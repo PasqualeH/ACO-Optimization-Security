@@ -1,0 +1,362 @@
+file 2006591 1728651828                                         
+version 3
+run STARLINK-2Sat-0-20241011-15:03:06-1310313
+attr configname STARLINK-2Sat
+attr datetime 20241011-15:03:06
+attr datetimef 20241011-150306
+attr experiment STARLINK-2Sat
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network SatelliteTest
+attr processid 1310313
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path ../../images:../../../inet/images:../../../simu5G/images:../../../veins/images
+config description STARLINK-2Sat
+config *.satellite[*].mobility.typename SatelliteMobilityScs
+config *.satellite[*].NoradModule.TLEfile "\"starlink2023.txt\""
+config *.satellite[*].mobility.updateInterval 20s
+config *.configurator.updateInterval 10.0000001s
+config **.numOfSats 2
+config **.numOfMCCs 0
+config *.Pos.offsetX 0
+config *.Pos.offset_x 0
+config *.Pos.offset_y 0
+config *.Pos.mapx 2160
+config *.Pos.mapy 1080
+config *.Pos.mapx2 2160
+config *.Pos.mapy2 1080
+config *.Pos.emapx 2160
+config *.Pos.emapy 1080
+config *.satellite[*].numWlanInterfaces 0
+config *.satellite[0].satelliteName "\"STARLINK-3308\""
+config *.satellite[1].satelliteName "\"STARLINK-3319\""
+config *.satellite[*].mobility.targetyear 123
+config *.satellite[*].mobility.targetmonth 2
+config *.satellite[*].mobility.targetday 2
+config *.satellite[*].mobility.targethour 12
+config *.satellite[*].mobility.targetsec 10
+config *.satellite[*].mobility.targetwday 4
+config *.satellite[*].mobility.targetyday 60
+config *.satellite[*].mobility.enableRepeatCycle 0
+config *.satellite[*].mobility.cycleTime 360
+config *.satellite[*].mobility.targetmin 8
+config *.configurator.enableInterSatelliteLinks true
+config network SatelliteTest
+config image-path ../../images
+config output-scalar-file-append false
+config **.routingRecorder.enabled false
+config **.vector-recording true
+config **.sctp.**.scalar-recording false
+config **.sctp.**.vector-recording false
+config **.app[0].**.vector-recording true
+config debug-on-errors true
+config print-undisposed true
+config **.numOfSats 1
+config **.numOfMCCs 1
+config **.numOfCars 1
+config **.numOfServiceLinkChannels 1
+config **.mobility.initFromDisplayString false
+config *.MCC[*].mobility.typename GroundStationMobility
+config *.GS[*].mobility.typename GroundStationMobility
+config *.GS[*].mobility.latitude 35.45379
+config *.GS[*].mobility.longitude 139.64062
+config *.GS[*].cityName "\"Yokohama\""
+config **.constraintAreaMinX 0m
+config **.constraintAreaMaxX 2160m
+config **.constraintAreaMinY 0m
+config **.constraintAreaMaxY 1080m
+config **.constraintAreaMinZ 0m
+config **.constraintAreaMaxZ 0m
+config *.playgroundSizeX 2160m
+config *.playgroundSizeY 1080m
+config *.playgroundSizeZ 50m
+config *.Pos.offsetX 0
+config *.Pos.offset_x 0
+config *.Pos.offset_y 0
+config *.Pos.mapx 2160
+config *.Pos.mapy 1080
+config *.Pos.mapx2 2160
+config *.Pos.mapy2 1080
+config *.Pos.emapx 2160
+config *.Pos.emapy 1080
+config *.*.ipv4.arp.typename GlobalArp
+config *.*.ipv4.routingTable.netmaskRoutes "\"\""
+config **.networkConfiguratorModule "\"configurator\""
+config *.configurator.config "xmldoc(\"./demo.xml\")"
+config *.configurator.addStaticRoutes true
+config *.configurator.optimizeRoutes false
+config *.configurator.enableInterSatelliteLinks true
+config *.configurator.dumpConfig "\"demodump.xml\""
+config *.*.forwarding true
+config *.visualizer.dataLinkVisualizer.packetFilter "\"UDP*\""
+config *.visualizer.networkRouteVisualizer.displayRoutes true
+config *.visualizer.statisticVisualizer.signalName "\"rtt\""
+config *.visualizer.statisticVisualizer.unit "\"s\""
+config *.satellite[*].cnl[*].radio.displayCommunicationRange false
+config *.satellite[*].cnl[*].mac.fullDuplex true
+config *.satellite[*].NoradModule.gapOffset 150
+config *.satellite[*].numBeamInterfaces 2
+config *.satellite[*].numSubChannels 1
+config *.satellite[*].bm.numBeamInterfaces 2
+config *.satellite[*].bm.numSubChannels 1
+config *.satellite[*].numWlanInterfaces 2
+config **.numBeamInterfaces 2
+config **.numSubChannels 1
+config *.MCC[*].wlan[*].radio.displayCommunicationRange false
+config *.MCC[*].wlan[*].mac.fullDuplex true
+config *.GS[*].wlan[*].radio.displayCommunicationRange false
+config *.GS[*].wlan[*].mac.fullDuplex true
+config **.wlan[*].mac.mtu 32000B
+config **.wlan[*].mac.queue.packetCapacity -1
+config *.satellite[*].cnl[*].mac.useAck false
+config *.satellite[*].cnl[*].mac.mtu 32000B
+config *.satellite[*].cnl[*].mac.queue.packetCapacity -1
+config *.GS[*].wlan[*].mac.useAck false
+config *.MCC[*].wlan[*].mac.useAck false
+config **.radioMediumFL.listeningFilter false
+config **.radioMediumFL.pathLoss.typename SatellitePathloss
+config **.radioMediumFL.pathLoss.plConfig "xmldoc(\"plConfig.xml\")"
+config **.radioMediumFL.backgroundNoise.power -110dBm
+config **.radioMediumSV[*].listeningFilter false
+config **.radioMediumSV[*].pathLoss.typename SatellitePathloss
+config **.radioMediumSV[*].pathLoss.plConfig "xmldoc(\"plConfig.xml\")"
+config **.radioMediumSV[*].backgroundNoise.power -110dBm
+config *.satellite[*].cnl[0].radio.*.modulation "\"QAM-256\""
+config *.satellite[*].cnl[1..].radio.*.modulation "\"QAM-16\""
+config *.MCC[*].wlan[*].radio.*.modulation "\"QAM-256\""
+config *.GS[*].wlan[*].radio.*.modulation "\"QAM-16\""
+config **.analogModel.ignorePartialInterference true
+config *.satellite[*].NoradModule.satIndex parentIndex()
+config *.satellite[*].NoradModule.satName "\"sat\""
+config *.satellite[*].NoradModule.planes 2
+config *.satellite[*].NoradModule.satPerPlane 66
+config *.satellite[*].mobility.updateInterval 2s
+config *.MCC[*].mobility.updateInterval 200s
+config *.configurator.updateInterval 10s
+config *.GS[*].*.updateInterval 0.5s
+config *.MCC[*].mobility.latitude 35.18698
+config *.MCC[*].mobility.longitude 136.90033
+config *.MCC[*].cityName "\"Nagoya\""
+config *.satellite[0].**.bitrate 500Mbps
+config *.satellite[1..].**.bitrate 250Mbps
+config *.MCC[*].**.bitrate 500Mbps
+config *.GS[*].wlan[0].bitrate 250Mbps
+config *.satellite[*].cnl[0].radio.radioMediumModule "\"radioMediumFL\""
+config *.satellite[*].cnl[0].radio.centerFrequency 28.5GHz
+config *.satellite[*].cnl[0].radio.bandwidth 500MHz
+config *.satellite[*].cnl[1].radio.radioMediumModule "\"radioMediumSV[0]\""
+config *.satellite[*].cnl[1].radio.centerFrequency 10.825GHz
+config *.satellite[*].cnl[1].radio.bandwidth 250MHz
+config *.satellite[*].cnl[2..].radio.radioMediumModule "\"radioMediumSV[1]\""
+config *.satellite[*].cnl[2..].radio.centerFrequency 10.825GHz
+config *.satellite[*].cnl[2..].radio.bandwidth 250MHz
+config *.satellite[*].cnl[0].radio.transmitter.centerFrequency 28.5GHz
+config *.satellite[*].cnl[0].radio.transmitter.bandwidth 500MHz
+config *.satellite[*].cnl[0].radio.transmitter.preambleDuration 10us
+config *.satellite[*].cnl[0].radio.transmitter.headerLength 8B
+config *.satellite[*].cnl[0].radio.transmitter.power 15W
+config *.satellite[*].cnl[1].radio.transmitter.centerFrequency 10.825GHz
+config *.satellite[*].cnl[1].mediumLimitCache.centerFrequency 10.875GHz
+config *.satellite[*].cnl[2..].radio.transmitter.centerFrequency 11.075GHz
+config *.satellite[*].cnl[2..].mediumLimitCache.centerFrequency 11.075GHz
+config *.satellite[*].cnl[1..].radio.transmitter.bandwidth 250MHz
+config *.satellite[*].cnl[1..].radio.transmitter.preambleDuration 10us
+config *.satellite[*].cnl[1..].radio.transmitter.headerLength 8B
+config *.satellite[*].cnl[1..].radio.transmitter.power 15W
+config *.satellite[*].cnl[0].radio.receiver.centerFrequency 28.5GHz
+config *.satellite[*].cnl[0].radio.receiver.bandwidth 500MHz
+config *.satellite[*].cnl[0].radio.receiver.snirThreshold 4dB
+config *.satellite[*].cnl[0].radio.receiver.sensitivity -100dBm
+config *.satellite[*].cnl[0].radio.receiver.energyDetection -85dBm
+config *.satellite[*].cnl[1].radio.receiver.centerFrequency 10.825GHz
+config *.satellite[*].cnl[2..].radio.receiver.centerFrequency 11.075GHz
+config *.satellite[*].cnl[1..].radio.receiver.bandwidth 250MHz
+config *.satellite[*].cnl[1..].radio.receiver.snirThreshold 4dB
+config *.satellite[*].cnl[1..].radio.receiver.sensitivity -100dBm
+config *.satellite[*].cnl[1..].radio.receiver.energyDetection -85dBm
+config *.satellite[*].cnl[0].radio.antenna.typename ConstantGainAntenna
+config *.satellite[*].cnl[0].radio.antenna.gain 34dB
+config *.satellite[*].cnl[1..].radio.antenna.typename ConstantGainAntenna
+config *.satellite[*].cnl[1..].radio.antenna.gain 34dB
+config *.MCC[*].wlan[*].radio.radioMediumModule "\"radioMediumFL\""
+config *.MCC[*].wlan[*].radio.centerFrequency 28.5GHz
+config *.MCC[*].wlan[*].radio.bandwidth 500MHz
+config *.MCC[*].wlan[*].radio.transmitter.centerFrequency 28.5GHz
+config *.MCC[*].wlan[*].radio.transmitter.bandwidth 500MHz
+config *.MCC[*].wlan[*].radio.transmitter.preambleDuration 10us
+config *.MCC[*].wlan[*].radio.transmitter.headerLength 8B
+config *.MCC[*].wlan[*].radio.transmitter.power 251W
+config *.MCC[*].wlan[*].radio.receiver.centerFrequency 28.5GHz
+config *.MCC[*].wlan[*].radio.receiver.bandwidth 500MHz
+config *.MCC[*].wlan[*].radio.receiver.snirThreshold 4dB
+config *.MCC[*].wlan[*].radio.receiver.sensitivity -100dBm
+config *.MCC[*].wlan[*].radio.receiver.energyDetection -85dBm
+config *.MCC[*].wlan[0].radio.antenna.typename ConstantGainAntenna
+config *.MCC[*].wlan[0].radio.antenna.gain 65.5dB
+config *.GS[*].wlan[*].radio.centerFrequency 10.825GHz
+config *.GS[*].wlan[*].radio.bandwidth 250MHz
+config *.GS[*].wlan[*].radio.radioMediumModule "\"radioMediumSV[0]\""
+config *.GS[*].wlan[*].radio.transmitter.centerFrequency 10.825GHz
+config *.GS[*].wlan[*].radio.transmitter.bandwidth 250MHz
+config *.GS[*].wlan[*].radio.transmitter.preambleDuration 10us
+config *.GS[*].wlan[*].radio.transmitter.headerLength 8B
+config *.GS[*].wlan[*].radio.receiver.centerFrequency 10.825GHz
+config *.GS[*].wlan[*].radio.receiver.bandwidth 250MHz
+config *.GS[*].wlan[*].radio.receiver.snirThreshold 4dB
+config *.GS[*].wlan[*].radio.receiver.sensitivity -100dBm
+config *.GS[*].wlan[*].radio.receiver.energyDetection -85dBm
+config *.GS[*].wlan[*].radio.antenna.typename ConstantGainAntenna
+config *.GS[*].wlan[*].radio.antenna.gain 34dB
+config *.GS[*].wlan[*].radio.transmitter.power 10W
+config *.GS[*].wlan[*].radio.antenna.mobility.typename AttachedMobility
+config *.GS[*].wlan[*].radio.antenna.mobility.mobilityModule "\"^.^.^.^.mobility\""
+config *.MCC[*].numEthInterfaces 1
+config *.GS[*].numEthInterfaces 1
+config **.mobility.updateFromDisplayString false
+
+vector 0 SatelliteTest.satellite[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 1 SatelliteTest.satellite[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 2 SatelliteTest.satellite[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 3 SatelliteTest.satellite[1].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 4 SatelliteTest.satellite[1].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 5 SatelliteTest.satellite[1].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 6 SatelliteTest.GS[0].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 7 SatelliteTest.GS[0].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 8 SatelliteTest.GS[0].eth[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 9 SatelliteTest.GS[0].eth[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 10 SatelliteTest.GS[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 11 SatelliteTest.GS[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 12 SatelliteTest.GS[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 13 SatelliteTest.GS[0].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 14 SatelliteTest.GS[0].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 15 SatelliteTest.GS[0].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+0	14584 8 0 0 0 0 1 0 0 0 0
+1	14592 8 0 0 0 0 1 0 0 0 0
+2	14600 8 0 0 0 0 1 0 0 0 0
+3	14608 8 0 0 0 0 1 0 0 0 0
+4	14616 8 0 0 0 0 1 0 0 0 0
+5	14624 8 0 0 0 0 1 0 0 0 0
+6	14632 40 0 0 0 0 5 0 0 0 0
+7	14672 40 0 0 0 0 5 0 0 0 0
+8	14712 40 0 0 0 0 5 0 0 0 0
+9	14752 40 0 0 0 0 5 0 0 0 0
+10	14792 9 0 0 0 0 1 0 0 0 0
+11	14801 9 0 0 0 0 1 0 0 0 0
+12	14810 9 0 0 0 0 1 0 0 0 0
+13	14819 27 0 0 0 0 3 0 4 4 16
+14	14846 9 0 0 0 0 1 1 1 1 1
+15	14855 9 0 0 0 0 1 1 1 1 1
+vector 16 SatelliteTest.GS[0].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 17 SatelliteTest.GS[0].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 18 SatelliteTest.GS[0].eth[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 19 SatelliteTest.GS[0].eth[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 20 SatelliteTest.GS[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+16	15865 398145 517 517 0.1 2590.0000259 25901 0 0 0 0
+17	414010 398145 517 517 0.1 2590.0000259 25901 0 0 0 0
+18	812155 398145 517 517 0.1 2590.0000259 25901 0 0 0 0
+19	1210300 398145 517 517 0.1 2590.0000259 25901 0 0 0 0
+20	1608445 398145 517 517 0.1 2590.0000259 25901 0 0 0 0
+

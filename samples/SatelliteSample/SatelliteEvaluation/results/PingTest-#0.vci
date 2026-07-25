@@ -1,0 +1,778 @@
+file 37235 1729115044                                           
+version 3
+run PingTest-0-20241016-23:41:28-3044632
+attr configname PingTest
+attr datetime 20241016-23:41:28
+attr datetimef 20241016-234128
+attr experiment PingTest
+attr inifile omnet.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network VMCC2Car8
+attr processid 3044632
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path ../../images:../../../inet/images:../../../simu5G/images:../../../veins/images
+config description "MCC to MCC PING simulation"
+config sim-time-limit 3s
+config **.numOfMCCs 2
+config *.MCC[*].numApps 1
+config *.MCC[*].app[0].typename PingApp
+config *.MCC[0].app[0].startTime 0.1s
+config *.MCC[0].app[0].destAddr "\"MCC[1]\""
+config *.MCC[0].app[0].sendInterval 1s
+config *.MCC[0].app[0].**.vector-recording true
+config *.satellite[0].app[0].**.vector-recording true
+config sim-time-limit 0.3s
+config **.scalar-recording true
+config **.vector-recording true
+config image-path ../../images
+config debug-on-errors true
+config print-undisposed true
+config network VMCC2Car8
+config **.numOfSats 1
+config **.numOfMCCs 1
+config **.numOfCars 1
+config **.numOfServiceLinkChannels 1
+config **.mobility.initFromDisplayString false
+config *.satellite[*].mobility.typename SatelliteMobilityScs
+config *.MCC[*].mobility.typename GroundStationMobility
+config *.GS[*].mobility.typename GroundStationMobility
+config *.GS[*].mobility.latitude 35.45379
+config *.GS[*].mobility.longitude 139.64062
+config *.GS[*].cityName "\"Yokohama\""
+config **.constraintAreaMinX 0m
+config **.constraintAreaMaxX 2160m
+config **.constraintAreaMinY 0m
+config **.constraintAreaMaxY 1080m
+config **.constraintAreaMinZ 0m
+config **.constraintAreaMaxZ 0m
+config *.playgroundSizeX 2160m
+config *.playgroundSizeY 1080m
+config *.playgroundSizeZ 50m
+config *.Pos.offsetX 1080
+config *.Pos.offset_x 1770
+config *.Pos.offset_y 181
+config *.Pos.mapx 2160
+config *.Pos.mapy 1080
+config *.Pos.mapx2 255
+config *.Pos.mapy2 255
+config *.Pos.emapx 1080
+config *.Pos.emapy 1080
+config *.satellite[*].NoradModule.TLEfile "\"starlink2023.txt\""
+config *.satellite[*].mobility.targetyear 123
+config *.satellite[*].mobility.targetmonth 2
+config *.satellite[*].mobility.targetday 2
+config *.satellite[*].mobility.targethour 12
+config *.satellite[*].mobility.targetsec 10
+config *.satellite[*].mobility.targetwday 4
+config *.satellite[*].mobility.targetyday 60
+config *.satellite[*].mobility.enableRepeatCycle 1
+config *.satellite[*].satelliteName "\"STARLINK-3308\""
+config *.satellite[*].mobility.cycleTime 360
+config *.satellite[*].mobility.targetmin 8
+config *.*.ipv4.arp.typename GlobalArp
+config *.*.ipv4.routingTable.netmaskRoutes "\"\""
+config **.networkConfiguratorModule "\"configurator\""
+config *.configurator.config "xmldoc(\"./demo.xml\")"
+config *.configurator.addStaticRoutes true
+config *.configurator.optimizeRoutes false
+config *.configurator.enableInterSatelliteLinks true
+config *.*.forwarding true
+config *.configurator.dumpConfig "\"demodump.xml\""
+config *.visualizer.dataLinkVisualizer.packetFilter "\"UDP*\""
+config *.visualizer.networkRouteVisualizer.displayRoutes true
+config *.visualizer.statisticVisualizer.signalName "\"rtt\""
+config *.visualizer.statisticVisualizer.unit "\"s\""
+config *.satellite[*].cnl[*].radio.displayCommunicationRange false
+config *.satellite[*].cnl[*].mac.fullDuplex true
+config *.satellite[*].cnl[*].mac.ackTimeout 100ms
+config *.satellite[*].numBeamInterfaces 2
+config *.satellite[*].numSubChannels 1
+config *.satellite[*].bm.numBeamInterfaces 2
+config *.satellite[*].bm.numSubChannels 1
+config **.numBeamInterfaces 2
+config **.numSubChannels 1
+config *.satellite[*].numWlanInterfaces 2
+config *.MCC[*].wlan[*].radio.displayCommunicationRange false
+config *.MCC[*].wlan[*].mac.fullDuplex true
+config *.GS[*].wlan[*].radio.displayCommunicationRange false
+config *.GS[*].wlan[*].mac.fullDuplex true
+config *.GS[*].wlan[*].mac.headerLength 23B
+config **.wlan[*].mac.mtu 32000B
+config **.wlan[*].mac.queue.packetCapacity -1
+config *.satellite[*].cnl[*].mac.useAck false
+config *.satellite[*].cnl[*].mac.mtu 32000B
+config *.satellite[*].cnl[*].mac.queue.packetCapacity -1
+config *.GS[*].wlan[*].mac.useAck false
+config *.MCC[*].wlan[*].mac.useAck false
+config **.radioMediumFL.listeningFilter false
+config **.radioMediumFL.pathLoss.typename SatellitePathloss
+config **.radioMediumFL.pathLoss.plConfig "xmldoc(\"plConfig.xml\")"
+config **.radioMediumFL.backgroundNoise.power -110dBm
+config **.radioMediumSV[*].listeningFilter false
+config **.radioMediumSV[*].pathLoss.typename SatellitePathloss
+config **.radioMediumSV[*].pathLoss.plConfig "xmldoc(\"plConfig.xml\")"
+config **.radioMediumSV[*].backgroundNoise.power -110dBm
+config *.satellite[*].cnl[0].radio.*.modulation "\"QAM-256\""
+config *.satellite[*].cnl[1..].radio.*.modulation "\"QAM-16\""
+config *.MCC[*].wlan[*].radio.*.modulation "\"QAM-256\""
+config *.GS[*].wlan[*].radio.*.modulation "\"QAM-16\""
+config **.analogModel.ignorePartialInterference true
+config *.satellite[*].NoradModule.epochYear 23
+config *.satellite[*].NoradModule.epochDay 47.79033611
+config *.satellite[*].NoradModule.meanMotion 15.15306312100295
+config *.satellite[*].NoradModule.eccentricity 0.0001698
+config *.satellite[*].NoradModule.bstar 0.00042243
+config *.satellite[*].NoradModule.drag 0.00001846
+config *.satellite[*].NoradModule.simcycle 120
+config *.satellite[*].NoradModule.satIndex parentIndex()
+config *.satellite[*].NoradModule.satName "\"sat\""
+config *.satellite[*].NoradModule.planes 2
+config *.satellite[*].NoradModule.satPerPlane 66
+config *.satellite[*].NoradModule.gapOffset 150
+config *.satellite[*].mobility.offsetX 1920
+config *.satellite[*].mobility.updateInterval 2s
+config *.MCC[*].mobility.updateInterval 200s
+config *.configurator.updateInterval 10s
+config *.GS[*].*.updateInterval 0.5s
+config *.MCC[*].mobility.latitude 35.18698
+config *.MCC[*].mobility.longitude 136.90033
+config *.MCC[*].cityName "\"Nagoya\""
+config *.satellite[0].**.bitrate 500Mbps
+config *.satellite[1..2].**.bitrate 250Mbps
+config *.MCC[*].**.bitrate 500Mbps
+config *.GS[*].wlan[0].bitrate 250Mbps
+config *.satellite[*].cnl[0].radio.radioMediumModule "\"radioMediumFL\""
+config *.satellite[*].cnl[0].radio.centerFrequency 28.5GHz
+config *.satellite[*].cnl[0].radio.bandwidth 500MHz
+config *.satellite[*].cnl[1].radio.radioMediumModule "\"radioMediumSV[0]\""
+config *.satellite[*].cnl[1..].radio.bandwidth 250MHz
+config *.satellite[*].cnl[1].radio.centerFrequency 10.825GHz
+config *.satellite[*].cnl[0].radio.transmitter.centerFrequency 28.5GHz
+config *.satellite[*].cnl[0].radio.transmitter.bandwidth 500MHz
+config *.satellite[*].cnl[0].radio.transmitter.preambleDuration 1us
+config *.satellite[*].cnl[0].radio.transmitter.headerLength 8B
+config *.satellite[*].cnl[0].radio.transmitter.power 15W
+config *.satellite[*].cnl[1].radio.transmitter.centerFrequency 10.825GHz
+config *.satellite[*].cnl[1].mediumLimitCache.centerFrequencyy 10.825GHz
+config *.satellite[*].cnl[1..].radio.transmitter.bandwidth 250MHz
+config *.satellite[*].cnl[1..].radio.transmitter.preambleDuration 1us
+config *.satellite[*].cnl[1..].radio.transmitter.headerLength 8B
+config *.satellite[*].cnl[1..].radio.transmitter.power 15W
+config *.satellite[*].cnl[0].radio.receiver.centerFrequency 28.5GHz
+config *.satellite[*].cnl[0].radio.receiver.bandwidth 500MHz
+config *.satellite[*].cnl[0].radio.receiver.snirThreshold 4dB
+config *.satellite[*].cnl[0].radio.receiver.sensitivity -100dBm
+config *.satellite[*].cnl[0].radio.receiver.energyDetection -85dBm
+config *.satellite[*].cnl[1].radio.receiver.centerFrequency 10.825GHz
+config *.satellite[*].cnl[1..].radio.receiver.bandwidth 250MHz
+config *.satellite[*].cnl[1..].radio.receiver.snirThreshold 4dB
+config *.satellite[*].cnl[1..].radio.receiver.sensitivity -100dBm
+config *.satellite[*].cnl[1..].radio.receiver.energyDetection -85dBm
+config *.satellite[*].cnl[*].radio.antenna.typename ConstantGainAntenna
+config *.satellite[*].cnl[*].radio.antenna.gain 34dB
+config *.useRouting true
+config *.MCC[*].wlan[*].radio.radioMediumModule "\"radioMediumFL\""
+config *.MCC[*].wlan[*].radio.centerFrequency 28.5GHz
+config *.MCC[*].wlan[*].radio.bandwidth 500MHz
+config *.MCC[*].wlan[*].agent.defaultSsid "\"uplink\""
+config *.MCC[*].wlan[*].radio.transmitter.centerFrequency 28.5GHz
+config *.MCC[*].wlan[*].radio.transmitter.bandwidth 500MHz
+config *.MCC[*].wlan[*].radio.transmitter.preambleDuration 1us
+config *.MCC[*].wlan[*].radio.transmitter.headerLength 8B
+config *.MCC[*].wlan[*].radio.transmitter.power 251W
+config *.MCC[*].wlan[*].radio.receiver.centerFrequency 28.5GHz
+config *.MCC[*].wlan[*].radio.receiver.bandwidth 500MHz
+config *.MCC[*].wlan[*].radio.receiver.snirThreshold 4dB
+config *.MCC[*].wlan[*].radio.receiver.sensitivity -100dBm
+config *.MCC[*].wlan[*].radio.receiver.energyDetection -85dBm
+config *.MCC[*].wlan[0].radio.antenna.typename ConstantGainAntenna
+config *.MCC[*].wlan[0].radio.antenna.gain 65.5dB
+config *.GS[0].wlan[*].radio.centerFrequency 10.825GHz
+config *.GS[0].wlan[*].radio.radioMediumModule "\"radioMediumSV[0]\""
+config *.GS[0].wlan[*].radio.transmitter.centerFrequency 10.825GHz
+config *.GS[*].wlan[*].radio.transmitter.bandwidth 250MHz
+config *.GS[*].wlan[*].radio.transmitter.preambleDuration 1us
+config *.GS[*].wlan[*].radio.transmitter.headerLength 8B
+config *.GS[0].wlan[*].radio.receiver.centerFrequency 10.825GHz
+config *.GS[*].wlan[*].radio.receiver.bandwidth 250MHz
+config *.GS[*].wlan[*].radio.receiver.snirThreshold 4dB
+config *.GS[*].wlan[*].radio.receiver.sensitivity -100dBm
+config *.GS[*].wlan[*].radio.receiver.energyDetection -85dBm
+config *.GS[*].wlan[*].radio.antenna.typename ConstantGainAntenna
+config *.GS[*].wlan[*].radio.antenna.gain 34dB
+config *.GS[*].wlan[*].radio.transmitter.power 15W
+config *.GS[*].wlan[*].radio.antenna.mobility.typename AttachedMobility
+config *.GS[*].wlan[*].radio.antenna.mobility.mobilityModule "\"^.^.^.^.mobility\""
+config *.MCC[*].numEthInterfaces 1
+config **.mobility.updateFromDisplayString false
+
+vector 0 VMCC2Car8.satellite[0].cnl[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 1 VMCC2Car8.satellite[0].cnl[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 2 VMCC2Car8.satellite[0].cnl[1].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 3 VMCC2Car8.satellite[0].cnl[1].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 4 VMCC2Car8.satellite[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 5 VMCC2Car8.satellite[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 6 VMCC2Car8.satellite[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 7 VMCC2Car8.MCC[0].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 8 VMCC2Car8.MCC[0].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 9 VMCC2Car8.MCC[0].eth[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 10 VMCC2Car8.MCC[0].eth[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 11 VMCC2Car8.MCC[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 12 VMCC2Car8.MCC[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 13 VMCC2Car8.MCC[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 14 VMCC2Car8.MCC[1].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 15 VMCC2Car8.MCC[1].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 16 VMCC2Car8.MCC[1].eth[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 17 VMCC2Car8.MCC[1].eth[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 18 VMCC2Car8.MCC[1].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 19 VMCC2Car8.MCC[1].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 20 VMCC2Car8.MCC[1].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 21 VMCC2Car8.GS[0].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 22 VMCC2Car8.GS[0].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 23 VMCC2Car8.GS[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 24 VMCC2Car8.GS[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 25 VMCC2Car8.GS[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 26 VMCC2Car8.satellite[0].cnl[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 27 VMCC2Car8.satellite[0].cnl[1].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 28 VMCC2Car8.MCC[0].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 29 VMCC2Car8.MCC[1].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 30 VMCC2Car8.GS[0].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 31 VMCC2Car8.satellite[0].cnl[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 32 VMCC2Car8.satellite[0].cnl[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 33 VMCC2Car8.satellite[0].cnl[1].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 34 VMCC2Car8.satellite[0].cnl[1].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 35 VMCC2Car8.MCC[0].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 36 VMCC2Car8.MCC[0].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 37 VMCC2Car8.MCC[1].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 38 VMCC2Car8.MCC[1].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 39 VMCC2Car8.GS[0].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 40 VMCC2Car8.GS[0].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 41 VMCC2Car8.satellite[0].cnl[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 42 VMCC2Car8.satellite[0].cnl[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 43 VMCC2Car8.satellite[0].cnl[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 44 VMCC2Car8.satellite[0].cnl[0].mac sentDownPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToLower
+attr title "packets sent to lower layer, packetBytes"
+vector 45 VMCC2Car8.satellite[0].cnl[1].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 46 VMCC2Car8.satellite[0].cnl[1].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 47 VMCC2Car8.satellite[0].cnl[1].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 48 VMCC2Car8.satellite[0].cnl[1].mac sentDownPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToLower
+attr title "packets sent to lower layer, packetBytes"
+vector 49 VMCC2Car8.MCC[0].wlan[0].mac rcvdPkFromLl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromLower
+attr title "packets received from lower layer, packetBytes"
+vector 50 VMCC2Car8.MCC[0].wlan[0].mac passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 51 VMCC2Car8.MCC[1].wlan[0].mac rcvdPkFromLl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromLower
+attr title "packets received from lower layer, packetBytes"
+vector 52 VMCC2Car8.MCC[1].wlan[0].mac passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 53 VMCC2Car8.GS[0].wlan[0].mac rcvdPkFromLl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromLower
+attr title "packets received from lower layer, packetBytes"
+vector 54 VMCC2Car8.GS[0].wlan[0].mac passedUpPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToUpper
+attr title "packets passed to higher layer, packetBytes"
+vector 55 VMCC2Car8.MCC[0].app[0] pingTxSeq:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "ping tx seq"
+vector 56 VMCC2Car8.MCC[0].wlan[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 57 VMCC2Car8.MCC[0].wlan[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 58 VMCC2Car8.MCC[0].wlan[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 59 VMCC2Car8.MCC[0].wlan[0].mac sentDownPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToLower
+attr title "packets sent to lower layer, packetBytes"
+vector 60 VMCC2Car8.satellite[0].cnl[0].mac rcvdPkFromLl:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetReceivedFromLower
+attr title "packets received from lower layer, packetBytes"
+vector 61 VMCC2Car8.satellite[0].cnl[0].mac packetDropNotAddressedToUs:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetDropReasonIsNotAddressedToUs(packetDropped)
+attr title "packet drop: not addressed to us, packetBytes"
+vector 62 VMCC2Car8.MCC[1].wlan[0].queue incomingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPushStarted)
+attr title "incoming packet lengths"
+attr unit b
+vector 63 VMCC2Car8.MCC[1].wlan[0].queue queueingTime:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source queueingTime(packetPulled)
+attr title "queueing times"
+attr unit s
+vector 64 VMCC2Car8.MCC[1].wlan[0].queue outgoingPacketLengths:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr source packetLength(packetPulled)
+attr title "outgoing packet lengths"
+attr unit b
+vector 65 VMCC2Car8.MCC[1].wlan[0].mac sentDownPk:vector(packetBytes) ETV
+attr interpolationmode none
+attr recordingmode vector(packetBytes)
+attr source packetSentToLower
+attr title "packets sent to lower layer, packetBytes"
+vector 66 VMCC2Car8.MCC[0].app[0] pingRxSeq:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "ping rx seq"
+vector 67 VMCC2Car8.MCC[0].app[0] rtt:vector ETV
+attr interpolationmode none
+attr recordingmode vector
+attr title "ping round-trip time"
+attr unit s
+vector 68 VMCC2Car8.satellite[0].cnl[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 69 VMCC2Car8.satellite[0].cnl[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 70 VMCC2Car8.satellite[0].cnl[1].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 71 VMCC2Car8.satellite[0].cnl[1].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 72 VMCC2Car8.MCC[0].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 73 VMCC2Car8.MCC[0].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 74 VMCC2Car8.MCC[0].eth[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 75 VMCC2Car8.MCC[0].eth[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 76 VMCC2Car8.MCC[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 77 VMCC2Car8.MCC[1].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 78 VMCC2Car8.MCC[1].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 79 VMCC2Car8.MCC[1].eth[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 80 VMCC2Car8.MCC[1].eth[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 81 VMCC2Car8.MCC[1] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+vector 82 VMCC2Car8.GS[0].wlan[0].queue outgoingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPulled)
+attr title "outgoing datarate"
+attr unit bps
+vector 83 VMCC2Car8.GS[0].wlan[0].queue incomingDataRate:vector ETV
+attr interpolationmode linear
+attr recordingmode vector
+attr source throughput(packetPushStarted)
+attr title "incoming datarate"
+attr unit bps
+vector 84 VMCC2Car8.GS[0] throughput:vector ETV
+attr recordingmode vector
+attr source throughput(packetReceived)
+attr title throughput
+attr unit bps
+0	30115 48 0 3 0 0 6 0 0 0 0
+1	30163 48 0 3 0 0 6 0 0 0 0
+2	30211 48 0 4 0 0 6 0 0 0 0
+3	30259 48 0 4 0 0 6 0 0 0 0
+4	30307 8 0 0 0 0 1 0 0 0 0
+5	30315 8 0 0 0 0 1 0 0 0 0
+6	30323 8 0 0 0 0 1 0 0 0 0
+7	30331 73 0 86 0 2.1 8 0 0 0 0
+8	30404 73 0 86 0 2.1 8 0 0 0 0
+9	30477 40 0 0 0 0 5 0 0 0 0
+10	30517 45 0 0 0 0 5 0 0 0 0
+11	30562 9 0 0 0 0 1 0 0 0 0
+12	30571 9 0 0 0 0 1 0 0 0 0
+13	30580 9 0 0 0 0 1 0 0 0 0
+14	30589 114 0 98 0 2.126549103643 8 0 0 0 0
+15	30703 114 0 98 0 2.126549103643 8 0 0 0 0
+16	30817 45 0 0 0 0 5 0 0 0 0
+17	30862 45 0 0 0 0 5 0 0 0 0
+18	30907 9 0 0 0 0 1 0 0 0 0
+19	30916 9 0 0 0 0 1 0 0 0 0
+20	30925 9 0 0 0 0 1 0 0 0 0
+21	30934 45 0 0 0 0 5 0 0 0 0
+22	30979 45 0 0 0 0 5 0 0 0 0
+23	31024 9 0 0 0 0 1 0 0 0 0
+24	31033 9 0 0 0 0 1 0 0 0 0
+25	31042 9 0 0 0 0 1 0 0 0 0
+26	31051 27 0 0 0 0 3 0 4 4 16
+27	31078 27 0 0 0 0 3 0 4 4 16
+28	31105 27 0 0 0 0 3 0 4 4 16
+29	31132 27 0 0 0 0 3 0 4 4 16
+30	31159 27 0 0 0 0 3 0 4 4 16
+31	31186 287 0 102 0 2.128556588649 13 1 3 25 61
+32	31473 37 0 7 0 0.000001832 3 1 2 4 6
+33	31510 9 0 0 0 0 1 1 1 1 1
+34	31519 37 0 8 0 0.000001832 3 1 2 4 6
+35	31556 194 0 106 0 2.153098207286 9 1 3 17 41
+36	31750 105 0 88 0 2.100002728 7 1 2 10 16
+37	31855 193 0 93 0 2.126549103643 9 1 3 17 41
+38	32048 148 0 100 0 2.126551831643 7 1 2 10 16
+39	32196 55 0 20 0 0.002336780666 3 1 3 5 11
+40	32251 9 0 0 0 0 1 1 1 1 1
+41	32260 11 3 3 0 0 1 224 224 224 50176
+42	32271 9 3 3 0 0 1 0 0 0 0
+43	32280 11 3 3 0 0 1 224 224 224 50176
+44	32291 10 3 3 0 0 1 44 44 44 1936
+45	32301 11 4 4 0 0 1 224 224 224 50176
+46	32312 9 4 4 0 0 1 0 0 0 0
+47	32321 11 4 4 0 0 1 224 224 224 50176
+48	32332 10 4 4 0 0 1 44 44 44 1936
+49	32342 100 13 107 0.001998914601 2.153098207286 4 44 100 344 31936
+50	32442 97 13 107 0.001998914601 2.153098207286 4 28 84 280 21952
+51	32539 99 14 94 0.001998914601 2.126549103643 4 44 100 344 31936
+52	32638 96 14 94 0.001998914601 2.126549103643 4 28 84 280 21952
+53	32734 24 21 21 0.002336780666 0.002336780666 1 44 44 44 1936
+54	32758 24 21 21 0.002336780666 0.002336780666 1 28 28 28 784
+55	32782 36 26 84 0.1 2.1 3 0 2 3 5
+56	32818 42 29 86 0.1 2.1 3 672 672 2016 1354752
+57	32860 36 29 86 0.1 2.1 3 0 0 0 0
+58	32896 42 29 86 0.1 2.1 3 672 672 2016 1354752
+59	32938 42 29 86 0.1 2.1 3 100 100 300 30000
+60	32980 151 34 103 0.101999810601 2.128556588649 6 100 100 600 60000
+61	33131 151 34 103 0.101999810601 2.128556588649 6 100 100 600 60000
+62	33282 75 41 98 0.126549103643 2.126549103643 3 672 672 2016 1354752
+63	33357 69 41 98 0.126549103643 2.126549103643 3 0 0 0 0
+64	33426 75 41 98 0.126549103643 2.126549103643 3 672 672 2016 1354752
+65	33501 75 41 98 0.126549103643 2.126549103643 3 100 100 300 30000
+66	33576 70 52 109 0.153098207286 2.153098207286 3 0 2 3 5
+67	33646 109 52 109 0.153098207286 2.153098207286 3 0.053098207286 0.053098207286 0.159294621858 0.0084582588509611
+68	33755 206 112 112 2.247535668062 3 9 0 2240 2240 5017600
+69	33961 206 112 112 2.247535668062 3 9 0 2240 2240 5017600
+70	34167 206 112 112 2.247535668062 3 9 0 2240 2240 5017600
+71	34373 206 112 112 2.247535668062 3 9 0 2240 2240 5017600
+72	34579 207 112 112 2.247535668062 3 9 0 20160 20160 406425600
+73	34786 207 112 112 2.247535668062 3 9 0 20160 20160 406425600
+74	34993 203 112 112 2.247535668062 3 9 0 0 0 0
+75	35196 203 112 112 2.247535668062 3 9 0 0 0 0
+76	35399 203 112 112 2.247535668062 3 9 0 0 0 0
+77	35602 207 112 112 2.247535668062 3 9 0 20160 20160 406425600
+78	35809 207 112 112 2.247535668062 3 9 0 20160 20160 406425600
+79	36016 203 112 112 2.247535668062 3 9 0 0 0 0
+80	36219 203 112 112 2.247535668062 3 9 0 0 0 0
+81	36422 203 112 112 2.247535668062 3 9 0 0 0 0
+82	36625 203 112 112 2.247535668062 3 9 0 0 0 0
+83	36828 203 112 112 2.247535668062 3 9 0 0 0 0
+84	37031 203 112 112 2.247535668062 3 9 0 0 0 0
+

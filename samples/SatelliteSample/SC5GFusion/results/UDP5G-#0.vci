@@ -1,0 +1,906 @@
+file 40331 1729113475                                           
+version 3
+run UDP5G-0-20241016-23:15:56-3026598
+attr configname UDP5G
+attr datetime 20241016-23:15:56
+attr datetimef 20241016-231556
+attr experiment UDP5G
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network SC5G
+attr processid 3026598
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config image-path ../../images:../../../inet/images:../../../simu5G/images:../../../veins/images
+config description "5G UDP transcer via Satelllite Communication"
+config sim-time-limit 0.1s
+config *.server.numApps 1
+config *.ue[*].numApps 1
+config **.ue[*].macCellId 1
+config **.ue[*].masterId 1
+config *.ue[0].app[*].typename VoIPReceiver
+config *.ue[0].app[0].localPort 3000
+config *.server.app[*].PacketSize 4375
+config *.server.app[*].destAddress "\"ue[0]\""
+config *.server.app[*].destPort 3000
+config *.server.app[*].localPort 3088+ancestorIndex(0)
+config *.server.app[*].typename VoIPSender
+config *.server.app[*].startTime uniform(0s,0.02s)
+config *.server.app[*].sampling_time 0.01s
+config image-path ../../images
+config output-scalar-file-append false
+config sim-time-limit 1.1s
+config network SC5G
+config **.routingRecorder.enabled false
+config **.vector-recording true
+config **.sctp.**.scalar-recording false
+config **.sctp.**.vector-recording false
+config **.app[0].**.vector-recording true
+config debug-on-errors true
+config print-undisposed true
+config **.numOfSats 1
+config **.numOfMCCs 1
+config **.numOfCars 1
+config **.numOfServiceLinkChannels 1
+config **.mobility.initFromDisplayString false
+config *.satellite[*].mobility.typename SatelliteMobilityScs
+config *.MCC[*].mobility.typename GroundStationMobility
+config *.GS[*].mobility.typename GroundStationMobility
+config *.GS[*].mobility.latitude 35.45379
+config *.GS[*].mobility.longitude 139.64062
+config *.GS[*].cityName "\"Yokohama\""
+config **.constraintAreaMinX 0m
+config **.constraintAreaMaxX 2160m
+config **.constraintAreaMinY 0m
+config **.constraintAreaMaxY 1080m
+config **.constraintAreaMinZ 0m
+config **.constraintAreaMaxZ 0m
+config *.playgroundSizeX 2160m
+config *.playgroundSizeY 1080m
+config *.playgroundSizeZ 50m
+config *.Pos.offsetX 1080
+config *.Pos.offset_x 1770
+config *.Pos.offset_y 181
+config *.Pos.mapx 2160
+config *.Pos.mapy 1080
+config *.Pos.mapx2 255
+config *.Pos.mapy2 255
+config *.Pos.emapx 1080
+config *.Pos.emapy 1080
+config *.satellite[*].NoradModule.TLEfile "\"starlink2023.txt\""
+config *.satellite[*].mobility.targetyear 123
+config *.satellite[*].mobility.targetmonth 2
+config *.satellite[*].mobility.targetday 2
+config *.satellite[*].mobility.targethour 12
+config *.satellite[*].mobility.targetsec 10
+config *.satellite[*].mobility.targetwday 4
+config *.satellite[*].mobility.targetyday 60
+config *.satellite[*].mobility.enableRepeatCycle 1
+config *.satellite[*].satelliteName "\"STARLINK-3308\""
+config *.satellite[*].mobility.cycleTime 360
+config *.satellite[*].mobility.targetmin 8
+config *.*.ipv4.arp.typename GlobalArp
+config *.*.ipv4.routingTable.netmaskRoutes "\"\""
+config **.networkConfiguratorModule "\"configurator\""
+config *.configurator.config "xml(\"<config><interface hosts='**' address='10.1.x.x' netmask='255.255.x.x'/><autoroute metric='propagationDelay'/></config>\")"
+config *.configurator.config "xmldoc(\"./demo.xml\")"
+config *.configurator.addStaticRoutes true
+config *.configurator.optimizeRoutes false
+config *.configurator.enableInterSatelliteLinks true
+config *.configurator.dumpConfig "\"demodump.xml\""
+config *.*.forwarding true
+config *.visualizer.dataLinkVisualizer.packetFilter "\"UDP*\""
+config *.visualizer.networkRouteVisualizer.displayRoutes true
+config *.visualizer.statisticVisualizer.signalName "\"rtt\""
+config *.visualizer.statisticVisualizer.unit "\"s\""
+config *.satellite[*].cnl[*].radio.displayCommunicationRange false
+config *.satellite[*].cnl[*].mac.fullDuplex true
+config *.satellite[*].numBeamInterfaces 2
+config *.satellite[*].numSubChannels 1
+config *.satellite[*].bm.numBeamInterfaces 2
+config *.satellite[*].bm.numSubChannels 1
+config *.satellite[*].numWlanInterfaces 2
+config **.numBeamInterfaces 2
+config **.numSubChannels 1
+config *.MCC[*].wlan[*].radio.displayCommunicationRange false
+config *.MCC[*].wlan[*].mac.fullDuplex true
+config *.GS[*].wlan[*].radio.displayCommunicationRange false
+config *.GS[*].wlan[*].mac.fullDuplex true
+config **.wlan[*].mac.mtu 32000B
+config **.wlan[*].mac.queue.packetCapacity -1
+config *.satellite[*].cnl[*].mac.useAck false
+config *.satellite[*].cnl[*].mac.mtu 32000B
+config *.satellite[*].cnl[*].mac.queue.packetCapacity -1
+config *.GS[*].wlan[*].mac.useAck false
+config *.MCC[*].wlan[*].mac.useAck false
+config **.radioMediumFL.listeningFilter false
+config **.radioMediumFL.pathLoss.typename SatellitePathloss
+config **.radioMediumFL.pathLoss.plConfig "xmldoc(\"plConfig.xml\")"
+config **.radioMediumFL.backgroundNoise.power -110dBm
+config **.radioMediumSV[*].listeningFilter false
+config **.radioMediumSV[*].pathLoss.typename SatellitePathloss
+config **.radioMediumSV[*].pathLoss.plConfig "xmldoc(\"plConfig.xml\")"
+config **.radioMediumSV[*].backgroundNoise.power -110dBm
+config *.satellite[*].cnl[0].radio.*.modulation "\"QAM-256\""
+config *.satellite[*].cnl[1..].radio.*.modulation "\"QAM-16\""
+config *.MCC[*].wlan[*].radio.*.modulation "\"QAM-256\""
+config *.GS[*].wlan[*].radio.*.modulation "\"QAM-16\""
+config **.analogModel.ignorePartialInterference true
+config *.satellite[*].NoradModule.epochYear 23
+config *.satellite[*].NoradModule.epochDay 47.79033611
+config *.satellite[*].NoradModule.meanMotion 15.15306312100295
+config *.satellite[*].NoradModule.eccentricity 0.0001698
+config *.satellite[*].NoradModule.bstar 0.00042243
+config *.satellite[*].NoradModule.drag 0.00001846
+config *.satellite[*].NoradModule.simcycle 120
+config *.satellite[*].NoradModule.satIndex parentIndex()
+config *.satellite[*].NoradModule.satName "\"sat\""
+config *.satellite[*].NoradModule.planes 2
+config *.satellite[*].NoradModule.satPerPlane 66
+config *.satellite[*].NoradModule.gapOffset 150
+config *.satellite[*].mobility.updateInterval 2s
+config *.MCC[*].mobility.updateInterval 200s
+config *.configurator.updateInterval 10s
+config *.GS[*].*.updateInterval 0.5s
+config *.MCC[*].mobility.latitude 35.18698
+config *.MCC[*].mobility.longitude 136.90033
+config *.MCC[*].cityName "\"Nagoya\""
+config *.satellite[0].**.bitrate 500Mbps
+config *.satellite[1..].**.bitrate 250Mbps
+config *.MCC[*].**.bitrate 500Mbps
+config *.GS[*].wlan[0].bitrate 250Mbps
+config *.satellite[*].cnl[0].radio.radioMediumModule "\"radioMediumFL\""
+config *.satellite[*].cnl[0].radio.centerFrequency 28.5GHz
+config *.satellite[*].cnl[0].radio.bandwidth 500MHz
+config *.satellite[*].cnl[1].radio.radioMediumModule "\"radioMediumSV[0]\""
+config *.satellite[*].cnl[1].radio.centerFrequency 10.825GHz
+config *.satellite[*].cnl[1].radio.bandwidth 250MHz
+config *.satellite[*].cnl[2..].radio.radioMediumModule "\"radioMediumSV[1]\""
+config *.satellite[*].cnl[2..].radio.centerFrequency 10.825GHz
+config *.satellite[*].cnl[2..].radio.bandwidth 250MHz
+config *.satellite[*].cnl[0].radio.transmitter.centerFrequency 28.5GHz
+config *.satellite[*].cnl[0].radio.transmitter.bandwidth 500MHz
+config *.satellite[*].cnl[0].radio.transmitter.preambleDuration 10us
+config *.satellite[*].cnl[0].radio.transmitter.headerLength 8B
+config *.satellite[*].cnl[0].radio.transmitter.power 15W
+config *.satellite[*].cnl[1].radio.transmitter.centerFrequency 10.825GHz
+config *.satellite[*].cnl[1].mediumLimitCache.centerFrequency 10.875GHz
+config *.satellite[*].cnl[2..].radio.transmitter.centerFrequency 11.075GHz
+config *.satellite[*].cnl[2..].mediumLimitCache.centerFrequency 11.075GHz
+config *.satellite[*].cnl[1..].radio.transmitter.bandwidth 250MHz
+config *.satellite[*].cnl[1..].radio.transmitter.preambleDuration 10us
+config *.satellite[*].cnl[1..].radio.transmitter.headerLength 8B
+config *.satellite[*].cnl[1..].radio.transmitter.power 15W
+config *.satellite[*].cnl[0].radio.receiver.centerFrequency 28.5GHz
+config *.satellite[*].cnl[0].radio.receiver.bandwidth 500MHz
+config *.satellite[*].cnl[0].radio.receiver.snirThreshold 4dB
+config *.satellite[*].cnl[0].radio.receiver.sensitivity -100dBm
+config *.satellite[*].cnl[0].radio.receiver.energyDetection -85dBm
+config *.satellite[*].cnl[1].radio.receiver.centerFrequency 10.825GHz
+config *.satellite[*].cnl[2..].radio.receiver.centerFrequency 11.075GHz
+config *.satellite[*].cnl[1..].radio.receiver.bandwidth 250MHz
+config *.satellite[*].cnl[1..].radio.receiver.snirThreshold 4dB
+config *.satellite[*].cnl[1..].radio.receiver.sensitivity -100dBm
+config *.satellite[*].cnl[1..].radio.receiver.energyDetection -85dBm
+config *.satellite[*].cnl[0].radio.antenna.typename ConstantGainAntenna
+config *.satellite[*].cnl[0].radio.antenna.gain 34dB
+config *.satellite[*].cnl[1..].radio.antenna.typename ConstantGainAntenna
+config *.satellite[*].cnl[1..].radio.antenna.gain 34dB
+config *.MCC[*].wlan[*].radio.radioMediumModule "\"radioMediumFL\""
+config *.MCC[*].wlan[*].radio.centerFrequency 28.5GHz
+config *.MCC[*].wlan[*].radio.bandwidth 500MHz
+config *.MCC[*].wlan[*].radio.transmitter.centerFrequency 28.5GHz
+config *.MCC[*].wlan[*].radio.transmitter.bandwidth 500MHz
+config *.MCC[*].wlan[*].radio.transmitter.preambleDuration 10us
+config *.MCC[*].wlan[*].radio.transmitter.headerLength 8B
+config *.MCC[*].wlan[*].radio.transmitter.power 251W
+config *.MCC[*].wlan[*].radio.receiver.centerFrequency 28.5GHz
+config *.MCC[*].wlan[*].radio.receiver.bandwidth 500MHz
+config *.MCC[*].wlan[*].radio.receiver.snirThreshold 4dB
+config *.MCC[*].wlan[*].radio.receiver.sensitivity -100dBm
+config *.MCC[*].wlan[*].radio.receiver.energyDetection -85dBm
+config *.MCC[*].wlan[0].radio.antenna.typename ConstantGainAntenna
+config *.MCC[*].wlan[0].radio.antenna.gain 65.5dB
+config *.GS[*].wlan[*].radio.centerFrequency 10.825GHz
+config *.GS[*].wlan[*].radio.bandwidth 250MHz
+config *.GS[*].wlan[*].radio.radioMediumModule "\"radioMediumSV[0]\""
+config *.GS[*].wlan[*].radio.transmitter.centerFrequency 10.825GHz
+config *.GS[*].wlan[*].radio.transmitter.bandwidth 250MHz
+config *.GS[*].wlan[*].radio.transmitter.preambleDuration 10us
+config *.GS[*].wlan[*].radio.transmitter.headerLength 8B
+config *.GS[*].wlan[*].radio.receiver.centerFrequency 10.825GHz
+config *.GS[*].wlan[*].radio.receiver.bandwidth 250MHz
+config *.GS[*].wlan[*].radio.receiver.snirThreshold 4dB
+config *.GS[*].wlan[*].radio.receiver.sensitivity -100dBm
+config *.GS[*].wlan[*].radio.receiver.energyDetection -85dBm
+config *.GS[*].wlan[*].radio.antenna.typename ConstantGainAntenna
+config *.GS[*].wlan[*].radio.antenna.gain 34dB
+config *.GS[*].wlan[*].radio.transmitter.power 10W
+config *.GS[*].wlan[*].radio.antenna.mobility.typename AttachedMobility
+config *.GS[*].wlan[*].radio.antenna.mobility.mobilityModule "\"^.^.^.^.mobility\""
+config *.MCC[*].numEthInterfaces 1
+config *.GS[*].numEthInterfaces 1
+config *.numUe 1
+config **.mobility.updateFromDisplayString false
+config *.eNB.mobility.initFromDisplayString false
+config *.eNB.mobility.initialX 300m
+config *.eNB.mobility.initialY 300m
+config *.ue[*].mobility.initFromDisplayString false
+
+vector 0 SC5G.satellite[0].cnl[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 1 SC5G.satellite[0].cnl[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 2 SC5G.satellite[0].cnl[1].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 3 SC5G.satellite[0].cnl[1].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 4 SC5G.satellite[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 5 SC5G.satellite[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 6 SC5G.satellite[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 7 SC5G.MCC[0].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 8 SC5G.MCC[0].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 9 SC5G.MCC[0].ppp[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 10 SC5G.MCC[0].ppp[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 11 SC5G.MCC[0].ppp[0].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 12 SC5G.MCC[0].eth[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 13 SC5G.MCC[0].eth[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 14 SC5G.MCC[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 15 SC5G.MCC[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 16 SC5G.MCC[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 17 SC5G.GS[0].wlan[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 18 SC5G.GS[0].wlan[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 19 SC5G.GS[0].ppp[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 20 SC5G.GS[0].ppp[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 21 SC5G.GS[0].ppp[0].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 22 SC5G.GS[0].eth[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 23 SC5G.GS[0].eth[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 24 SC5G.GS[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 25 SC5G.GS[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 26 SC5G.GS[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 27 SC5G.routerFL.ppp[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 28 SC5G.routerFL.ppp[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 29 SC5G.routerFL.ppp[0].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 30 SC5G.routerFL.ppp[1].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 31 SC5G.routerFL.ppp[1].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 32 SC5G.routerFL.ppp[1].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 33 SC5G.upf.ppp[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 34 SC5G.upf.ppp[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 35 SC5G.upf.ppp[0].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 36 SC5G.upf.ppp[1].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 37 SC5G.upf.ppp[1].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 38 SC5G.upf.ppp[1].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 39 SC5G.upf.pppIf.queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 40 SC5G.upf.pppIf.queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 41 SC5G.upf.pppIf.ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 42 SC5G.upf.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 43 SC5G.upf.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 44 SC5G.upf.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 45 SC5G.router2.ppp[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 46 SC5G.router2.ppp[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 47 SC5G.router2.ppp[0].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 48 SC5G.router2.ppp[1].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 49 SC5G.router2.ppp[1].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 50 SC5G.router2.ppp[1].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 51 SC5G.server.ppp[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 52 SC5G.server.ppp[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 53 SC5G.server.ppp[0].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 54 SC5G.server.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 55 SC5G.server.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 56 SC5G.server.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 57 SC5G.router.ppp[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 58 SC5G.router.ppp[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 59 SC5G.router.ppp[0].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 60 SC5G.router.ppp[1].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 61 SC5G.router.ppp[1].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 62 SC5G.router.ppp[1].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 63 SC5G.pgw.ppp[0].queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 64 SC5G.pgw.ppp[0].queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 65 SC5G.pgw.ppp[0].ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 66 SC5G.pgw.pppIf.queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 67 SC5G.pgw.pppIf.queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 68 SC5G.pgw.pppIf.ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 69 SC5G.pgw.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 70 SC5G.pgw.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 71 SC5G.pgw.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 72 SC5G.eNB.pppIf.queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 73 SC5G.eNB.pppIf.queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 74 SC5G.eNB.pppIf.ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 75 SC5G.eNB.pppMEHostIf.queue queueLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + count(packetPushStarted) - count(packetPulled) - count(packetRemoved) - count(packetDropped)))"
+attr title "queue length"
+attr unit pk
+vector 76 SC5G.eNB.pppMEHostIf.queue queueBitLength:vector ETV
+attr autoWarmupFilter false
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source "warmup(atomic(constant0(packetPushEnded) + sum(packetLength(packetPushStarted)) - sum(packetLength(packetPulled)) - sum(packetLength(packetRemoved)) - sum(packetLength(packetDropped))))"
+attr title "queue bit length"
+attr unit b
+vector 77 SC5G.eNB.pppMEHostIf.ppp transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "tx state"
+vector 78 SC5G.eNB.udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 79 SC5G.eNB.udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 80 SC5G.eNB.udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 81 SC5G.ue[0].udp passedUpPk:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetSentToUpper
+attr title "packets passed up, count"
+vector 82 SC5G.ue[0].udp droppedPkWrongPort:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsNoPortFound(packetDropped)
+attr title "packets dropped (wrong port), count"
+vector 83 SC5G.ue[0].udp droppedPkBadChecksum:vector(count) ETV
+attr interpolationmode none
+attr recordingmode vector(count)
+attr source packetDropReasonIsIncorrectlyReceived(packetDropped)
+attr title "packets dropped (checksum error), count"
+vector 84 SC5G.satellite[0].cnl[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 85 SC5G.satellite[0].cnl[1].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 86 SC5G.MCC[0].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 87 SC5G.GS[0].wlan[0].radio radioMode:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source radioModeChanged
+attr title "Radio mode"
+vector 88 SC5G.ue[0].cellularNic.phy servingCell:vector ETV
+attr recordingmode vector
+attr source servingCell
+attr title "ID of the serving eNodeB for the UE"
+attr unit ""
+vector 89 SC5G.satellite[0].cnl[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 90 SC5G.satellite[0].cnl[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 91 SC5G.satellite[0].cnl[1].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 92 SC5G.satellite[0].cnl[1].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 93 SC5G.MCC[0].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 94 SC5G.MCC[0].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+vector 95 SC5G.GS[0].wlan[0].radio receptionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source receptionStateChanged
+attr title "Radio reception state"
+vector 96 SC5G.GS[0].wlan[0].radio transmissionState:vector ETV
+attr interpolationmode sample-hold
+attr recordingmode vector
+attr source transmissionStateChanged
+attr title "Radio transmission state"
+0	37839 40 0 0 0 0 5 0 0 0 0
+1	37879 40 0 0 0 0 5 0 0 0 0
+2	37919 40 0 0 0 0 5 0 0 0 0
+3	37959 40 0 0 0 0 5 0 0 0 0
+4	37999 8 0 0 0 0 1 0 0 0 0
+5	38007 8 0 0 0 0 1 0 0 0 0
+6	38015 8 0 0 0 0 1 0 0 0 0
+7	38023 40 0 0 0 0 5 0 0 0 0
+8	38063 40 0 0 0 0 5 0 0 0 0
+9	38103 40 0 0 0 0 5 0 0 0 0
+10	38143 45 0 0 0 0 5 0 0 0 0
+11	38188 9 0 0 0 0 1 0 0 0 0
+12	38197 45 0 0 0 0 5 0 0 0 0
+13	38242 45 0 0 0 0 5 0 0 0 0
+14	38287 9 0 0 0 0 1 0 0 0 0
+15	38296 9 0 0 0 0 1 0 0 0 0
+16	38305 9 0 0 0 0 1 0 0 0 0
+17	38314 45 0 0 0 0 5 0 0 0 0
+18	38359 45 0 0 0 0 5 0 0 0 0
+19	38404 45 0 0 0 0 5 0 0 0 0
+20	38449 45 0 0 0 0 5 0 0 0 0
+21	38494 9 0 0 0 0 1 0 0 0 0
+22	38503 45 0 0 0 0 5 0 0 0 0
+23	38548 45 0 0 0 0 5 0 0 0 0
+24	38593 9 0 0 0 0 1 0 0 0 0
+25	38602 9 0 0 0 0 1 0 0 0 0
+26	38611 9 0 0 0 0 1 0 0 0 0
+27	38620 45 0 0 0 0 5 0 0 0 0
+28	38665 45 0 0 0 0 5 0 0 0 0
+29	38710 9 0 0 0 0 1 0 0 0 0
+30	38719 45 0 0 0 0 5 0 0 0 0
+31	38764 45 0 0 0 0 5 0 0 0 0
+32	38809 9 0 0 0 0 1 0 0 0 0
+33	38818 45 0 0 0 0 5 0 0 0 0
+34	38863 45 0 0 0 0 5 0 0 0 0
+35	38908 9 0 0 0 0 1 0 0 0 0
+36	38917 45 0 0 0 0 5 0 0 0 0
+37	38962 45 0 0 0 0 5 0 0 0 0
+38	39007 9 0 0 0 0 1 0 0 0 0
+39	39016 45 0 0 0 0 5 0 0 0 0
+40	39061 45 0 0 0 0 5 0 0 0 0
+41	39106 9 0 0 0 0 1 0 0 0 0
+42	39115 9 0 0 0 0 1 0 0 0 0
+43	39124 9 0 0 0 0 1 0 0 0 0
+44	39133 9 0 0 0 0 1 0 0 0 0
+45	39142 45 0 0 0 0 5 0 0 0 0
+46	39187 45 0 0 0 0 5 0 0 0 0
+47	39232 9 0 0 0 0 1 0 0 0 0
+48	39241 45 0 0 0 0 5 0 0 0 0
+49	39286 45 0 0 0 0 5 0 0 0 0
+50	39331 9 0 0 0 0 1 0 0 0 0
+51	39340 45 0 0 0 0 5 0 0 0 0
+52	39385 45 0 0 0 0 5 0 0 0 0
+53	39430 9 0 0 0 0 1 0 0 0 0
+54	39439 9 0 0 0 0 1 0 0 0 0
+55	39448 9 0 0 0 0 1 0 0 0 0
+56	39457 9 0 0 0 0 1 0 0 0 0
+57	39466 45 0 0 0 0 5 0 0 0 0
+58	39511 45 0 0 0 0 5 0 0 0 0
+59	39556 9 0 0 0 0 1 0 0 0 0
+60	39565 45 0 0 0 0 5 0 0 0 0
+61	39610 45 0 0 0 0 5 0 0 0 0
+62	39655 9 0 0 0 0 1 0 0 0 0
+63	39664 45 0 0 0 0 5 0 0 0 0
+64	39709 45 0 0 0 0 5 0 0 0 0
+65	39754 9 0 0 0 0 1 0 0 0 0
+66	39763 45 0 0 0 0 5 0 0 0 0
+67	39808 45 0 0 0 0 5 0 0 0 0
+68	39853 9 0 0 0 0 1 0 0 0 0
+69	39862 9 0 0 0 0 1 0 0 0 0
+70	39871 9 0 0 0 0 1 0 0 0 0
+71	39880 9 0 0 0 0 1 0 0 0 0
+72	39889 45 0 0 0 0 5 0 0 0 0
+73	39934 45 0 0 0 0 5 0 0 0 0
+74	39979 9 0 0 0 0 1 0 0 0 0
+75	39988 45 0 0 0 0 5 0 0 0 0
+76	40033 45 0 0 0 0 5 0 0 0 0
+77	40078 9 0 0 0 0 1 0 0 0 0
+78	40087 9 0 0 0 0 1 0 0 0 0
+79	40096 9 0 0 0 0 1 0 0 0 0
+80	40105 9 0 0 0 0 1 0 0 0 0
+81	40114 9 0 0 0 0 1 0 0 0 0
+82	40123 9 0 0 0 0 1 0 0 0 0
+83	40132 9 0 0 0 0 1 0 0 0 0
+84	40141 27 0 0 0 0 3 0 4 4 16
+85	40168 27 0 0 0 0 3 0 4 4 16
+86	40195 27 0 0 0 0 3 0 4 4 16
+87	40222 27 0 0 0 0 3 0 4 4 16
+88	40249 9 0 0 0 0 1 1 1 1 1
+89	40258 9 0 0 0 0 1 1 1 1 1
+90	40267 9 0 0 0 0 1 1 1 1 1
+91	40276 9 0 0 0 0 1 1 1 1 1
+92	40285 9 0 0 0 0 1 1 1 1 1
+93	40294 9 0 0 0 0 1 1 1 1 1
+94	40303 9 0 0 0 0 1 1 1 1 1
+95	40312 9 0 0 0 0 1 1 1 1 1
+96	40321 9 0 0 0 0 1 1 1 1 1
+

@@ -1,0 +1,9 @@
+*_dbg
+.settings
+out/
+Makefile
+*.so
+*_m.cc
+*m.h
+*.dylib
+.DS_Store

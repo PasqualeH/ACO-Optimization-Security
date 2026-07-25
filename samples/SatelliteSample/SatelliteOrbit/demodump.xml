@@ -1,0 +1,9 @@
+<config>
+   <interface hosts="SatelliteTest.GS[0]" names="wlan0" address="10.0.0.1" netmask="255.255.255.252" metric="8"/>
+   <interface hosts="SatelliteTest.GS[0]" names="eth0" address="10.0.0.5" netmask="255.255.255.252" metric="1"/>
+   <multicast-group hosts="SatelliteTest.GS[0]" interfaces="wlan0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="SatelliteTest.GS[0]" interfaces="eth0" address="224.0.0.1 224.0.0.2"/>
+   <wireless interfaces="SatelliteTest.GS[0]%wlan0"/>
+   <route hosts="SatelliteTest.satellite[0].router1" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+   <route hosts="SatelliteTest.satellite[1].router1" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+</config>

@@ -1,0 +1,143 @@
+#
+# OMNeT++/OMNEST Makefile for $(LIB_PREFIX)os3_leosatellites
+#
+# This file was generated with the command:
+#  opp_makemake --make-lib -f --deep -O out -KLEOSATELLITES_PROJ=../../leosatellites -KINET_PROJ=../../inet -KOS3_PROJ=../../os3 -KSCS_UTILS_PROJ=../../scs_utils -I. -I$$\(LEOSATELLITES_PROJ\)/src -I$$\(INET_PROJ\)/src -I$$\(OS3_PROJ\) -I$$\(SCS_UTILS_PROJ\)/src -I$$\(SCS_UTILS_PROJ\) -I$$\(OS3_PROJ\)/src -I$$\(OS3_PROJ\)/src/--meta:recurse -I$$\(LEOSATELLITES_PROJ\) -L$$\(LEOSATELLITES_PROJ\)/src -lleosatellites$$\(D\)
+#
+
+# Name of target to be created (-o option)
+TARGET_DIR = .
+TARGET_NAME = $(LIB_PREFIX)os3_leosatellites$(D)
+TARGET = $(TARGET_NAME)$(A_LIB_SUFFIX)
+TARGET_IMPLIB = $(TARGET_NAME)$(IMPLIB_SUFFIX)
+TARGET_IMPDEF = $(TARGET_NAME)$(IMPDEF_SUFFIX)
+TARGET_FILES = $(TARGET_DIR)/$(TARGET)
+
+# C++ include paths (with -I)
+INCLUDE_PATH = \
+    -I. \
+    -I$(LEOSATELLITES_PROJ)/src \
+    -I$(INET_PROJ)/src \
+    -I$(OS3_PROJ) \
+    -I$(SCS_UTILS_PROJ)/src \
+    -I$(SCS_UTILS_PROJ) \
+    -I$(OS3_PROJ)/src \
+    -I$(OS3_PROJ)/src/--meta:recurse \
+    -I$(LEOSATELLITES_PROJ)
+
+# Additional object and library files to link with
+EXTRA_OBJS =
+
+# Output directory
+PROJECT_OUTPUT_DIR = ../out
+PROJECTRELATIVE_PATH = src
+O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
+
+# Object files for local .cc, .msg and .sm files
+OBJS = $O/os3/libnorad/cOrbitScs.o $O/os3/mobility/NoradScs.o
+
+# Message files
+MSGFILES =
+
+# SM files
+SMFILES =
+
+# Other makefile variables (-K)
+LEOSATELLITES_PROJ=../../leosatellites
+INET_PROJ=../../inet
+OS3_PROJ=../../os3
+SCS_UTILS_PROJ=../../scs_utils
+
+#------------------------------------------------------------------------------
+
+# Pull in OMNeT++ configuration (Makefile.inc)
+
+ifneq ("$(OMNETPP_CONFIGFILE)","")
+CONFIGFILE = $(OMNETPP_CONFIGFILE)
+else
+CONFIGFILE = $(shell opp_configfilepath)
+endif
+
+ifeq ("$(wildcard $(CONFIGFILE))","")
+$(error Config file '$(CONFIGFILE)' does not exist -- add the OMNeT++ bin directory to the path so that opp_configfilepath can be found, or set the OMNETPP_CONFIGFILE variable to point to Makefile.inc)
+endif
+
+include $(CONFIGFILE)
+
+COPTS = $(CFLAGS) $(IMPORT_DEFINES)  $(INCLUDE_PATH) -I$(OMNETPP_INCL_DIR)
+MSGCOPTS = $(INCLUDE_PATH)
+SMCOPTS =
+
+# we want to recompile everything if COPTS changes,
+# so we store COPTS into $COPTS_FILE (if COPTS has changed since last build)
+# and make the object files depend on it
+COPTS_FILE = $O/.last-copts
+ifneq ("$(COPTS)","$(shell cat $(COPTS_FILE) 2>/dev/null || echo '')")
+  $(shell $(MKPATH) "$O")
+  $(file >$(COPTS_FILE),$(COPTS))
+endif
+
+#------------------------------------------------------------------------------
+# User-supplied makefile fragment(s)
+-include makefrag
+
+#------------------------------------------------------------------------------
+
+# Main target
+all: $(TARGET_FILES)
+
+$(TARGET_DIR)/% :: $O/%
+	@mkdir -p $(TARGET_DIR)
+	$(Q)$(LN) $< $@
+ifeq ($(TOOLCHAIN_NAME),clang-msabi)
+	-$(Q)-$(LN) $(<:%.dll=%.lib) $(@:%.dll=%.lib) 2>/dev/null
+
+$O/$(TARGET_NAME).pdb: $O/$(TARGET)
+endif
+
+$O/$(TARGET): $(OBJS)  $(wildcard $(EXTRA_OBJS)) Makefile $(CONFIGFILE)
+	@$(MKPATH) $O
+	@echo Creating static library: $@
+	$(Q)$(AR_CR) $O/$(TARGET) $(OBJS) $(EXTRA_OBJS)
+
+.PHONY: all clean cleanall depend msgheaders smheaders
+
+# disabling all implicit rules
+.SUFFIXES :
+.PRECIOUS : %_m.h %_m.cc
+
+$O/%.o: %.cc $(COPTS_FILE) | msgheaders smheaders
+	@$(MKPATH) $(dir $@)
+	$(qecho) "$<"
+	$(Q)$(CXX) -c $(CXXFLAGS) $(COPTS) -o $@ $<
+
+%_m.cc %_m.h: %.msg
+	$(qecho) MSGC: $<
+	$(Q)$(MSGC) -s _m.cc -MD -MP -MF $O/$(basename $<)_m.h.d $(MSGCOPTS) $?
+
+%_sm.cc %_sm.h: %.sm
+	$(qecho) SMC: $<
+	$(Q)$(SMC) -c++ -suffix cc $(SMCOPTS) $?
+
+msgheaders: $(MSGFILES:.msg=_m.h)
+
+smheaders: $(SMFILES:.sm=_sm.h)
+
+clean:
+	$(qecho) Cleaning $(TARGET)
+	$(Q)-rm -rf $O
+	$(Q)-rm -f $(TARGET_FILES)
+	$(Q)-rm -f $(call opp_rwildcard, . , *_m.cc *_m.h *_sm.cc *_sm.h)
+
+cleanall:
+	$(Q)$(CLEANALL_COMMAND)
+	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
+
+help:
+	@echo "$$HELP_SYNOPSYS"
+	@echo "$$HELP_TARGETS"
+	@echo "$$HELP_VARIABLES"
+	@echo "$$HELP_EXAMPLES"
+
+# include all dependencies
+-include $(OBJS:%=%.d) $(MSGFILES:%.msg=$O/%_m.h.d)

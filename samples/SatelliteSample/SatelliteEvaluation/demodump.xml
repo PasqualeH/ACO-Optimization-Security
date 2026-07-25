@@ -1,0 +1,36 @@
+<config>
+   <interface hosts="VMCC2Car8.satellite[0]" names="cnl0" address="10.0.0.1" netmask="255.255.255.248" metric="4"/>
+   <interface hosts="VMCC2Car8.MCC[0]" names="wlan0" address="10.0.0.2" netmask="255.255.255.248" metric="4"/>
+   <interface hosts="VMCC2Car8.MCC[1]" names="wlan0" address="10.0.0.3" netmask="255.255.255.248" metric="4"/>
+   <interface hosts="VMCC2Car8.satellite[0]" names="cnl1" address="10.0.0.9" netmask="255.255.255.252" metric="4"/>
+   <interface hosts="VMCC2Car8.GS[0]" names="wlan0" address="10.0.0.10" netmask="255.255.255.252" metric="8"/>
+   <interface hosts="VMCC2Car8.MCC[0]" names="eth0" address="10.0.0.13" netmask="255.255.255.252" metric="1"/>
+   <interface hosts="VMCC2Car8.MCC[1]" names="eth0" address="10.0.0.17" netmask="255.255.255.252" metric="1"/>
+   <multicast-group hosts="VMCC2Car8.satellite[0]" interfaces="cnl0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="VMCC2Car8.MCC[0]" interfaces="wlan0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="VMCC2Car8.MCC[1]" interfaces="wlan0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="VMCC2Car8.satellite[0]" interfaces="cnl1" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="VMCC2Car8.GS[0]" interfaces="wlan0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="VMCC2Car8.MCC[0]" interfaces="eth0" address="224.0.0.1 224.0.0.2"/>
+   <multicast-group hosts="VMCC2Car8.MCC[1]" interfaces="eth0" address="224.0.0.1 224.0.0.2"/>
+   <wireless interfaces="VMCC2Car8.satellite[0]%cnl0 VMCC2Car8.MCC[0]%wlan0 VMCC2Car8.MCC[1]%wlan0"/>
+   <wireless interfaces="VMCC2Car8.satellite[0]%cnl1 VMCC2Car8.GS[0]%wlan0"/>
+   <route hosts="VMCC2Car8.satellite[0]" destination="10.0.0.2" netmask="255.255.255.255" gateway="*" interface="cnl0" metric="0"/>
+   <route hosts="VMCC2Car8.satellite[0]" destination="10.0.0.3" netmask="255.255.255.255" gateway="*" interface="cnl0" metric="0"/>
+   <route hosts="VMCC2Car8.satellite[0]" destination="10.0.0.13" netmask="255.255.255.255" gateway="10.0.0.2" interface="cnl0" metric="0"/>
+   <route hosts="VMCC2Car8.satellite[0]" destination="10.0.0.17" netmask="255.255.255.255" gateway="10.0.0.3" interface="cnl0" metric="0"/>
+   <route hosts="VMCC2Car8.satellite[0]" destination="10.0.0.8" netmask="255.255.255.252" gateway="*" interface="cnl1" metric="0"/>
+   <route hosts="VMCC2Car8.MCC[0]" destination="10.0.0.1" netmask="255.255.255.255" gateway="*" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.MCC[0]" destination="10.0.0.3" netmask="255.255.255.255" gateway="*" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.MCC[0]" destination="10.0.0.9" netmask="255.255.255.255" gateway="10.0.0.1" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.MCC[0]" destination="10.0.0.17" netmask="255.255.255.255" gateway="10.0.0.3" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.MCC[0]" destination="10.0.0.8" netmask="255.255.255.252" gateway="10.0.0.1" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.MCC[1]" destination="10.0.0.1" netmask="255.255.255.255" gateway="*" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.MCC[1]" destination="10.0.0.2" netmask="255.255.255.255" gateway="*" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.MCC[1]" destination="10.0.0.9" netmask="255.255.255.255" gateway="10.0.0.1" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.MCC[1]" destination="10.0.0.13" netmask="255.255.255.255" gateway="10.0.0.2" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.MCC[1]" destination="10.0.0.8" netmask="255.255.255.252" gateway="10.0.0.1" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.GS[0]" destination="10.0.0.8" netmask="255.255.255.252" gateway="*" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.GS[0]" destination="*" netmask="*" gateway="10.0.0.9" interface="wlan0" metric="0"/>
+   <route hosts="VMCC2Car8.satellite[0].router1" destination="127.0.0.0" netmask="255.0.0.0" gateway="*" interface="lo0" metric="1"/>
+</config>

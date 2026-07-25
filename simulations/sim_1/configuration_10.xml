@@ -1,0 +1,39 @@
+<config>
+    <interface hosts='**' address='10.0.x.x' netmask='255.255.x.x'/>
+    <route hosts='gat1' destination='upf%ppp0' netmask='255.255.255.255' gateway='iUpf%ppp1' interface='ppp0' metric='0'/>
+    <route hosts='ue1[*]' destination='0.0.0.0' netmask='0.0.0.0' gateway='*' interface='cellular' metric='0'/>
+    <route hosts='ue2[*]' destination='0.0.0.0' netmask='0.0.0.0' gateway='*' interface='cellular' metric='0'/>
+    <route hosts='gnb*' destination='upf' netmask='255.255.255.255' gateway='*' interface='pppIf' metric='0'/>
+    <route hosts='iUpf' destination='upf' netmask='255.255.255.255' gateway='*' interface='ppp0' metric='0'/>
+    <route hosts='upf' destination='10.0.0.0' netmask='255.255.255.252' gateway='*' interface='pppIf' metric='0'/>
+    <route hosts='adh[0]' destination='gnb0%x2ppp0' netmask='255.255.255.255' gateway='*' interface='ppp1' metric='0'/>
+    <route hosts='adh[1]' destination='gnb1%x2ppp0' netmask='255.255.255.255' gateway='*' interface='ppp1' metric='0'/>
+    <route hosts='adh[2]' destination='gnb2%x2ppp0' netmask='255.255.255.255' gateway='*' interface='ppp1' metric='0'/>
+    <route hosts='adh[3]' destination='gnb3%x2ppp0' netmask='255.255.255.255' gateway='*' interface='ppp1' metric='0'/>
+    <route hosts='adh[4]' destination='gnb4%x2ppp0' netmask='255.255.255.255' gateway='*' interface='ppp1' metric='0'/>
+    <route hosts='adh[5]' destination='gnb5%x2ppp0' netmask='255.255.255.255' gateway='*' interface='ppp1' metric='0'/>
+    <route hosts='adh[6]' destination='gnb6%x2ppp0' netmask='255.255.255.255' gateway='*' interface='ppp1' metric='0'/>
+    <route hosts='adh[7]' destination='gnb7%x2ppp0' netmask='255.255.255.255' gateway='*' interface='ppp1' metric='0'/>
+    <route hosts='adh[8]' destination='gnb8%x2ppp0' netmask='255.255.255.255' gateway='*' interface='ppp1' metric='0'/>
+    <route hosts='gnb*' destination='0.0.0.0' netmask='0.0.0.0' gateway='*' interface='x2ppp0' metric='1'/>
+    <route hosts='router' destination='server1[0]' netmask='255.255.255.255' gateway='*' interface='ppp1' metric='0'/>
+    <route hosts='router' destination='server1[1]' netmask='255.255.255.255' gateway='*' interface='ppp2' metric='0'/>
+    <route hosts='router' destination='server1[2]' netmask='255.255.255.255' gateway='*' interface='ppp3' metric='0'/>
+    <route hosts='router' destination='server1[3]' netmask='255.255.255.255' gateway='*' interface='ppp4' metric='0'/>
+    <route hosts='router' destination='server1[4]' netmask='255.255.255.255' gateway='*' interface='ppp5' metric='0'/>
+    <route hosts='router' destination='server1[5]' netmask='255.255.255.255' gateway='*' interface='ppp6' metric='0'/>
+    <route hosts='router' destination='server1[6]' netmask='255.255.255.255' gateway='*' interface='ppp7' metric='0'/>
+    <route hosts='router' destination='server1[7]' netmask='255.255.255.255' gateway='*' interface='ppp8' metric='0'/>
+    <route hosts='router' destination='server1[8]' netmask='255.255.255.255' gateway='*' interface='ppp9' metric='0'/>
+    <route hosts='router' destination='server1[9]' netmask='255.255.255.255' gateway='*' interface='ppp10' metric='0'/>
+    <route hosts='router' destination='server2[0]' netmask='255.255.255.255' gateway='*' interface='ppp11' metric='0'/>
+    <route hosts='router' destination='server2[1]' netmask='255.255.255.255' gateway='*' interface='ppp12' metric='0'/>
+    <route hosts='router' destination='server2[2]' netmask='255.255.255.255' gateway='*' interface='ppp13' metric='0'/>
+    <route hosts='router' destination='server2[3]' netmask='255.255.255.255' gateway='*' interface='ppp14' metric='0'/>
+    <route hosts='router' destination='server2[4]' netmask='255.255.255.255' gateway='*' interface='ppp15' metric='0'/>
+    <route hosts='router' destination='server2[5]' netmask='255.255.255.255' gateway='*' interface='ppp16' metric='0'/>
+    <route hosts='router' destination='server2[6]' netmask='255.255.255.255' gateway='*' interface='ppp17' metric='0'/>
+    <route hosts='router' destination='server2[7]' netmask='255.255.255.255' gateway='*' interface='ppp18' metric='0'/>
+    <route hosts='router' destination='server2[8]' netmask='255.255.255.255' gateway='*' interface='ppp19' metric='0'/>
+    <route hosts='router' destination='server2[9]' netmask='255.255.255.255' gateway='*' interface='ppp20' metric='0'/>
+</config>
