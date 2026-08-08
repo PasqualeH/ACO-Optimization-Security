@@ -1,0 +1,16 @@
+=====================================================
+ TOTALI DI RETE - livello di sicurezza Ant2
+ (nodi conteggiati finora: 19)
+=====================================================
+ FANT   verificati: 8641   scartati: 0
+ BANT   verificati: 17059   scartati: 0
+ REQ    verificati: 107   scartati: 0
+-----------------------------------------------------
+ TOTALE verificati: 25807   scartati: 0
+ Percentuale pacchetti rifiutati: 0%
+-----------------------------------------------------
+ Motivi degli scarti:
+   identita' sconosciuta (non nel registro): 0
+   firma Ed25519 non valida:                 0
+   payload manomesso (tag Ascon errato):     0
+=====================================================

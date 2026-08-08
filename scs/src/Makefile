@@ -1,13 +1,13 @@
 #
-# OMNeT++/OMNEST Makefile for scs
+# OMNeT++/OMNEST Makefile for scs_run
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -O out -KINET_PROJ=../../inet -KINET_LEOSATELLITES_PROJ=../../inet_leosatellites -KLEOSATELLITES_PROJ=../../leosatellites -KOS3_PROJ=../../os3 -KSCS_UTILS_PROJ=../../scs_utils -KOS3_LEOSATELLITES_PROJ=../../os3_leosatellites -DINET_IMPORT -I. -I$$\(INET_PROJ\)/src -I$$\(INET_LEOSATELLITES_PROJ\) -I$$\(LEOSATELLITES_PROJ\)/src -I$$\(OS3_PROJ\) -I$$\(SCS_UTILS_PROJ\)/src -I$$\(SCS_UTILS_PROJ\) -I$$\(OS3_PROJ\)/src -I$$\(OS3_PROJ\)/src/--meta:recurse -I$$\(LEOSATELLITES_PROJ\) -I$$\(INET_LEOSATELLITES_PROJ\)/src -I$$\(OS3_LEOSATELLITES_PROJ\) -I$$\(OS3_LEOSATELLITES_PROJ\)/src -L$$\(INET_PROJ\)/src -L$$\(INET_LEOSATELLITES_PROJ\)/src -L$$\(LEOSATELLITES_PROJ\)/src -L$$\(OS3_PROJ\)/src -L$$\(OS3_LEOSATELLITES_PROJ\)/src -L$$\(SCS_UTILS_PROJ\)/src -lINET$$\(D\) -linet_leosatellites$$\(D\) -lleosatellites$$\(D\) -los3$$\(D\) -los3_leosatellites$$\(D\) -lscs_utils$$\(D\)
+#  opp_makemake -f --deep -o scs_run -O out -KINET_PROJ=../../inet -KINET_LEOSATELLITES_PROJ=../../inet_leosatellites -KLEOSATELLITES_PROJ=../../leosatellites -KOS3_PROJ=../../os3 -KSCS_UTILS_PROJ=../../scs_utils -KOS3_LEOSATELLITES_PROJ=../../os3_leosatellites -DINET_IMPORT -I. -I$$\(INET_PROJ\)/src -I$$\(INET_LEOSATELLITES_PROJ\) -I$$\(LEOSATELLITES_PROJ\)/src -I$$\(OS3_PROJ\) -I$$\(SCS_UTILS_PROJ\)/src -I$$\(SCS_UTILS_PROJ\) -I$$\(OS3_PROJ\)/src -I$$\(OS3_PROJ\)/src/--meta:recurse -I$$\(LEOSATELLITES_PROJ\) -I$$\(INET_LEOSATELLITES_PROJ\)/src -I$$\(OS3_LEOSATELLITES_PROJ\) -I$$\(OS3_LEOSATELLITES_PROJ\)/src -L$$\(INET_PROJ\)/src -L$$\(INET_LEOSATELLITES_PROJ\)/src -L$$\(LEOSATELLITES_PROJ\)/src -L$$\(OS3_PROJ\)/src -L$$\(OS3_LEOSATELLITES_PROJ\)/src -L$$\(SCS_UTILS_PROJ\)/src -lINET$$\(D\) -linet_leosatellites$$\(D\) -lleosatellites$$\(D\) -los3$$\(D\) -los3_leosatellites$$\(D\) -lscs_utils$$\(D\)
 #
 
 # Name of target to be created (-o option)
 TARGET_DIR = .
-TARGET_NAME = scs$(D)
+TARGET_NAME = scs_run$(D)
 TARGET = $(TARGET_NAME)$(EXE_SUFFIX)
 TARGET_IMPLIB = $(TARGET_NAME)$(IMPLIB_SUFFIX)
 TARGET_IMPDEF = $(TARGET_NAME)$(IMPDEF_SUFFIX)

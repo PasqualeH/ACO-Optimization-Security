@@ -6,43 +6,40 @@
 // Diogo Antio & Pedro Menezes
 // Instituto Superior Tecnico
 // Lisboa - Portugal
-// This version and newer version can be found at http://dsdv.has.it
-// This code was written while assisting the course "Redes moveis e sem fios" http://comp.ist.utl.pt/ec-cm
-// Autorization to use and modify this code not needed :P
-// The authors hope it will be useful to help understand how
-// INET and OMNET++ works(more specifically INET 20061020 and omnet++ 3.3).
-// Also we hope it will help in the developing of routing protocols using INET.
 //
+// --- MODIFICATO: livello di sicurezza (ASCON-AEAD128 + Ed25519) ---
+// I campi sensibili (energia, throughput, coordinate, cluster_id, ecc.)
+// NON sono piu' campi in chiaro: vengono impacchettati, cifrati e
+// autenticati prima dell'invio, e viaggiano solo dentro 'ciphertext'.
+// Restano in chiaro solo i campi indispensabili all'inoltro (routing),
+// che pero' sono comunque autenticati come AAD (Associated Data) dal tag/firma.
 
 import inet.common.INETDefs;
 import inet.common.packet.chunk.Chunk;
 import inet.networklayer.contract.ipv4.Ipv4Address;
 
-// added for  coordenates
-
 namespace inet;
 
 class BantM2 extends FieldsChunk
 {
+    // --- Campi di routing: restano in chiaro, servono ad ogni hop per l'inoltro.
+    // Sono comunque autenticati (AAD): un nodo intermedio non puo' alterarli
+    // senza far fallire la verifica della firma del mittente originale.
     Ipv4Address srcAddress;
     Ipv4Address dstAddress;
     Ipv4Address gateway;
     unsigned int sequencenumber;
     Ipv4Address nextAddress;
     int hopdistance;
-    
-    // ADDED FOR NODE STATUS MONITORING
-    double throughput;
-    double energy;
-    string coordenates;
-    double hops;
-    
-    // ADDED TO CONTROL BADWDTH
-    double max_throughput;
-    
-    // ADDED TO KNOW THE CLUSTER ID
-    int cluster_id;
-    
-    // ADDED FOR RECRUITMENT    
-    bool allowed_accept_request;
+
+    // --- Payload cifrato: qui dentro, impacchettati e cifrati con Ascon-AEAD128,
+    // viaggiano i campi che nella versione originale erano in chiaro:
+    // throughput, energy, coordenates (convertite in 3 double x/y/z),
+    // hops, max_throughput, cluster_id, allowed_accept_request.
+    uint8_t ciphertext[];       // lunghezza = lunghezza del payload in chiaro (Ascon e' "length-preserving")
+    uint8_t authTag[16];        // tag di autenticazione Ascon-AEAD128 (16 byte fissi)
+
+    // --- Autenticazione del mittente: firma Ed25519 su srcAddress||sequencenumber||ciphertext||authTag.
+    // Chi non ha la chiave privata del nodo dichiarato in srcAddress non puo' produrla.
+    uint8_t signature[64];      // firma Ed25519 (64 byte fissi)
 }

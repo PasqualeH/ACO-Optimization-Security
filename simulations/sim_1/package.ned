@@ -11,6 +11,7 @@ import simu5g.nodes.NR.gNodeB;
 import simu5g.nodes.NR.NRUe;
 import simu5g.nodes.backgroundCell.BackgroundCell;
 import simu5g.world.radio.LteChannelControl;
+import inet.routing.ant2.Ant2KeyAuthority;
 
 
 // ADDED
@@ -138,6 +139,8 @@ network sim1
         visualizer: IntegratedCanvasVisualizer {
             @display("p=38.461544,106.50889");
         }
+        
+        keyAuthority: Ant2KeyAuthority;
 
     connections:
         router.pppg++ <--> Eth10G <--> upf.filterGate;

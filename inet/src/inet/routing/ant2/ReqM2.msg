@@ -6,13 +6,12 @@
 // Diogo Antio & Pedro Menezes
 // Instituto Superior Tecnico
 // Lisboa - Portugal
-// This version and newer version can be found at http://dsdv.has.it
-// This code was written while assisting the course "Redes moveis e sem fios" http://comp.ist.utl.pt/ec-cm
-// Autorization to use and modify this code not needed :P
-// The authors hope it will be useful to help understand how
-// INET and OMNET++ works(more specifically INET 20061020 and omnet++ 3.3).
-// Also we hope it will help in the developing of routing protocols using INET.
 //
+// --- MODIFICATO: livello di sicurezza (ASCON-AEAD128 + Ed25519) ---
+// 'coordenates' e 'allowed_accept_request' sono dati sensibili (la posizione
+// di un drone in difficolta', e se un candidato e' disponibile): vanno cifrati.
+// hopAddresses[] resta in chiaro: cambia ad ogni hop, non puo' essere protetto
+// dalla firma del mittente originale (vedi nota nel documento di design, §7).
 
 import inet.common.INETDefs;
 import inet.common.packet.chunk.Chunk;
@@ -22,14 +21,20 @@ namespace inet;
 
 class ReqM2 extends FieldsChunk
 {
+    // --- Campi di routing: in chiaro, autenticati come AAD.
     Ipv4Address srcAddress;
     Ipv4Address dstAddress;
     unsigned int sequencenumber;
     Ipv4Address nextAddress;
     int hopdistance;
+
+    // --- Metadato di inoltro: muta ad ogni hop, non autenticato (limite noto, §7 del design doc).
     Ipv4Address hopAddresses[];
-    
-    // Added for recruiting
-    string coordenates;    
-    bool allowed_accept_request;
+
+    // --- Payload cifrato: coordenates (3 double x/y/z) + allowed_accept_request.
+    uint8_t ciphertext[];
+    uint8_t authTag[16];
+
+    // --- Firma Ed25519 del mittente originale.
+    uint8_t signature[64];
 }

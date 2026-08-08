@@ -36,6 +36,12 @@
 #include "inet/routing/ant2/BantM2_m.h"
 #include "inet/routing/ant2/ReqM2_m.h"
 
+#include <fstream>   // per il log su file del livello di sicurezza
+
+// Aggiunto per il livello di sicurezza (Ascon-AEAD128 + Ed25519)
+#include "inet/routing/ant2/Ant2Crypto.h"
+#include "inet/routing/ant2/Ant2KeyAuthority.h"
+
 // Added for energy monitoring
 #include "inet/power/management/SimpleEpEnergyManagement.h"
 
@@ -169,6 +175,53 @@ class INET_API Ant2 : public RoutingProtocolBase, public cListener, public Netfi
     simsignal_t arrivalSignal3;
     std::string coordenates_to_be_recruited;
 
+    // Aggiunto per il livello di sicurezza (Ascon-AEAD128 + Ed25519).
+    // Un'unica istanza per nodo, caricata una volta in initialize().
+    Ant2Crypto crypto;
+
+    // Costruisce un BANT gia' cifrato e firmato, pronto per essere inviato.
+    // Centralizza qui la logica di sicurezza cosi' non va ripetuta nei
+    // (due) punti del codice in cui oggi viene creato un BantM2.
+    Packet *buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
+                             unsigned int seq, Ipv4Address source);
+
+    // Verifica firma + decifra un BANT ricevuto. Ritorna false se il pacchetto
+    // va scartato (firma non valida, mittente sconosciuto, o tag AEAD non valido).
+    // Se ritorna true, i parametri di output contengono i dati in chiaro.
+    // NOTA: "hops" non e' tra i valori decifrati: e' un dato che deve poter
+    // essere aggiornato ad ogni hop (come hopdistance), quindi va preso dal
+    // campo in chiaro hopdistance, non da dentro il payload cifrato.
+    bool verifyAndDecryptBant(const Ptr<const BantM2>& recHello,
+                               double& energyOut, double& throughputOut,
+                               Coord& positionOut,
+                               double& maxThroughputOut, int& clusterIdOut,
+                               bool& allowedAcceptOut);
+
+    // Stesso schema di buildSecureBant/verifyAndDecryptBant, applicato al REQ:
+    // qui i dati sensibili sono coordinate (posizione del drone in difficolta')
+    // e allowed_accept_request.
+    Packet *buildSecureReq(Ipv4Address dstAddress, unsigned int seq, Ipv4Address source,
+                            const Coord& coordToSend, bool allowedAccept);
+
+    bool verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
+                              Coord& coordOut, bool& allowedAcceptOut);
+
+    // FANT: non trasporta dati sensibili (e' solo scoperta di rotta), quindi
+    // non viene cifrato: basta la firma Ed25519 su srcAddress||dstAddress||
+    // sequencenumber, che impedisce a un nodo non autorizzato di iniettarlo.
+    // I campi hopdistance/hopAddresses[] restano fuori dalla firma perche'
+    // cambiano ad ogni hop (limite noto, gia' documentato nel design).
+    void signFant(const Ptr<FantM2>& fant);
+    bool verifyFant(const Ptr<const FantM2>& fant);
+
+    // Logging del livello di sicurezza: il DETTAGLIO completo va sempre su file
+    // (ant2_security_events.log), mentre la console riceve solo l'essenziale,
+    // a meno che consoleVerbose non sia attivo.
+    static std::ofstream& securityEventLog();
+    void logScarto(const char *tipo, Ipv4Address mittente, const char *motivo, long n);
+    void logAccettato(const char *tipo, Ipv4Address mittente, long n);
+    bool consoleVerbose = false;
+
   protected:
     simtime_t helloInterval;
     ModuleRefByPar<IInterfaceTable> ift;
@@ -259,7 +312,24 @@ class INET_API Ant2 : public RoutingProtocolBase, public cListener, public Netfi
 
   protected:
 
+    // Contatori del livello di sicurezza. Stampati in finish() con std::cout
+    // (non con EV_*) di proposito: le stampe EV_* NON compaiono quando Cmdenv
+    // gira in "express mode", mentre std::cout e' sempre visibile.
+    long sec_bant_ok = 0;
+    long sec_bant_fail = 0;
+    long sec_req_ok = 0;
+    long sec_req_fail = 0;
+    long sec_fant_ok = 0;
+    long sec_fant_fail = 0;
+
+    // Contatori per MOTIVO dello scarto: utile per capire a colpo d'occhio
+    // che tipo di attacco/anomalia si sta osservando.
+    long sec_fail_unknown = 0;    // mittente non presente nel registro delle identita'
+    long sec_fail_signature = 0;  // identita' nota, ma firma Ed25519 non valida
+    long sec_fail_aead = 0;       // firma valida, ma payload manomesso (tag Ascon errato)
+
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
+    virtual void finish() override;
 
     void handleSelfMessage(cMessage *msg);
     void handleStartOperation(LifecycleOperation *operation) override { start(); }
@@ -289,4 +359,3 @@ class INET_API AntIpv4Route : public Ipv4Route
 }
 
 #endif
-

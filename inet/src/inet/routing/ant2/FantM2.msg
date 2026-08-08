@@ -6,13 +6,11 @@
 // Diogo Antio & Pedro Menezes
 // Instituto Superior Tecnico
 // Lisboa - Portugal
-// This version and newer version can be found at http://dsdv.has.it
-// This code was written while assisting the course "Redes moveis e sem fios" http://comp.ist.utl.pt/ec-cm
-// Autorization to use and modify this code not needed :P
-// The authors hope it will be useful to help understand how
-// INET and OMNET++ works(more specifically INET 20061020 and omnet++ 3.3).
-// Also we hope it will help in the developing of routing protocols using INET.
 //
+// --- MODIFICATO: livello di sicurezza (Ed25519) ---
+// Il FANT non trasporta alcun dato sensibile (e' solo un "hello"/scoperta
+// di rotta): non serve cifrarlo con Ascon, basta autenticarlo con la firma
+// del mittente, per impedire che un nodo non autorizzato lo inietti.
 
 import inet.common.INETDefs;
 import inet.common.packet.chunk.Chunk;
@@ -22,10 +20,16 @@ namespace inet;
 
 class FantM2 extends FieldsChunk
 {
+    // --- Campi di routing: in chiaro, autenticati (coperti dalla firma).
     Ipv4Address srcAddress;
     Ipv4Address dstAddress;
     unsigned int sequencenumber;
     Ipv4Address nextAddress;
+
+    // --- Metadati di inoltro: mutano ad ogni hop, non autenticati (limite noto, §7 del design doc).
     int hopdistance;
     Ipv4Address hopAddresses[];
+
+    // --- Firma Ed25519 del mittente originale su srcAddress||dstAddress||sequencenumber.
+    uint8_t signature[64];
 }

@@ -1,0 +1,30 @@
+# ================================================================
+# Riepilogo livello di sicurezza Ant2 (Ascon-AEAD128 + Ed25519)
+# ================================================================
+# Una riga per nodo. Per ogni tipo di messaggio del protocollo:
+#   FANT = scoperta di rotta       (solo firmato)
+#   BANT = risposta con stato nodo (firmato + cifrato)
+#   REQ  = richiesta di recruiting (firmato + cifrato)
+#
+#   ok        = firma verificata e payload decifrato correttamente
+#   scartati  = pacchetto rifiutato PRIMA di aggiornare qualsiasi tabella
+# ================================================================
+sim1.adh[0].routing  FANT: ok=605 scartati=0 | BANT: ok=1115 scartati=0 | REQ: ok=10 scartati=0
+sim1.adh[1].routing  FANT: ok=426 scartati=0 | BANT: ok=870 scartati=0 | REQ: ok=8 scartati=0
+sim1.adh[2].routing  FANT: ok=585 scartati=0 | BANT: ok=1096 scartati=0 | REQ: ok=9 scartati=0
+sim1.adh[3].routing  FANT: ok=413 scartati=0 | BANT: ok=778 scartati=0 | REQ: ok=7 scartati=0
+sim1.adh[4].routing  FANT: ok=497 scartati=0 | BANT: ok=963 scartati=0 | REQ: ok=9 scartati=0
+sim1.adh[5].routing  FANT: ok=466 scartati=0 | BANT: ok=842 scartati=0 | REQ: ok=5 scartati=0
+sim1.adh[6].routing  FANT: ok=418 scartati=0 | BANT: ok=753 scartati=0 | REQ: ok=3 scartati=0
+sim1.adh[7].routing  FANT: ok=389 scartati=0 | BANT: ok=737 scartati=0 | REQ: ok=3 scartati=0
+sim1.adh[8].routing  FANT: ok=451 scartati=0 | BANT: ok=930 scartati=0 | REQ: ok=6 scartati=0
+sim1.adh[9].routing  FANT: ok=317 scartati=0 | BANT: ok=562 scartati=0 | REQ: ok=2 scartati=0
+sim1.adh[10].routing  FANT: ok=285 scartati=0 | BANT: ok=590 scartati=0 | REQ: ok=2 scartati=0
+sim1.adh[11].routing  FANT: ok=385 scartati=0 | BANT: ok=733 scartati=0 | REQ: ok=4 scartati=0
+sim1.adh[12].routing  FANT: ok=362 scartati=0 | BANT: ok=665 scartati=0 | REQ: ok=3 scartati=0
+sim1.adh[13].routing  FANT: ok=287 scartati=0 | BANT: ok=610 scartati=0 | REQ: ok=2 scartati=0
+sim1.adh[14].routing  FANT: ok=283 scartati=0 | BANT: ok=583 scartati=0 | REQ: ok=2 scartati=0
+sim1.gat1.routing  FANT: ok=865 scartati=0 | BANT: ok=1633 scartati=0 | REQ: ok=14 scartati=0
+sim1.gat2.routing  FANT: ok=677 scartati=0 | BANT: ok=1494 scartati=0 | REQ: ok=8 scartati=0
+sim1.gat3.routing  FANT: ok=586 scartati=0 | BANT: ok=938 scartati=0 | REQ: ok=7 scartati=0
+sim1.satellite[0].routing  FANT: ok=344 scartati=0 | BANT: ok=1167 scartati=0 | REQ: ok=3 scartati=0

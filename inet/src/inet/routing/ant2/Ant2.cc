@@ -1,4 +1,3 @@
-
 // General libraries
 #include "inet/routing/ant2/Ant2.h"
 #include "inet/common/IProtocolRegistrationListener.h"
@@ -45,6 +44,7 @@
 #include "inet/common/ModuleAccess.h"
 #include "inet/networklayer/common/L3Address.h"
 #include <iostream>
+#include <fstream>   // aggiunto per il riepilogo di sicurezza scritto su file in finish()
 
 
 // Libraries added to enable dynamic moblity of UAVs while simulation is running
@@ -113,6 +113,12 @@ void Ant2::initialize(int stage)
 
         routeLifetime = par("routeLifetime").doubleValue();
         helloInterval = par("helloInterval");
+
+        // NOTA per il livello di sicurezza: il caricamento delle chiavi NON puo'
+        // stare qui. A questo punto di initialize(), interface80211ptr e' ancora
+        // nullptr (viene assegnato solo dentro Ant2::start(), eseguito dopo).
+        // Vedi il blocco spostato in Ant2::start(), subito dopo l'assegnazione
+        // di interface80211ptr.
         forwardList = new std::list<ForwardEntry *>();
         event = new cMessage("event");
 
@@ -205,6 +211,67 @@ void Ant2::start()
     } else {
         throw cRuntimeError("DSDV has found %i 80211 interfaces", num_80211);
     }
+
+    // Aggiunto per il livello di sicurezza: caricamento chiavi (una tantum per nodo).
+    // Va fatto QUI (in start(), non in initialize()) perche' e' il primo punto in
+    // cui interface80211ptr e' garantito assegnato (vedi sopra) e quindi possiamo
+    // leggere il vero indirizzo IP del nodo. Due approcci alternativi, scelti col
+    // parametro useCentralAuthority:
+    // - false (default): provisioning OFFLINE da file, generati prima della run
+    //   con gli strumenti in tools/ (vedi Ant2Crypto::loadGroupKey/loadOwnKeypair/loadFleetRoster).
+    // - true: autorita' centrale "in-simulazione" (Ant2KeyAuthority), che genera
+    //   le chiavi al volo la prima volta che un nodo le richiede.
+    // Se un file manca, una chiave e' corrotta, o l'autorita' non si trova,
+    // il nodo si ferma subito con un errore chiaro: e' preferibile a farlo
+    // partire "silenziosamente insicuro".
+    consoleVerbose = par("securityConsoleVerbose").boolValue();
+
+    try {
+        if (par("useCentralAuthority").boolValue()) {
+            auto authorityModule = getSimulation()->getSystemModule()->getSubmodule(par("keyAuthorityName").stringValue());
+            if (authorityModule == nullptr)
+                throw cRuntimeError("Ant2KeyAuthority non trovata nella rete (nome cercato: %s)",
+                                    par("keyAuthorityName").stringValue());
+            auto authority = check_and_cast<ant2::Ant2KeyAuthority *>(authorityModule);
+
+            Ipv4Address myAddress = interface80211ptr->getProtocolData<Ipv4InterfaceData>()->getIPAddress();
+            crypto.useCentralAuthority(authority, myAddress.getInt());
+            // Banner esplicativo, stampato una sola volta dal primo nodo che si avvia.
+            static bool bannerStampato = false;
+            if (!bannerStampato) {
+                bannerStampato = true;
+                std::cout << "\n"
+                          << "============================================================\n"
+                          << " LIVELLO DI SICUREZZA Ant2 attivo\n"
+                          << "   - Ascon-AEAD128 : cifra e protegge il contenuto dei messaggi\n"
+                          << "                     (coordinate, energia, throughput, cluster)\n"
+                          << "   - Ed25519       : firma digitale individuale di ogni nodo,\n"
+                          << "                     verificata prima di accettare un pacchetto\n"
+                          << " Provisioning chiavi: autorita' centrale in-simulazione\n"
+                          << " File prodotti a fine run (nella cartella della simulazione):\n"
+                          << "   ant2_security_events.log   -> ogni singolo evento, con motivo\n"
+                          << "   ant2_security_summary.txt  -> riepilogo per nodo\n"
+                          << "   ant2_security_totals.txt   -> totali di rete\n"
+                          << " (in console solo l'essenziale; per il dettaglio completo a\n"
+                          << "  schermo: **.routing.securityConsoleVerbose = true)\n"
+                          << "============================================================\n"
+                          << std::endl;
+            }
+            securityEventLog() << simTime() << "  " << getFullPath()
+                               << "  AVVIO   identita' ricevuta (chiave privata Ed25519 + chiave di gruppo Ascon), indirizzo="
+                               << myAddress << "\n";
+            std::cout << "[SEC][AVVIO] " << getFullPath() << " -> identita' ok, indirizzo=" << myAddress << std::endl;
+            EV_INFO << "Ant2/security: chiavi ottenute dall'autorita' centrale per " << myAddress << endl;
+        }
+        else {
+            crypto.loadGroupKey(par("groupKeyFile").stdstringValue());
+            crypto.loadOwnKeypair(par("ownPubKeyFile").stdstringValue(), par("ownPrivKeyFile").stdstringValue());
+            crypto.loadFleetRoster(par("fleetRosterFile").stdstringValue());
+            EV_INFO << "Ant2/security: chiavi caricate da file (provisioning offline)" << endl;
+        }
+    } catch (const std::exception& e) {
+        throw cRuntimeError("Ant2: errore nel caricamento delle chiavi di sicurezza: %s", e.what());
+    }
     // UNCOMMENT AFTER
     // if (par("manetPurgeRoutingTables").boolValue()) {
     Ipv4Route *entry;
@@ -216,6 +283,33 @@ void Ant2::start()
     //        if (entry->getInterface()->isWireless())
     //            rt->deleteRoute(entry);
       }
+
+    // Sicurezza: questo nodo puo' inviare FANT usando come srcAddress anche
+    // x2ppp_address (l'interfaccia X2/PPP verso il proprio gNodeB) invece
+    // dell'indirizzo wlan con cui si e' registrato. Lo dichiariamo come alias
+    // della stessa identita', altrimenti quei pacchetti - pur autentici -
+    // verrebbero scartati dagli altri nodi come "mittente sconosciuto".
+    if (x2ppp_address != Ipv4Address::UNSPECIFIED_ADDRESS) {
+        crypto.registerOwnAlias(x2ppp_address.getInt());
+        securityEventLog() << simTime() << "  " << getFullPath()
+                           << "  AVVIO   secondo indirizzo (interfaccia X2 verso il gNodeB): "
+                           << x2ppp_address << " registrato come stessa identita'\n";
+    }
+
+    // TEST NEGATIVO: se configurato come attaccante, il nodo scarta la propria
+    // identita' legittima e ne genera una non riconosciuta da nessuno.
+    // Da qui in avanti continuera' a inviare FANT/BANT/REQ regolarmente, ma
+    // ogni ricevente ne rifiutera' la firma. Si fa DOPO il provisioning proprio
+    // per simulare una compromissione avvenuta dopo il rilascio in campo.
+    if (par("isAttacker").boolValue()) {
+        crypto.useRogueIdentity();
+        std::cout << "\n[SEC][ATTACCANTE] *** " << getFullPath() << " e' stato COMPROMESSO ***\n"
+                  << "                  Da ora firma i propri messaggi con una chiave NON riconosciuta.\n"
+                  << "                  Conserva pero' la chiave di gruppo Ascon: con la sola cifratura\n"
+                  << "                  di gruppo sarebbe indistinguibile da un nodo onesto.\n"
+                  << "                  Ci aspettiamo che tutti i suoi vicini ne rifiutino i pacchetti.\n"
+                  << std::endl;
+    }
     //}
 
     //CHK(interface80211ptr->getProtocolDataForUpdate<Ipv4InterfaceData>())->joinMulticastGroup(Ipv4Address::LL_MANET_ROUTERS);
@@ -223,6 +317,93 @@ void Ant2::start()
     //    scheduleAfter(uniform(0.0, 2.0), event);
     //}
     scheduleAfter(uniform(0.0, 2.0), event);
+}
+
+void Ant2::finish()
+{
+    // Riepilogo del livello di sicurezza, a fine run, per OGNI nodo.
+    //
+    // Scritto su file dedicati (nella working directory della simulazione) e non
+    // solo con EV_*/std::cout, perche' le stampe EV_* vengono soppresse in
+    // "express mode" e std::cout non finisce nel file di cmdenv-output-file.
+    static bool firstCall = true;
+    static long tot_bant_ok = 0, tot_bant_fail = 0;
+    static long tot_req_ok = 0, tot_req_fail = 0;
+    static long tot_fant_ok = 0, tot_fant_fail = 0;
+    static long tot_unknown = 0, tot_signature = 0, tot_aead = 0;
+    static int nodiConteggiati = 0;
+
+    tot_bant_ok += sec_bant_ok;   tot_bant_fail += sec_bant_fail;
+    tot_req_ok  += sec_req_ok;    tot_req_fail  += sec_req_fail;
+    tot_fant_ok += sec_fant_ok;   tot_fant_fail += sec_fant_fail;
+    tot_unknown += sec_fail_unknown;
+    tot_signature += sec_fail_signature;
+    tot_aead += sec_fail_aead;
+    nodiConteggiati++;
+
+    std::ofstream out;
+    if (firstCall) {
+        out.open("ant2_security_summary.txt", std::ios::trunc);
+        out << "# ================================================================\n";
+        out << "# Riepilogo livello di sicurezza Ant2 (Ascon-AEAD128 + Ed25519)\n";
+        out << "# ================================================================\n";
+        out << "# Una riga per nodo. Per ogni tipo di messaggio del protocollo:\n";
+        out << "#   FANT = scoperta di rotta       (solo firmato)\n";
+        out << "#   BANT = risposta con stato nodo (firmato + cifrato)\n";
+        out << "#   REQ  = richiesta di recruiting (firmato + cifrato)\n";
+        out << "#\n";
+        out << "#   ok        = firma verificata e payload decifrato correttamente\n";
+        out << "#   scartati  = pacchetto rifiutato PRIMA di aggiornare qualsiasi tabella\n";
+        out << "# ================================================================\n";
+        firstCall = false;
+    }
+    else
+        out.open("ant2_security_summary.txt", std::ios::app);
+
+    if (out) {
+        out << getFullPath()
+            << "  FANT: ok=" << sec_fant_ok << " scartati=" << sec_fant_fail
+            << " | BANT: ok=" << sec_bant_ok << " scartati=" << sec_bant_fail
+            << " | REQ: ok=" << sec_req_ok << " scartati=" << sec_req_fail;
+        if (sec_fail_unknown || sec_fail_signature || sec_fail_aead) {
+            out << "   [motivi scarti -> identita' sconosciuta: " << sec_fail_unknown
+                << ", firma non valida: " << sec_fail_signature
+                << ", payload manomesso: " << sec_fail_aead << "]";
+        }
+        out << "\n";
+    }
+
+    // File separato con i TOTALI di rete: viene riscritto ad ogni finish(),
+    // quindi al termine contiene l'aggregato completo di tutti i nodi.
+    std::ofstream tot("ant2_security_totals.txt", std::ios::trunc);
+    if (tot) {
+        long okTot = tot_fant_ok + tot_bant_ok + tot_req_ok;
+        long failTot = tot_fant_fail + tot_bant_fail + tot_req_fail;
+        tot << "=====================================================\n";
+        tot << " TOTALI DI RETE - livello di sicurezza Ant2\n";
+        tot << " (nodi conteggiati finora: " << nodiConteggiati << ")\n";
+        tot << "=====================================================\n";
+        tot << " FANT   verificati: " << tot_fant_ok  << "   scartati: " << tot_fant_fail << "\n";
+        tot << " BANT   verificati: " << tot_bant_ok  << "   scartati: " << tot_bant_fail << "\n";
+        tot << " REQ    verificati: " << tot_req_ok   << "   scartati: " << tot_req_fail << "\n";
+        tot << "-----------------------------------------------------\n";
+        tot << " TOTALE verificati: " << okTot << "   scartati: " << failTot << "\n";
+        if (okTot + failTot > 0)
+            tot << " Percentuale pacchetti rifiutati: "
+                << (100.0 * failTot / (okTot + failTot)) << "%\n";
+        tot << "-----------------------------------------------------\n";
+        tot << " Motivi degli scarti:\n";
+        tot << "   identita' sconosciuta (non nel registro): " << tot_unknown << "\n";
+        tot << "   firma Ed25519 non valida:                 " << tot_signature << "\n";
+        tot << "   payload manomesso (tag Ascon errato):     " << tot_aead << "\n";
+        tot << "=====================================================\n";
+    }
+
+    std::cout << "[SEC][RIEPILOGO] " << getFullPath()
+              << "  FANT ok=" << sec_fant_ok << "/scartati=" << sec_fant_fail
+              << "  BANT ok=" << sec_bant_ok << "/scartati=" << sec_bant_fail
+              << "  REQ ok=" << sec_req_ok << "/scartati=" << sec_req_fail
+              << std::endl;
 }
 
 void Ant2::stop()
@@ -255,33 +436,13 @@ void Ant2::handleSelfMessage(cMessage *msg)
         allowed_accept_request = false;
         int counter = 1;
         for (auto& interface80211ptr : wirelessInterfaces) {
-            auto fant_message = makeShared<ReqM2>();
-
-            // Create a ReqM2 message
+            // MODIFICATO per sicurezza: cifratura + firma centralizzate in buildSecureReq().
             Ipv4Address source = (interface80211ptr->getProtocolData<Ipv4InterfaceData>()->getIPAddress());
-            fant_message->setChunkLength(b(128));
-            fant_message->setSrcAddress(source);
-            fant_message->setDstAddress(source);
             sequencenumber += 1;
-            fant_message->setSequencenumber(sequencenumber);
-            fant_message->setNextAddress(source);
-            fant_message->setHopdistance(1);
-            fant_message->appendHopAddresses(source);
-
-            // Set the node's current position
             Coord selfPosition = mobility->getCurrentPosition();
             node_position = selfPosition;
-            std::stringstream ss;
-            ss << "(" << node_position.x << ", " << node_position.y << ", " << node_position.z << ")";
-            std::string coordenates = ss.str();
-            const char *coordCStr = coordenates.c_str();
-            fant_message->setCoordenates(coordCStr);
-            fant_message->setAllowed_accept_request(false);
-
-            // Creating ReqM2 packet
-            auto packet = new Packet("Request", fant_message);
+            auto packet = buildSecureReq(source, sequencenumber, source, node_position, false);
             auto addressReq = packet->addTag<L3AddressReq>();
-            packet->setKind(REQ_PACKET); // Set the packet type
             addressReq->setDestAddress(L3Address(broadcast_addr));
             addressReq->setSrcAddress(L3Address(source));
 
@@ -296,7 +457,6 @@ void Ant2::handleSelfMessage(cMessage *msg)
 
             // Clean up
             packet = nullptr;
-            fant_message = nullptr;
 
             allowed_send_request = false;
         }
@@ -387,6 +547,8 @@ void Ant2::handleSelfMessage(cMessage *msg)
         fant_message->setHopdistance(1);
         fant_message->appendHopAddresses(source);
 
+        // firma Ed25519 del FANT prima dell'invio
+        signFant(fant_message);
         auto packet = new Packet("Fant", fant_message);
         auto addressReq = packet->addTag<L3AddressReq>();
         packet->setKind(FANT_PACKET);
@@ -419,6 +581,8 @@ void Ant2::handleSelfMessage(cMessage *msg)
             fant_message2->appendHopAddresses(source_b);
 
             // Creating fant packet
+            // firma Ed25519 del FANT prima dell'invio
+            signFant(fant_message2);
             auto packet2 = new Packet("Fant", fant_message2);
             auto addressReq2 = packet2->addTag<L3AddressReq>();
             packet2->setKind(FANT_PACKET);
@@ -452,6 +616,8 @@ void Ant2::handleSelfMessage(cMessage *msg)
             fant_message3->appendHopAddresses(source);
 
             // Creating fant packet
+            // firma Ed25519 del FANT prima dell'invio
+            signFant(fant_message3);
             auto packet3 = new Packet("Fant", fant_message3);
             auto addressReq3 = packet3->addTag<L3AddressReq>();
             packet3->setKind(FANT_PACKET);
@@ -482,6 +648,8 @@ void Ant2::handleSelfMessage(cMessage *msg)
                 fant_message4->appendHopAddresses(source_b);
 
                 // Creating fant packet
+                // firma Ed25519 del FANT prima dell'invio
+                signFant(fant_message4);
                 auto packet4 = new Packet("Fant", fant_message4);
                 auto addressReq4 = packet4->addTag<L3AddressReq>();
                 packet4->setKind(FANT_PACKET);
@@ -548,33 +716,13 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
         allowed_accept_request = false;
         int counter = 1;
         for (auto& interface80211ptr : wirelessInterfaces) {
-            auto fant_message = makeShared<ReqM2>();
-
-            // Create a ReqM2 message
+            // MODIFICATO per sicurezza: cifratura + firma centralizzate in buildSecureReq().
             Ipv4Address source = (interface80211ptr->getProtocolData<Ipv4InterfaceData>()->getIPAddress());
-            fant_message->setChunkLength(b(128));
-            fant_message->setSrcAddress(source);
-            fant_message->setDstAddress(source);
             sequencenumber += 1;
-            fant_message->setSequencenumber(sequencenumber);
-            fant_message->setNextAddress(source);
-            fant_message->setHopdistance(1);
-            fant_message->appendHopAddresses(source);
-
-            // Set the node's current position
             Coord selfPosition = mobility->getCurrentPosition();
             node_position = selfPosition;
-            std::stringstream ss;
-            ss << "(" << node_position.x << ", " << node_position.y << ", " << node_position.z << ")";
-            std::string coordenates = ss.str();
-            const char *coordCStr = coordenates.c_str();
-            fant_message->setCoordenates(coordCStr);
-            fant_message->setAllowed_accept_request(false);
-
-            // Creating ReqM2 packet
-            auto packet = new Packet("Request", fant_message);
+            auto packet = buildSecureReq(source, sequencenumber, source, node_position, false);
             auto addressReq = packet->addTag<L3AddressReq>();
-            packet->setKind(REQ_PACKET); // Set the packet type
             addressReq->setDestAddress(Ipv4Address(255,255,255,255));
             addressReq->setSrcAddress(source);
 
@@ -588,7 +736,6 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
             // Clean up
             packet = nullptr;
-            fant_message = nullptr;
             counter++;
             allowed_send_request = false;
         }
@@ -630,6 +777,13 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
         if (num_80211 == 1) {
             // Differentiating between FANT and BANT
             if (msg->getKind() == FANT_PACKET) {
+
+                // --- Sicurezza: verifica firma del FANT come primo passo,
+                // prima di allocare fhp, toccare tabelle o inoltrare.
+                if (!verifyFant(check_and_cast<Packet *>(msg)->peekData<FantM2>())) {
+                    delete msg;
+                    return;
+                }
 
                 ForwardEntry *fhp = nullptr;
                 auto recHello = staticPtrCast<FantM2>(check_and_cast<Packet *>(msg)->peekData<FantM2>()->dupShared());
@@ -752,42 +906,14 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                             return;
                         }
                         else {
-
-                            auto bant_message = makeShared<BantM2>();
-
-                            // Set up the Bant message fields
-                            bant_message->setChunkLength(b(128));  // Set size of Bant message in bits
-                            bant_message->setSrcAddress(source);   // Source is this node's address
-                            bant_message->setDstAddress(src);      // Destination is the source address of the Fant message
-                            bant_message->setNextAddress(source);  // Next address is also this node's address
-                            bant_message->setGateway(gateway);
-                            bant_message->setSequencenumber(msgsequencenumber);  // Use the same sequence number
-                            bant_message->setHopdistance(int(1));
-
-                            //added for node monitoring
-
-                            bant_message->setThroughput(node_throughput);
-                            bant_message->setEnergy(node_energy);
-                            bant_message->setAllowed_accept_request(allowed_accept_request);
-
-                            std::stringstream ss;
-                            ss << "(" << node_position.x << ", " << node_position.y << ", " << node_position.z << ")";
-                            std::string coordenates = ss.str();
-                            const char *coordCStr = coordenates.c_str();
-
-                            bant_message->setCoordenates(coordCStr);
-                            bant_message->setHops(double(1.0));
-                            bant_message->setMax_throughput(max_band); // Mbps
-                            bant_message->setCluster_id(cluster_id);
-
-                            // Create a Bant packet
-                            auto bant_packet = new Packet("Bant", bant_message);
-                            bant_packet->setKind(BANT_PACKET); // Set the packet type
+                            // MODIFICATO per sicurezza: cifratura + firma centralizzate in
+                            // buildSecureBant() (vedi Ant2Crypto). Nessun campo sensibile
+                            // (energia, throughput, coordinate, cluster_id, disponibilita')
+                            // viene piu' impostato in chiaro qui.
+                            auto bant_packet = buildSecureBant(src, gateway, msgsequencenumber, source);
                             auto bantAddressReq = bant_packet->addTag<L3AddressReq>();
-
-                            bantAddressReq->setDestAddress(L3Address(broadcast_addr));   // Destination is the source of the Fant message
-                            bantAddressReq->setSrcAddress(L3Address(source)); // Source is this node's address
-
+                            bantAddressReq->setDestAddress(L3Address(broadcast_addr));
+                            bantAddressReq->setSrcAddress(L3Address(source));
                             bant_packet->addTag<InterfaceReq>()->setInterfaceId(interface80211ptr->getInterfaceId());
                             bant_packet->addTag<PacketProtocolTag>()->setProtocol(&Protocol::manet);
                             bant_packet->addTag<DispatchProtocolReq>()->setProtocol(&Protocol::ipv4);
@@ -800,7 +926,6 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
                             // Clean up
                             bant_packet = nullptr;
-                            bant_message = nullptr;
                             //packet = nullptr;
                             fhp = nullptr;
                         }
@@ -851,45 +976,13 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                             return;
                         }
                         else {
-                            //////////// added for new logic /////////
-                            //double waitTime1 = intuniform(1, 100);
-                            //waitTime1 = waitTime1 / 10000;
-
-                            auto bant_message = makeShared<BantM2>();
-
-                            // Set up the Bant message fields
-                            bant_message->setChunkLength(b(128));  // Set size of Bant message in bits
-                            bant_message->setSrcAddress(source);   // Source is this node's address
-                            bant_message->setDstAddress(src);      // Destination is the source address of the Fant message
-                            bant_message->setNextAddress(source);  // Next address is also this node's address
-                            bant_message->setGateway(gateway);
-                            bant_message->setSequencenumber(msgsequencenumber);  // Use the same sequence number
-                            bant_message->setHopdistance(int(1));
-
-                            //added for node monitoring
-
-                            bant_message->setThroughput(node_throughput);
-                            bant_message->setEnergy(node_energy);
-                            bant_message->setAllowed_accept_request(allowed_accept_request);
-
-                            std::stringstream ss;
-                            ss << "(" << node_position.x << ", " << node_position.y << ", " << node_position.z << ")";
-                            std::string coordenates = ss.str();
-                            const char *coordCStr = coordenates.c_str();
-
-                            bant_message->setCoordenates(coordCStr);
-                            bant_message->setHops(double(1.0));
-                            bant_message->setMax_throughput(max_band); // Mbps
-                            bant_message->setCluster_id(cluster_id);
-
-                            // Create a Bant packet
-                            auto bant_packet = new Packet("Bant", bant_message);
-                            bant_packet->setKind(BANT_PACKET); // Set the packet type
+                            // MODIFICATO per sicurezza: cifratura + firma centralizzate in
+                            // buildSecureBant() (vedi Ant2Crypto). Stesso identico schema
+                            // usato nel blocco "caso destinazione" poco sopra.
+                            auto bant_packet = buildSecureBant(src, gateway, msgsequencenumber, source);
                             auto bantAddressReq = bant_packet->addTag<L3AddressReq>();
-
-                            //bantAddressReq->setDestAddress(Ipv4Address(10,0,0,1));   // Destination is the source of the Fant message
-                            bantAddressReq->setDestAddress(L3Address(broadcast_addr));   // Destination is the source of the Fant message
-                            bantAddressReq->setSrcAddress(L3Address(source)); // Source is this node's address
+                            bantAddressReq->setDestAddress(L3Address(broadcast_addr));
+                            bantAddressReq->setSrcAddress(L3Address(source));
 
                             bant_packet->addTag<InterfaceReq>()->setInterfaceId(interface80211ptr->getInterfaceId());
                             bant_packet->addTag<PacketProtocolTag>()->setProtocol(&Protocol::manet);
@@ -903,7 +996,6 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
                             // Clean up
                             bant_packet = nullptr;
-                            bant_message = nullptr;
 
                         }
                         //////////////////////////////////////////
@@ -918,9 +1010,25 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
             else if (msg->getKind() == BANT_PACKET) {
 
-                ForwardEntry *fhp = nullptr;
-                auto recHello = staticPtrCast<BantM2>(check_and_cast<Packet *>(msg)->peekData<BantM2>()->dupShared());
+                auto recHello = check_and_cast<Packet *>(msg)->peekData<BantM2>();
 
+                // --- Aggiunto per sicurezza: verifica firma + decifratura, come PRIMA
+                // cosa in assoluto, prima di allocare fhp, prima di toccare
+                // routingTableAnt/statusTable, prima di un eventuale inoltro. Un
+                // pacchetto che non supera questo controllo viene scartato subito,
+                // senza propagarsi oltre: e' questo a chiudere il problema
+                // dell'"amplificazione" da parte dei gateway di cui avevamo parlato.
+                double energy, throughput, max_throughput;
+                Coord node_position_neighbor;
+                int cluster_id_;
+                bool allowed_accept_request_node;
+                if (!verifyAndDecryptBant(recHello, energy, throughput, node_position_neighbor,
+                                           max_throughput, cluster_id_, allowed_accept_request_node)) {
+                    delete msg;
+                    return;
+                }
+
+                ForwardEntry *fhp = nullptr;
                 fhp = new ForwardEntry();
                 fhp->hello = check_and_cast<Packet *>(msg->dup());
 
@@ -936,7 +1044,6 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     int numHops;
                     Ipv4Address next;
                     Ipv4Address gateway;
-                    bool allowed_accept_req;
 
                     src = recHello->getSrcAddress();
                     dst = recHello->getDstAddress();
@@ -944,7 +1051,12 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     next = recHello->getNextAddress();
                     numHops = recHello->getHopdistance();
                     gateway = recHello->getGateway();
-                    allowed_accept_req = recHello->getAllowed_accept_request();
+                    // NOTA: allowed_accept_request_node arriva gia' decifrato qui sopra,
+                    // non si rilegge piu' un campo in chiaro dal pacchetto.
+                    // "hops" resta concettualmente uguale a hopdistance (il numero di
+                    // salti attraversati): e' un campo in chiaro, mutabile ad ogni hop,
+                    // quindi lo prendiamo da qui e non dal payload cifrato.
+                    double hops = static_cast<double>(numHops);
 
                     std::string src_string = recHello->getSrcAddress().str();
                     std::string dst_string = recHello->getNextAddress().str();
@@ -975,24 +1087,11 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     if ((gateway == source) || (dst == source) || (dst == x2ppp_address)) {
 
                         /////// Add the status of the Bant generateor address to monitor table ///////////////
-
-                        double energy = recHello->getEnergy();
-                        double throughput = recHello->getThroughput();
-                        std::string coordenates = recHello->getCoordenates();
-                        double hops = recHello->getHops();
-
-                        // Parse the string and extract coordinates
-                        double x, y, z;
-                        char dummy; // to ignore unwanted characters like '(' ',' and ')'
-                        std::stringstream ss(coordenates);
-                        ss >> dummy >> x >> dummy >> y >> dummy >> z >> dummy; // Parse format "(x, y, z)"
-                        // Convert parsed values to a Coord object
-                        Coord node_position_neighbor(x, y, z);
+                        // MODIFICATO: energy/throughput/node_position_neighbor/hops/max_throughput/
+                        // cluster_id_/allowed_accept_request_node arrivano gia' decifrati da
+                        // verifyAndDecryptBant() in cima al blocco: non si rileggono piu' dal pacchetto.
 
                         double distance = calculateEuclideanDistance(node_position_neighbor, node_position);
-                        double max_throughput = recHello->getMax_throughput();
-                        int cluster_id_ = recHello->getCluster_id();
-                        bool allowed_accept_request_node = recHello->getAllowed_accept_request();
 
                         // Check if the src_string already exists in the statusTable
                         auto it = std::find_if(statusTable.begin(), statusTable.end(),
@@ -1062,19 +1161,28 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         packet->addTag<PacketProtocolTag>()->setProtocol(&Protocol::manet);
                         packet->addTag<DispatchProtocolReq>()->setProtocol(&Protocol::ipv4);
 
-                        recHello->setNextAddress(source);
+                        // MODIFICATO per sicurezza: recHello e' ora un puntatore a un
+                        // BantM2 IMMUTABILE (const). Per inoltrarlo serve una copia
+                        // mutabile, e su quella copia si toccano SOLO i campi di
+                        // routing in chiaro (nextAddress, hopdistance, gateway).
+                        // srcAddress/dstAddress/sequencenumber/ciphertext/authTag/
+                        // signature restano byte-per-byte identici a come li ha
+                        // prodotti il mittente originale: e' proprio questo che
+                        // permette a chiunque, a qualunque hop, di continuare a
+                        // verificarne la firma. Non si riscrive piu' qui dentro
+                        // ne' "hops" ne' "allowed_accept_request": sono dati che
+                        // riguardano il mittente originale, non il nodo che inoltra,
+                        // e vivono cifrati dentro il payload sigillato dalla sua firma.
+                        auto forwardedBant = staticPtrCast<BantM2>(recHello->dupShared());
                         numHops++;
-                        recHello->setHopdistance(numHops);
-                        recHello->setSrcAddress(src);
-                        recHello->setDstAddress(dst);
-                        recHello->setGateway(next_gateway);
-                        recHello->setSequencenumber(msgsequencenumber);
-                        recHello->setHops(double(numHops));
-                        recHello->setAllowed_accept_request(allowed_accept_req);
+                        forwardedBant->setNextAddress(source);
+                        forwardedBant->setHopdistance(numHops);
+                        forwardedBant->setGateway(next_gateway);
+
                         double waitTime = intuniform(1, 100);
                         waitTime = waitTime / 10000;
                         EV_DETAIL << "Forwarding Bant " << endl;
-                        packet->insertAtBack(recHello);
+                        packet->insertAtBack(forwardedBant);
                         packet->setKind(BANT_PACKET);  // Set the correct packet type
                         sendDelayed(packet, waitTime, "ipOut");
                         total_manet_packets++;
@@ -1091,9 +1199,21 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
             else if (msg->getKind() == REQ_PACKET) {
                 total_req_packets++;
 
+                auto recHelloConst = check_and_cast<Packet *>(msg)->peekData<ReqM2>();
+
+                // --- Aggiunto per sicurezza: stesso schema del BANT. Verifica
+                // firma + decifratura come primissimo passo, prima di allocare
+                // fhp e prima di toccare qualunque tabella.
+                Coord coordenates_to_be_recruited_coord;
+                bool allowed_accept_request_sender;
+                if (!verifyAndDecryptReq(recHelloConst, coordenates_to_be_recruited_coord,
+                                          allowed_accept_request_sender)) {
+                    delete msg;
+                    return;
+                }
 
                 ForwardEntry *fhp = nullptr;
-                auto recHello = staticPtrCast<ReqM2>(check_and_cast<Packet *>(msg)->peekData<ReqM2>()->dupShared());
+                auto recHello = staticPtrCast<ReqM2>(recHelloConst->dupShared());
                 fhp = new ForwardEntry();
                 fhp->hello = check_and_cast<Packet *>(msg->dup());
 
@@ -1121,7 +1241,10 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     std::string src_string = recHello->getSrcAddress().str();
                     std::string dst_string = recHello->getNextAddress().str();
                     std::string nxt_string = recHello->getNextAddress().str();
-                    std::string coordenates_to_be_recruited_packet = recHello->getCoordenates();
+                    // NOTA: le coordinate arrivano gia' decifrate in
+                    // coordenates_to_be_recruited_coord (calcolato sopra da
+                    // verifyAndDecryptReq()), non si rilegge piu' un campo in
+                    // chiaro dal pacchetto.
 
                     //////////////////////////////////////////////////////////////////////
                     // Create the key for the m/p
@@ -1219,7 +1342,15 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         moveTimer = new cMessage("moveTimer");
                         scheduleAfter(timer , moveTimer); // Schedule the timer to trigger every second
                         allowed_accept_request = false;
-                        coordenates_to_be_recruited = coordenates_to_be_recruited_packet;
+                        // MODIFICATO per sicurezza: la coordinata arriva gia' decifrata
+                        // come oggetto Coord (coordenates_to_be_recruited_coord); la
+                        // riconvertiamo nello stesso formato stringa "(x, y, z)" che
+                        // moveUav() si aspetta gia', cosi' non serve toccare moveUav().
+                        std::stringstream ssCoord;
+                        ssCoord << "(" << coordenates_to_be_recruited_coord.x << ", "
+                                << coordenates_to_be_recruited_coord.y << ", "
+                                << coordenates_to_be_recruited_coord.z << ")";
+                        coordenates_to_be_recruited = ssCoord.str();
 
                         //////// code to update the energy /////
 
@@ -1298,6 +1429,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     fant_message->setHopdistance(1);
                     fant_message->appendHopAddresses(source);
 
+                    // firma Ed25519 del FANT prima dell'invio
+                    signFant(fant_message);
                     auto packet = new Packet("Fant", fant_message);
                     auto addressReq = packet->addTag<L3AddressReq>();
                     packet->setKind(FANT_PACKET);
@@ -1331,6 +1464,12 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
 
                 ForwardEntry *fhp = nullptr;
+                // --- Sicurezza: verifica firma del FANT come primo passo.
+                if (!verifyFant(check_and_cast<Packet *>(msg)->peekData<FantM2>())) {
+                    delete msg;
+                    return;
+                }
+
                 auto recHello1 = staticPtrCast<FantM2>(check_and_cast<Packet *>(msg)->peekData<FantM2>()->dupShared());
                 auto recHello2 = staticPtrCast<FantM2>(check_and_cast<Packet *>(msg)->peekData<FantM2>()->dupShared());
 
@@ -1456,92 +1595,32 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         }
                         else {
                             //////////// sent to wlan0 /////////
-                            auto bant_message = makeShared<BantM2>();
-
-                            // Set up the Bant message fields
-                            bant_message->setChunkLength(b(128));  // Set size of Bant message in bits
-                            bant_message->setSrcAddress(source_a);   // Source is this node's address
-                            bant_message->setDstAddress(src);      // Destination is the source address of the Fant message
-                            bant_message->setNextAddress(source_a);  // Next address is also this node's address
-                            bant_message->setGateway(gateway);
-                            bant_message->setSequencenumber(msgsequencenumber);  // Use the same sequence number
-                            bant_message->setHopdistance(int(1));
-
-                            //added for node monitoring
-
-                            bant_message->setThroughput(node_throughput);
-                            bant_message->setEnergy(node_energy);
-                            bant_message->setAllowed_accept_request(allowed_accept_request);
-
-                            std::stringstream ss;
-                            ss << "(" << node_position.x << ", " << node_position.y << ", " << node_position.z << ")";
-                            std::string coordenates = ss.str();
-                            const char *coordCStr = coordenates.c_str();
-
-                            bant_message->setCoordenates(coordCStr);
-                            bant_message->setHops(double(1.0));
-                            bant_message->setMax_throughput(max_band); // Mbps
-                            bant_message->setCluster_id(cluster_id);
-
-                            // Create a Bant packet
-                            auto bant_packet = new Packet("Bant", bant_message);
+                            // MODIFICATO per sicurezza: cifratura + firma centralizzate in
+                            // buildSecureBant(), stesso schema usato altrove.
+                            auto bant_packet = buildSecureBant(src, gateway, msgsequencenumber, source_a);
                             auto bantAddressReq = bant_packet->addTag<L3AddressReq>();
-                            bant_packet->setKind(BANT_PACKET); // Set the packet type
                             bantAddressReq->setDestAddress(L3Address(broadcast_addr));
-                            bantAddressReq->setSrcAddress(source_a); // Source is this node's address
+                            bantAddressReq->setSrcAddress(source_a);
 
                             bant_packet->addTag<InterfaceReq>()->setInterfaceId(wirelessInterfaces[0]->getInterfaceId());
                             bant_packet->addTag<PacketProtocolTag>()->setProtocol(&Protocol::manet);
                             bant_packet->addTag<DispatchProtocolReq>()->setProtocol(&Protocol::ipv4);
 
-                            // Send the Bant packet
                             double waitTime = intuniform(1, 100);
                             waitTime = waitTime / 10000;
                             sendDelayed(bant_packet, waitTime, "ipOut");
                             total_manet_packets++;
 
                             //////////// sent to wlan1 /////////
-                            /////////////////////////////////////
-
-                            auto bant_message1 = makeShared<BantM2>();
-
-                            // Set up the Bant message fields
-                            bant_message1->setChunkLength(b(128));  // Set size of Bant message in bits
-                            bant_message1->setSrcAddress(source_a);   // Source is this node's address
-                            bant_message1->setDstAddress(src);      // Destination is the source address of the Fant message
-                            bant_message1->setNextAddress(source_a);  // Next address is also this node's address
-                            bant_message1->setGateway(gateway);
-                            bant_message1->setSequencenumber(msgsequencenumber);  // Use the same sequence number
-                            bant_message1->setHopdistance(int(1));
-
-                            //added for node monitoring
-
-                            bant_message1->setThroughput(node_throughput);
-                            bant_message1->setEnergy(node_energy);
-                            bant_message1->setAllowed_accept_request(allowed_accept_request);
-
-                            std::stringstream ss1;
-                            ss1 << "(" << node_position.x << ", " << node_position.y << ", " << node_position.z << ")";
-                            std::string coordenates1 = ss1.str();
-                            const char *coordCStr1 = coordenates1.c_str();
-
-                            bant_message1->setCoordenates(coordCStr1);
-                            bant_message1->setHops(double(1.0));
-                            bant_message1->setMax_throughput(max_band); // Mbps
-                            bant_message1->setCluster_id(cluster_id);
-
-                            // Create a Bant packet
-                            auto bant_packet1 = new Packet("Bant", bant_message1);
+                            auto bant_packet1 = buildSecureBant(src, gateway, msgsequencenumber, source_a);
                             auto bantAddressReq1 = bant_packet1->addTag<L3AddressReq>();
-                            bant_packet1->setKind(BANT_PACKET); // Set the packet type
                             bantAddressReq1->setDestAddress(L3Address(broadcast_addr));
-                            bantAddressReq1->setSrcAddress(source_b); // Source is this node's address
+                            bantAddressReq1->setSrcAddress(source_b);
 
                             bant_packet1->addTag<InterfaceReq>()->setInterfaceId(wirelessInterfaces[1]->getInterfaceId());
                             bant_packet1->addTag<PacketProtocolTag>()->setProtocol(&Protocol::manet);
                             bant_packet1->addTag<DispatchProtocolReq>()->setProtocol(&Protocol::ipv4);
 
-                            // Send the Bant packet
                             double waitTime1 = intuniform(1, 100);
                             waitTime1 = waitTime1 / 10000;
                             sendDelayed(bant_packet1, waitTime1, "ipOut");
@@ -1549,9 +1628,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
                             // Clean up
                             bant_packet = nullptr;
-                            bant_message = nullptr;
                             bant_packet1 = nullptr;
-                            bant_message1 = nullptr;
+
 
                         }
                         //////////////////////////////////////////
@@ -1629,92 +1707,32 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         }
                         else {
                             //////////// sent to wlan0 /////////
-                            auto bant_message = makeShared<BantM2>();
-
-                            // Set up the Bant message fields
-                            bant_message->setChunkLength(b(128));  // Set size of Bant message in bits
-                            bant_message->setSrcAddress(source_a);   // Source is this node's address
-                            bant_message->setDstAddress(src);      // Destination is the source address of the Fant message
-                            bant_message->setNextAddress(source_a);  // Next address is also this node's address
-                            bant_message->setGateway(gateway);
-                            bant_message->setSequencenumber(msgsequencenumber);  // Use the same sequence number
-                            bant_message->setHopdistance(int(1));
-
-                            //added for node monitoring
-
-                            bant_message->setThroughput(node_throughput);
-                            bant_message->setEnergy(node_energy);
-                            bant_message->setAllowed_accept_request(allowed_accept_request);
-
-                            std::stringstream ss;
-                            ss << "(" << node_position.x << ", " << node_position.y << ", " << node_position.z << ")";
-                            std::string coordenates = ss.str();
-                            const char *coordCStr = coordenates.c_str();
-
-                            bant_message->setCoordenates(coordCStr);
-                            bant_message->setHops(double(1.0));
-                            bant_message->setMax_throughput(max_band); // Mbps
-                            bant_message->setCluster_id(cluster_id);
-
-                            // Create a Bant packet
-                            auto bant_packet = new Packet("Bant", bant_message);
+                            // MODIFICATO per sicurezza: cifratura + firma centralizzate in
+                            // buildSecureBant(), stesso schema usato sopra.
+                            auto bant_packet = buildSecureBant(src, gateway, msgsequencenumber, source_a);
                             auto bantAddressReq = bant_packet->addTag<L3AddressReq>();
-                            bant_packet->setKind(BANT_PACKET); // Set the packet type
                             bantAddressReq->setDestAddress(L3Address(broadcast_addr));
-                            bantAddressReq->setSrcAddress(source_a); // Source is this node's address
+                            bantAddressReq->setSrcAddress(source_a);
 
                             bant_packet->addTag<InterfaceReq>()->setInterfaceId(wirelessInterfaces[0]->getInterfaceId());
                             bant_packet->addTag<PacketProtocolTag>()->setProtocol(&Protocol::manet);
                             bant_packet->addTag<DispatchProtocolReq>()->setProtocol(&Protocol::ipv4);
 
-                            // Send the Bant packet
                             double waitTime = intuniform(1, 100);
                             waitTime = waitTime / 10000;
                             sendDelayed(bant_packet, waitTime, "ipOut");
                             total_manet_packets++;
 
                             //////////// sent to wlan1 /////////
-                            /////////////////////////////////////
-
-                            auto bant_message1 = makeShared<BantM2>();
-
-                            // Set up the Bant message fields
-                            bant_message1->setChunkLength(b(128));  // Set size of Bant message in bits
-                            bant_message1->setSrcAddress(source_a);   // Source is this node's address
-                            bant_message1->setDstAddress(src);      // Destination is the source address of the Fant message
-                            bant_message1->setNextAddress(source_a);  // Next address is also this node's address
-                            bant_message1->setGateway(gateway);
-                            bant_message1->setSequencenumber(msgsequencenumber);  // Use the same sequence number
-                            bant_message1->setHopdistance(int(1));
-
-                            //added for node monitoring
-
-                            bant_message1->setThroughput(node_throughput);
-                            bant_message1->setEnergy(node_energy);
-                            bant_message1->setAllowed_accept_request(allowed_accept_request);
-
-                            std::stringstream ss1;
-                            ss1 << "(" << node_position.x << ", " << node_position.y << ", " << node_position.z << ")";
-                            std::string coordenates1 = ss1.str();
-                            const char *coordCStr1 = coordenates1.c_str();
-
-                            bant_message1->setCoordenates(coordCStr1);
-                            bant_message1->setHops(double(1.0));
-                            bant_message1->setMax_throughput(max_band); // Mbps
-                            bant_message1->setCluster_id(cluster_id);
-
-                            // Create a Bant packet
-                            auto bant_packet1 = new Packet("Bant", bant_message1);
+                            auto bant_packet1 = buildSecureBant(src, gateway, msgsequencenumber, source_a);
                             auto bantAddressReq1 = bant_packet1->addTag<L3AddressReq>();
-                            bant_packet1->setKind(BANT_PACKET); // Set the packet type
                             bantAddressReq1->setDestAddress(L3Address(broadcast_addr));
-                            bantAddressReq1->setSrcAddress(source_b); // Source is this node's address
+                            bantAddressReq1->setSrcAddress(source_b);
 
                             bant_packet1->addTag<InterfaceReq>()->setInterfaceId(wirelessInterfaces[1]->getInterfaceId());
                             bant_packet1->addTag<PacketProtocolTag>()->setProtocol(&Protocol::manet);
                             bant_packet1->addTag<DispatchProtocolReq>()->setProtocol(&Protocol::ipv4);
 
-                            // Send the Bant packet
                             double waitTime1 = intuniform(1, 100);
                             waitTime1 = waitTime1 / 10000;
                             sendDelayed(bant_packet1, waitTime1, "ipOut");
@@ -1722,9 +1740,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
                             // Clean up
                             bant_packet = nullptr;
-                            bant_message = nullptr;
                             bant_packet1 = nullptr;
-                            bant_message1 = nullptr;
+
 
                         }
                         //////////////////////////////////////////
@@ -1741,8 +1758,22 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
             else if (msg->getKind() == BANT_PACKET) {
 
-                auto recHello1 = staticPtrCast<BantM2>(check_and_cast<Packet *>(msg)->peekData<BantM2>()->dupShared());
-                auto recHello2 = staticPtrCast<BantM2>(check_and_cast<Packet *>(msg)->peekData<BantM2>()->dupShared());
+                auto recHelloConst = check_and_cast<Packet *>(msg)->peekData<BantM2>();
+
+                // --- Aggiunto per sicurezza: stesso schema del ramo a interfaccia
+                // singola. Verifica firma + decifratura come primissimo passo.
+                double energy, throughput, max_throughput;
+                Coord node_position_neighbor;
+                int cluster_id_;
+                bool allowed_accept_request_node;
+                if (!verifyAndDecryptBant(recHelloConst, energy, throughput, node_position_neighbor,
+                                           max_throughput, cluster_id_, allowed_accept_request_node)) {
+                    delete msg;
+                    return;
+                }
+
+                auto recHello1 = staticPtrCast<BantM2>(recHelloConst->dupShared());
+                auto recHello2 = staticPtrCast<BantM2>(recHelloConst->dupShared());
 
                 ForwardEntry *fhp = nullptr;
                 fhp = new ForwardEntry();
@@ -1772,6 +1803,9 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     next = recHello1->getNextAddress();
                     numHops = recHello1->getHopdistance();
                     gateway = recHello1->getGateway();
+                    // "hops" arriva dal campo hopdistance in chiaro (vedi nota nel
+                    // ramo a interfaccia singola): concettualmente lo stesso dato.
+                    double hops = static_cast<double>(numHops);
 
                     std::string src_string = recHello1->getSrcAddress().str();
                     std::string dst_string = recHello1->getNextAddress().str();
@@ -1801,24 +1835,11 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     if ((gateway == source_a) || (gateway == source_b) || (dst == source_a) || (dst == source_b) || (dst == x2ppp_address)) {
 
                         /////// Add the status of the Bant generateor address to monitor table ///////////////
-
-                        double energy = recHello1->getEnergy();
-                        double throughput = recHello1->getThroughput();
-                        std::string coordenates = recHello1->getCoordenates();
-                        double hops = recHello1->getHops();
-
-                        // Parse the string and extract coordinates
-                        double x, y, z;
-                        char dummy; // to ignore unwanted characters like '(' ',' and ')'
-                        std::stringstream ss(coordenates);
-                        ss >> dummy >> x >> dummy >> y >> dummy >> z >> dummy; // Parse format "(x, y, z)"
-                        // Convert parsed values to a Coord object
-                        Coord node_position_neighbor(x, y, z);
+                        // MODIFICATO per sicurezza: energy/throughput/node_position_neighbor/
+                        // max_throughput/cluster_id_/allowed_accept_request_node arrivano gia'
+                        // decifrati da verifyAndDecryptBant() in cima al blocco.
 
                         double distance = calculateEuclideanDistance(node_position_neighbor, node_position);
-                        double max_throughput = recHello1->getMax_throughput();
-                        int cluster_id_ = recHello1->getCluster_id();
-                        bool allowed_accept_request_node = recHello1->getAllowed_accept_request();
 
                         // Check if the src_string already exists in the statusTable
                         auto it = std::find_if(statusTable.begin(), statusTable.end(),
@@ -1909,11 +1930,7 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         recHello1->setNextAddress(source_a);
                         numHops++;
                         recHello1->setHopdistance(numHops);
-                        recHello1->setSrcAddress(src);
-                        recHello1->setDstAddress(dst);
                         recHello1->setGateway(next_gateway);
-                        recHello1->setSequencenumber(msgsequencenumber);
-                        recHello1->setHops(double(numHops));
                         double waitTime = intuniform(1, 100);
                         waitTime = waitTime / 10000;
                         EV_DETAIL << "Forwarding Bant " << endl;
@@ -1925,11 +1942,7 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         ////////// send to wlan1 ////////////////
                         recHello2->setNextAddress(source_b);
                         recHello2->setHopdistance(numHops);
-                        recHello2->setSrcAddress(src);
-                        recHello2->setDstAddress(dst);
                         recHello2->setGateway(next_gateway);
-                        recHello2->setSequencenumber(msgsequencenumber);
-                        recHello2->setHops(double(numHops));
                         double waitTime2 = intuniform(1, 100);
                         waitTime2 = waitTime2 / 10000;
                         EV_DETAIL << "Forwarding Bant " << endl;
@@ -1953,9 +1966,21 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
             else if (msg->getKind() == REQ_PACKET) {
                 total_req_packets++;
 
+                auto recHelloConstReq = check_and_cast<Packet *>(msg)->peekData<ReqM2>();
+
+                // --- Aggiunto per sicurezza: stesso schema usato ovunque altrove.
+                // Questo era l'ultimo punto del file rimasto privo del controllo.
+                Coord coordenates_to_be_recruited_coord_dual;
+                bool allowed_accept_request_sender_dual;
+                if (!verifyAndDecryptReq(recHelloConstReq, coordenates_to_be_recruited_coord_dual,
+                                          allowed_accept_request_sender_dual)) {
+                    delete msg;
+                    return;
+                }
+
                 ForwardEntry *fhp = nullptr;
-                auto recHello1 = staticPtrCast<ReqM2>(check_and_cast<Packet *>(msg)->peekData<ReqM2>()->dupShared());
-                auto recHello2 = staticPtrCast<ReqM2>(check_and_cast<Packet *>(msg)->peekData<ReqM2>()->dupShared());
+                auto recHello1 = staticPtrCast<ReqM2>(recHelloConstReq->dupShared());
+                auto recHello2 = staticPtrCast<ReqM2>(recHelloConstReq->dupShared());
 
                 fhp = new ForwardEntry();
                 fhp->hello = check_and_cast<Packet *>(msg->dup());
@@ -2147,6 +2172,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     fant_message_1->setHopdistance(1);
                     fant_message_1->appendHopAddresses(source);
 
+                    // firma Ed25519 del FANT prima dell'invio
+                    signFant(fant_message_1);
                     auto packet_1 = new Packet("Fant", fant_message_1);
                     auto addressReq_1 = packet_1->addTag<L3AddressReq>();
                     packet_1->setKind(FANT_PACKET);
@@ -2171,6 +2198,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     fant_message_2->setHopdistance(1);
                     fant_message_2->appendHopAddresses(source);
 
+                    // firma Ed25519 del FANT prima dell'invio
+                    signFant(fant_message_2);
                     auto packet_2 = new Packet("Fant", fant_message_2);
                     auto addressReq_2 = packet_2->addTag<L3AddressReq>();
                     packet_2->setKind(FANT_PACKET);
@@ -2215,29 +2244,13 @@ void Ant2::updatePheromoneValues()
     if (charge_status <= 15.0 && allowed_send_request == true) {
         allowed_accept_request = false;
 
-        auto fant_message = makeShared<ReqM2>();
-        // Create a Bant message
+        // MODIFICATO per sicurezza: cifratura + firma centralizzate in buildSecureReq().
         Ipv4Address source = (interface80211ptr->getProtocolData<Ipv4InterfaceData>()->getIPAddress());
-        fant_message->setChunkLength(b(128));
-        fant_message->setSrcAddress(source);
-        fant_message->setDstAddress(source);
         sequencenumber += 1;
-        fant_message->setSequencenumber(sequencenumber);
-        fant_message->setNextAddress(source);
-        fant_message->setHopdistance(1);
-        fant_message->appendHopAddresses(source);
         Coord selfPosition = mobility->getCurrentPosition();
         node_position = selfPosition;
-        std::stringstream ss;
-        ss << "(" << node_position.x << ", " << node_position.y << ", " << node_position.z << ")";
-        std::string coordenates = ss.str();
-        const char *coordCStr = coordenates.c_str();
-        fant_message->setCoordenates(coordCStr);
-        fant_message->setAllowed_accept_request(false);
-        // creatig fant packet
-        auto packet = new Packet("Request", fant_message);
+        auto packet = buildSecureReq(source, sequencenumber, source, node_position, false);
         auto addressReq = packet->addTag<L3AddressReq>();
-        packet->setKind(REQ_PACKET); // Set the packet type
         addressReq->setDestAddress(L3Address(broadcast_addr));
         addressReq->setSrcAddress(L3Address(source));
 
@@ -2249,7 +2262,6 @@ void Ant2::updatePheromoneValues()
         send(packet, "ipOut");
         total_manet_packets++;
         packet = nullptr;
-        fant_message = nullptr;
 
         allowed_send_request = false;
     }
@@ -2551,15 +2563,11 @@ void Ant2::sendRecruiting()
     EV_DETAIL << "=========== Trying to send request for help =========" << endl;
     if (allowed_send_request == true) {
         EV_DETAIL << "=========== Sending request for help =========" << endl;
-        auto fant_message = makeShared<ReqM2>();
 
         if (x2ppp_address != Ipv4Address::UNSPECIFIED_ADDRESS){
             // creating fant message
             //Ipv4Address source1 = x2ppp_address;
             Ipv4Address source = (interface80211ptr->getProtocolData<Ipv4InterfaceData>()->getIPAddress());
-            fant_message->setChunkLength(b(128));
-            fant_message->setSrcAddress(source);
-
 
             std::unordered_map<std::string, double> results;
 
@@ -2633,13 +2641,9 @@ void Ant2::sendRecruiting()
                 char dot; // to discard the dot separator
                 std::istringstream stream(bestAddress);
                 stream >> a >> dot >> b >> dot >> c >> dot >> d;
+                Ipv4Address bestAddr(a, b, c, d);
 
-                fant_message->setDstAddress(Ipv4Address(a,b,c,d));
                 sequencenumber += 1;
-                fant_message->setSequencenumber(sequencenumber);
-                fant_message->setNextAddress(source);
-                fant_message->setHopdistance(1);
-                fant_message->appendHopAddresses(source);
 
                 if (mobility == nullptr){
                     Coord selfPosition = Coord(100000,1000,1000);
@@ -2650,17 +2654,12 @@ void Ant2::sendRecruiting()
                     node_position = selfPosition;
                 }
 
-                std::stringstream ss;
-                ss << "(" << node_position.x << ", " << node_position.y << ", " << node_position.z << ")";
-                std::string coordenates = ss.str();
-                const char *coordCStr = coordenates.c_str();
-                fant_message->setCoordenates(coordCStr);
-
-
-                // creatig fant packet
-                auto packet = new Packet("Request", fant_message);
+                // MODIFICATO per sicurezza: cifratura + firma centralizzate in
+                // buildSecureReq(). 'false' per allowed_accept_request: stesso
+                // comportamento del codice originale, che qui non lo impostava
+                // mai esplicitamente (restava al valore di default).
+                auto packet = buildSecureReq(bestAddr, sequencenumber, source, node_position, false);
                 auto addressReq = packet->addTag<L3AddressReq>();
-                packet->setKind(REQ_PACKET); // Set the packet type
                 addressReq->setDestAddress(L3Address(broadcast_addr));
                 addressReq->setSrcAddress(source);
 
@@ -2673,7 +2672,6 @@ void Ant2::sendRecruiting()
                 total_manet_packets++;
 
                 packet = nullptr;
-                fant_message = nullptr;
 
                 allowed_send_request = false;
             }
@@ -2794,6 +2792,478 @@ double Ant2::calculateEuclideanDistance(const Coord& coord1, const Coord& coord2
     // Calculate the Euclidean distance
     double distance = std::sqrt(dx * dx + dy * dy + dz * dz);
     return distance;
+}
+
+// ============================================================================
+// Aggiunto per il livello di sicurezza (Ascon-AEAD128 + Ed25519).
+//
+// Le due funzioni sotto centralizzano TUTTA la logica crittografica per i
+// messaggi BANT, cosi' non va ripetuta nei vari punti di Ant2.cc che oggi
+// creano o ricevono un BantM2. Lo stesso schema (payload cifrato + AAD in
+// chiaro + firma su AAD||ciphertext||tag) va replicato in modo identico
+// per FANT (solo firma, non c'e' nulla di sensibile da cifrare) e per REQ
+// (cifrando coordenates + allowed_accept_request).
+// ============================================================================
+
+Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
+                               unsigned int seq, Ipv4Address source)
+{
+    // 1) Payload in chiaro: qui vanno TUTTI i dati che nella versione originale
+    //    erano campi separati del messaggio (throughput, energy, coordinate,
+    //    hops, max_throughput, cluster_id, allowed_accept_request).
+    std::vector<uint8_t> plaintext;
+    auto append = [&plaintext](const void *data, size_t len) {
+        const uint8_t *p = reinterpret_cast<const uint8_t *>(data);
+        plaintext.insert(plaintext.end(), p, p + len);
+    };
+    // NOTA: "hops" non viene incluso qui: e' concettualmente lo stesso dato di
+    // hopdistance (il numero di salti attraversati), che deve poter essere
+    // aggiornato ad ogni hop e quindi resta un campo in chiaro del pacchetto,
+    // non puo' stare dentro un payload sigillato dalla firma del mittente originale.
+    append(&node_throughput, sizeof(double));
+    append(&node_energy, sizeof(double));
+    append(&node_position.x, sizeof(double));
+    append(&node_position.y, sizeof(double));
+    append(&node_position.z, sizeof(double));
+    append(&max_band, sizeof(double));
+    append(&cluster_id, sizeof(int));
+    uint8_t allowedByte = allowed_accept_request ? 1 : 0;
+    append(&allowedByte, sizeof(uint8_t));
+
+    // 2) AAD (Associated Data): i campi di routing restano in chiaro (servono
+    //    ad ogni hop per l'inoltro) ma sono comunque autenticati dal tag/firma:
+    //    nessuno puo' alterarli senza far fallire la verifica.
+    std::vector<uint8_t> aad;
+    auto appendAad = [&aad](const void *data, size_t len) {
+        const uint8_t *p = reinterpret_cast<const uint8_t *>(data);
+        aad.insert(aad.end(), p, p + len);
+    };
+    uint32_t srcInt = source.getInt();
+    uint32_t dstInt = dstAddress.getInt();
+    appendAad(&srcInt, sizeof(uint32_t));
+    appendAad(&dstInt, sizeof(uint32_t));
+    appendAad(&seq, sizeof(uint32_t));
+
+    // 3) Nonce derivato: mai trasmesso, unico per (nodo, sequencenumber, tipo messaggio).
+    uint8_t nonce[Ant2Crypto::NONCE_LEN];
+    crypto.deriveNonce(srcInt, seq, Ant2Crypto::MSG_BANT, nonce);
+
+    // 4) Cifratura + tag di autenticita'/integrita' (Ascon-AEAD128).
+    std::vector<uint8_t> ciphertext;
+    uint8_t tag[Ant2Crypto::TAG_LEN];
+    if (!crypto.encrypt(plaintext, aad, nonce, ciphertext, tag))
+        throw cRuntimeError("Ant2: cifratura del BANT fallita");
+
+    // 5) Firma Ed25519 su AAD||ciphertext||tag: lega il tutto all'identita' del mittente.
+    std::vector<uint8_t> toSign = aad;
+    toSign.insert(toSign.end(), ciphertext.begin(), ciphertext.end());
+    toSign.insert(toSign.end(), tag, tag + Ant2Crypto::TAG_LEN);
+    uint8_t signature[Ant2Crypto::SIG_LEN];
+    crypto.sign(toSign, signature);
+
+    // 6) Popolamento del messaggio OMNeT: solo campi di routing in chiaro + blob cifrati.
+    auto bant_message = makeShared<BantM2>();
+    bant_message->setChunkLength(B(20 + ciphertext.size() + Ant2Crypto::TAG_LEN + Ant2Crypto::SIG_LEN));
+    bant_message->setSrcAddress(source);
+    bant_message->setDstAddress(dstAddress);
+    bant_message->setNextAddress(source);
+    bant_message->setGateway(gateway);
+    bant_message->setSequencenumber(seq);
+    bant_message->setHopdistance(1);
+
+    bant_message->setCiphertextArraySize(ciphertext.size());
+    for (size_t i = 0; i < ciphertext.size(); i++)
+        bant_message->setCiphertext(i, ciphertext[i]);
+    for (int i = 0; i < Ant2Crypto::TAG_LEN; i++)
+        bant_message->setAuthTag(i, tag[i]);
+    for (int i = 0; i < Ant2Crypto::SIG_LEN; i++)
+        bant_message->setSignature(i, signature[i]);
+
+    auto bant_packet = new Packet("Bant", bant_message);
+    bant_packet->setKind(BANT_PACKET);
+    return bant_packet;
+}
+
+bool Ant2::verifyAndDecryptBant(const Ptr<const BantM2>& recHello,
+                                 double& energyOut, double& throughputOut,
+                                 Coord& positionOut,
+                                 double& maxThroughputOut, int& clusterIdOut,
+                                 bool& allowedAcceptOut)
+{
+    uint32_t srcInt = recHello->getSrcAddress().getInt();
+    uint32_t dstInt = recHello->getDstAddress().getInt();
+    unsigned int seq = recHello->getSequencenumber();
+
+    // 1) Il mittente deve essere un nodo noto della flotta (nel fleet roster).
+    //    Questo e' il primo controllo, prima di qualunque altra elaborazione:
+    //    un mittente sconosciuto viene scartato subito, senza sprecare tempo
+    //    a verificare firme che comunque non potrebbero mai risultare valide.
+    if (!crypto.isKnownNode(srcInt)) {
+        sec_bant_fail++;
+        sec_fail_unknown++;
+        logScarto("BANT", recHello->getSrcAddress(), "identita' sconosciuta: non e' nel registro della flotta", sec_bant_fail);
+        EV_WARN << "Ant2/security: BANT scartato, mittente non presente nel fleet roster: "
+                << recHello->getSrcAddress() << endl;
+        return false;
+    }
+
+    // 2) Ricostruzione dell'AAD e del messaggio su cui verificare la firma.
+    std::vector<uint8_t> aad;
+    auto appendAad = [&aad](const void *data, size_t len) {
+        const uint8_t *p = reinterpret_cast<const uint8_t *>(data);
+        aad.insert(aad.end(), p, p + len);
+    };
+    appendAad(&srcInt, sizeof(uint32_t));
+    appendAad(&dstInt, sizeof(uint32_t));
+    appendAad(&seq, sizeof(uint32_t));
+
+    std::vector<uint8_t> ciphertext(recHello->getCiphertextArraySize());
+    for (size_t i = 0; i < ciphertext.size(); i++)
+        ciphertext[i] = recHello->getCiphertext(i);
+
+    uint8_t tag[Ant2Crypto::TAG_LEN];
+    for (int i = 0; i < Ant2Crypto::TAG_LEN; i++)
+        tag[i] = recHello->getAuthTag(i);
+
+    uint8_t signature[Ant2Crypto::SIG_LEN];
+    for (int i = 0; i < Ant2Crypto::SIG_LEN; i++)
+        signature[i] = recHello->getSignature(i);
+
+    std::vector<uint8_t> toVerify = aad;
+    toVerify.insert(toVerify.end(), ciphertext.begin(), ciphertext.end());
+    toVerify.insert(toVerify.end(), tag, tag + Ant2Crypto::TAG_LEN);
+
+    // 3) Verifica della firma: solo chi possiede la chiave privata di srcAddress
+    //    puo' averla prodotta. Fatta PRIMA di decifrare e PRIMA di toccare
+    //    qualunque tabella (routingTable/statusTable) o di inoltrare il pacchetto.
+    if (!crypto.verify(toVerify, signature, srcInt)) {
+        sec_bant_fail++;
+        sec_fail_signature++;
+        logScarto("BANT", recHello->getSrcAddress(), "firma Ed25519 non valida: chi ha inviato non possiede la chiave privata dichiarata", sec_bant_fail);
+        EV_WARN << "Ant2/security: BANT scartato, firma non valida da "
+                << recHello->getSrcAddress() << endl;
+        return false;
+    }
+
+    // 4) Decifratura + verifica del tag di integrita' AEAD.
+    uint8_t nonce[Ant2Crypto::NONCE_LEN];
+    crypto.deriveNonce(srcInt, seq, Ant2Crypto::MSG_BANT, nonce);
+
+    std::vector<uint8_t> plaintext;
+    if (!crypto.decrypt(ciphertext, tag, aad, nonce, plaintext)) {
+        sec_bant_fail++;
+        sec_fail_aead++;
+        logScarto("BANT", recHello->getSrcAddress(), "tag Ascon errato: il payload cifrato e' stato manomesso", sec_bant_fail);
+        EV_WARN << "Ant2/security: BANT scartato, tag AEAD non valido da "
+                << recHello->getSrcAddress() << endl;
+        return false;
+    }
+
+    const size_t expectedLen = 6 * sizeof(double) + sizeof(int) + sizeof(uint8_t);
+    if (plaintext.size() != expectedLen) {
+        sec_bant_fail++;
+        sec_fail_aead++;
+        logScarto("BANT", recHello->getSrcAddress(), "payload decifrato malformato", sec_bant_fail);
+        EV_WARN << "Ant2/security: BANT scartato, payload decifrato di lunghezza inattesa" << endl;
+        return false;
+    }
+
+    // 5) Spacchettamento nei valori di output, nello stesso ordine usato in buildSecureBant().
+    size_t offset = 0;
+    auto readDouble = [&plaintext, &offset]() {
+        double v;
+        memcpy(&v, plaintext.data() + offset, sizeof(double));
+        offset += sizeof(double);
+        return v;
+    };
+    throughputOut = readDouble();
+    energyOut = readDouble();
+    double x = readDouble(), y = readDouble(), z = readDouble();
+    positionOut = Coord(x, y, z);
+    maxThroughputOut = readDouble();
+    memcpy(&clusterIdOut, plaintext.data() + offset, sizeof(int));
+    offset += sizeof(int);
+    allowedAcceptOut = plaintext[offset] != 0;
+
+    // Aggiunto: stampa di successo, cosi' nel log si vede chiaramente sia cosa
+    // viene scartato (EV_WARN sopra) sia cosa passa la verifica correttamente.
+    sec_bant_ok++;
+    logAccettato("BANT", recHello->getSrcAddress(), sec_bant_ok);
+    EV_INFO << "Ant2/security: BANT OK da " << recHello->getSrcAddress()
+            << " (seq=" << seq << ", energia=" << energyOut
+            << ", throughput=" << throughputOut << ")" << endl;
+
+    return true;
+}
+
+// Stesso schema usato per il BANT (vedi sopra), applicato al REQ: qui i dati
+// sensibili sono le coordinate (la posizione del drone in difficolta', da non
+// esporre in chiaro via radio) e allowed_accept_request.
+Packet *Ant2::buildSecureReq(Ipv4Address dstAddress, unsigned int seq, Ipv4Address source,
+                              const Coord& coordToSend, bool allowedAccept)
+{
+    std::vector<uint8_t> plaintext;
+    auto append = [&plaintext](const void *data, size_t len) {
+        const uint8_t *p = reinterpret_cast<const uint8_t *>(data);
+        plaintext.insert(plaintext.end(), p, p + len);
+    };
+    append(&coordToSend.x, sizeof(double));
+    append(&coordToSend.y, sizeof(double));
+    append(&coordToSend.z, sizeof(double));
+    uint8_t allowedByte = allowedAccept ? 1 : 0;
+    append(&allowedByte, sizeof(uint8_t));
+
+    std::vector<uint8_t> aad;
+    auto appendAad = [&aad](const void *data, size_t len) {
+        const uint8_t *p = reinterpret_cast<const uint8_t *>(data);
+        aad.insert(aad.end(), p, p + len);
+    };
+    uint32_t srcInt = source.getInt();
+    uint32_t dstInt = dstAddress.getInt();
+    appendAad(&srcInt, sizeof(uint32_t));
+    appendAad(&dstInt, sizeof(uint32_t));
+    appendAad(&seq, sizeof(uint32_t));
+
+    uint8_t nonce[Ant2Crypto::NONCE_LEN];
+    crypto.deriveNonce(srcInt, seq, Ant2Crypto::MSG_REQ, nonce);
+
+    std::vector<uint8_t> ciphertext;
+    uint8_t tag[Ant2Crypto::TAG_LEN];
+    if (!crypto.encrypt(plaintext, aad, nonce, ciphertext, tag))
+        throw cRuntimeError("Ant2: cifratura del REQ fallita");
+
+    std::vector<uint8_t> toSign = aad;
+    toSign.insert(toSign.end(), ciphertext.begin(), ciphertext.end());
+    toSign.insert(toSign.end(), tag, tag + Ant2Crypto::TAG_LEN);
+    uint8_t signature[Ant2Crypto::SIG_LEN];
+    crypto.sign(toSign, signature);
+
+    auto req_message = makeShared<ReqM2>();
+    req_message->setChunkLength(B(16 + ciphertext.size() + Ant2Crypto::TAG_LEN + Ant2Crypto::SIG_LEN));
+    req_message->setSrcAddress(source);
+    req_message->setDstAddress(dstAddress);
+    req_message->setSequencenumber(seq);
+    req_message->setNextAddress(source);
+    req_message->setHopdistance(1);
+    req_message->appendHopAddresses(source);
+
+    req_message->setCiphertextArraySize(ciphertext.size());
+    for (size_t i = 0; i < ciphertext.size(); i++)
+        req_message->setCiphertext(i, ciphertext[i]);
+    for (int i = 0; i < Ant2Crypto::TAG_LEN; i++)
+        req_message->setAuthTag(i, tag[i]);
+    for (int i = 0; i < Ant2Crypto::SIG_LEN; i++)
+        req_message->setSignature(i, signature[i]);
+
+    auto req_packet = new Packet("Request", req_message);
+    req_packet->setKind(REQ_PACKET);
+    return req_packet;
+}
+
+bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
+                                Coord& coordOut, bool& allowedAcceptOut)
+{
+    uint32_t srcInt = recHello->getSrcAddress().getInt();
+    uint32_t dstInt = recHello->getDstAddress().getInt();
+    unsigned int seq = recHello->getSequencenumber();
+
+    if (!crypto.isKnownNode(srcInt)) {
+        sec_req_fail++;
+        sec_fail_unknown++;
+        logScarto("REQ", recHello->getSrcAddress(), "identita' sconosciuta: non e' nel registro della flotta", sec_req_fail);
+        EV_WARN << "Ant2/security: REQ scartato, mittente non presente nel fleet roster: "
+                << recHello->getSrcAddress() << endl;
+        return false;
+    }
+
+    std::vector<uint8_t> aad;
+    auto appendAad = [&aad](const void *data, size_t len) {
+        const uint8_t *p = reinterpret_cast<const uint8_t *>(data);
+        aad.insert(aad.end(), p, p + len);
+    };
+    appendAad(&srcInt, sizeof(uint32_t));
+    appendAad(&dstInt, sizeof(uint32_t));
+    appendAad(&seq, sizeof(uint32_t));
+
+    std::vector<uint8_t> ciphertext(recHello->getCiphertextArraySize());
+    for (size_t i = 0; i < ciphertext.size(); i++)
+        ciphertext[i] = recHello->getCiphertext(i);
+
+    uint8_t tag[Ant2Crypto::TAG_LEN];
+    for (int i = 0; i < Ant2Crypto::TAG_LEN; i++)
+        tag[i] = recHello->getAuthTag(i);
+
+    uint8_t signature[Ant2Crypto::SIG_LEN];
+    for (int i = 0; i < Ant2Crypto::SIG_LEN; i++)
+        signature[i] = recHello->getSignature(i);
+
+    std::vector<uint8_t> toVerify = aad;
+    toVerify.insert(toVerify.end(), ciphertext.begin(), ciphertext.end());
+    toVerify.insert(toVerify.end(), tag, tag + Ant2Crypto::TAG_LEN);
+
+    if (!crypto.verify(toVerify, signature, srcInt)) {
+        sec_req_fail++;
+        sec_fail_signature++;
+        logScarto("REQ", recHello->getSrcAddress(), "firma Ed25519 non valida: chi ha inviato non possiede la chiave privata dichiarata", sec_req_fail);
+        EV_WARN << "Ant2/security: REQ scartato, firma non valida da "
+                << recHello->getSrcAddress() << endl;
+        return false;
+    }
+
+    uint8_t nonce[Ant2Crypto::NONCE_LEN];
+    crypto.deriveNonce(srcInt, seq, Ant2Crypto::MSG_REQ, nonce);
+
+    std::vector<uint8_t> plaintext;
+    if (!crypto.decrypt(ciphertext, tag, aad, nonce, plaintext)) {
+        sec_req_fail++;
+        sec_fail_aead++;
+        logScarto("REQ", recHello->getSrcAddress(), "tag Ascon errato: il payload cifrato e' stato manomesso", sec_req_fail);
+        EV_WARN << "Ant2/security: REQ scartato, tag AEAD non valido da "
+                << recHello->getSrcAddress() << endl;
+        return false;
+    }
+
+    const size_t expectedLen = 3 * sizeof(double) + sizeof(uint8_t);
+    if (plaintext.size() != expectedLen) {
+        sec_req_fail++;
+        sec_fail_aead++;
+        logScarto("REQ", recHello->getSrcAddress(), "payload decifrato malformato", sec_req_fail);
+        EV_WARN << "Ant2/security: REQ scartato, payload decifrato di lunghezza inattesa" << endl;
+        return false;
+    }
+
+    double x, y, z;
+    memcpy(&x, plaintext.data(), sizeof(double));
+    memcpy(&y, plaintext.data() + sizeof(double), sizeof(double));
+    memcpy(&z, plaintext.data() + 2 * sizeof(double), sizeof(double));
+    coordOut = Coord(x, y, z);
+    allowedAcceptOut = plaintext[3 * sizeof(double)] != 0;
+
+    sec_req_ok++;
+    logAccettato("REQ", recHello->getSrcAddress(), sec_req_ok);
+    EV_INFO << "Ant2/security: REQ OK da " << recHello->getSrcAddress()
+            << " (seq=" << seq << ", coordinate=" << coordOut << ")" << endl;
+
+    return true;
+}
+
+
+// Stream condiviso verso il file di dettaglio degli eventi di sicurezza.
+// TUTTI gli eventi (accettazioni e scarti, di ogni nodo) finiscono qui, senza
+// limiti: il file e' pensato per essere analizzato con grep/contatori a fine run.
+// La console riceve invece solo l'essenziale, per non essere intasata
+// (il buffer dell'IDE tronca gli output lunghi, perdendo le righe iniziali).
+std::ofstream& Ant2::securityEventLog()
+{
+    static std::ofstream log("ant2_security_events.log", std::ios::trunc);
+    static bool intestazione = false;
+    if (!intestazione) {
+        intestazione = true;
+        log << "# Log dettagliato degli eventi del livello di sicurezza Ant2\n";
+        log << "# formato: <tempo_simulato> <nodo> <ESITO> <tipo_messaggio> <mittente> [motivo]\n";
+        log << "# tipi: FANT=scoperta rotta, BANT=risposta con stato, REQ=richiesta recruiting\n";
+        log << "#\n";
+        log << "# Esempi di analisi a fine run:\n";
+        log << "#   grep -c OK ant2_security_events.log            -> pacchetti accettati\n";
+        log << "#   grep SCARTO ant2_security_events.log           -> tutti i rifiuti, con motivo\n";
+        log << "#   grep SCARTO ant2_security_events.log | grep 10.0.0.248   -> rifiuti di un dato mittente\n";
+        log << "#\n";
+    }
+    return log;
+}
+
+// Un pacchetto rifiutato dal livello di sicurezza: indica CHI ha rifiutato,
+// CHE COSA, DA CHI proveniva e soprattutto PERCHE'.
+void Ant2::logScarto(const char *tipo, Ipv4Address mittente, const char *motivo, long n)
+{
+    securityEventLog() << simTime() << "  " << getFullPath()
+                       << "  SCARTO  " << tipo << "  da " << mittente
+                       << "  motivo: " << motivo << "\n";
+
+    // Su console solo i primi casi (e poi di rado), a meno che non sia stata
+    // richiesta esplicitamente la modalita' verbosa.
+    if (consoleVerbose || n <= 3)
+        std::cout << "[SEC][SCARTO] " << getFullPath() << " ha RIFIUTATO un " << tipo
+                  << " da " << mittente << " -> " << motivo
+                  << "  (scarto n." << n << ")" << std::endl;
+}
+
+// Un pacchetto accettato: firma verificata ed eventuale payload decifrato.
+void Ant2::logAccettato(const char *tipo, Ipv4Address mittente, long n)
+{
+    securityEventLog() << simTime() << "  " << getFullPath()
+                       << "  OK      " << tipo << "  da " << mittente << "\n";
+
+    if (consoleVerbose || n <= 2)
+        std::cout << "[SEC][OK] " << getFullPath() << " ha VERIFICATO un " << tipo
+                  << " da " << mittente << std::endl;
+}
+
+// --- FANT: solo autenticazione, nessuna cifratura ---
+// Il FANT e' un messaggio di scoperta rotta: non contiene dati sensibili
+// (energia, posizione, ecc. viaggiano nel BANT). Serve pero' impedire che un
+// nodo non autorizzato ne inietti di falsi per inquinare le tabelle di routing:
+// per questo lo firmiamo con Ed25519.
+
+static std::vector<uint8_t> buildFantSignedData(uint32_t srcInt, uint32_t dstInt, unsigned int seq)
+{
+    std::vector<uint8_t> data;
+    auto append = [&data](const void *p, size_t len) {
+        const uint8_t *b = reinterpret_cast<const uint8_t *>(p);
+        data.insert(data.end(), b, b + len);
+    };
+    append(&srcInt, sizeof(uint32_t));
+    append(&dstInt, sizeof(uint32_t));
+    append(&seq, sizeof(unsigned int));
+    return data;
+}
+
+void Ant2::signFant(const Ptr<FantM2>& fant)
+{
+    auto data = buildFantSignedData(fant->getSrcAddress().getInt(),
+                                     fant->getDstAddress().getInt(),
+                                     fant->getSequencenumber());
+    uint8_t signature[Ant2Crypto::SIG_LEN];
+    crypto.sign(data, signature);
+    for (int i = 0; i < Ant2Crypto::SIG_LEN; i++)
+        fant->setSignature(i, signature[i]);
+}
+
+bool Ant2::verifyFant(const Ptr<const FantM2>& fant)
+{
+    uint32_t srcInt = fant->getSrcAddress().getInt();
+
+    if (!crypto.isKnownNode(srcInt)) {
+        sec_fant_fail++;
+        sec_fail_unknown++;
+        logScarto("FANT", fant->getSrcAddress(),
+                  "identita' sconosciuta: non e' nel registro della flotta", sec_fant_fail);
+        EV_WARN << "Ant2/security: FANT scartato, mittente non nel fleet roster: "
+                << fant->getSrcAddress() << endl;
+        return false;
+    }
+
+    auto data = buildFantSignedData(srcInt, fant->getDstAddress().getInt(),
+                                     fant->getSequencenumber());
+    uint8_t signature[Ant2Crypto::SIG_LEN];
+    for (int i = 0; i < Ant2Crypto::SIG_LEN; i++)
+        signature[i] = fant->getSignature(i);
+
+    if (!crypto.verify(data, signature, srcInt)) {
+        sec_fant_fail++;
+        sec_fail_signature++;
+        logScarto("FANT", fant->getSrcAddress(),
+                  "firma Ed25519 non valida: chi ha inviato non possiede la chiave privata dichiarata",
+                  sec_fant_fail);
+        EV_WARN << "Ant2/security: FANT scartato, firma non valida da "
+                << fant->getSrcAddress() << endl;
+        return false;
+    }
+
+    sec_fant_ok++;
+    logAccettato("FANT", fant->getSrcAddress(), sec_fant_ok);
+    EV_INFO << "Ant2/security: FANT OK da " << fant->getSrcAddress() << endl;
+    return true;
 }
 
 void Ant2::updateEnergy()

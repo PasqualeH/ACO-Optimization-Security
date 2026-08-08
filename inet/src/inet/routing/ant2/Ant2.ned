@@ -51,6 +51,40 @@ simple Ant2 like IManetRouting
         
         // Added to identify the parent cluster ID of each UAV
         int cluster_id;
+
+        // Added for security (Ascon-AEAD128 + Ed25519): percorsi dei file di
+        // provisioning OFFLINE, generati con gli strumenti in tools/ prima
+        // della missione. Usati solo se useCentralAuthority = false.
+        // NB: default("") obbligatorio, altrimenti OMNeT++ pretende un valore per
+        // ogni nodo anche quando si usa l'autorita' centrale e questi file non
+        // servono affatto (errore "Enter parameter ... (unassigned)").
+        // Se si usa il provisioning offline e ci si dimentica di valorizzarli,
+        // il caricamento fallisce comunque con un errore esplicito: il nodo non
+        // parte mai "silenziosamente insicuro".
+        string groupKeyFile = default("");      // chiave simmetrica di gruppo (16 byte), uguale per tutta la flotta
+        string ownPubKeyFile = default("");     // chiave pubblica Ed25519 di QUESTO nodo (32 byte)
+        string ownPrivKeyFile = default("");    // chiave privata Ed25519 di QUESTO nodo (64 byte) - MAI condivisa
+        string fleetRosterFile = default("");   // tabella indirizzo -> chiave pubblica di tutta la flotta
+
+        // APPROCCIO ALTERNATIVO: autorita' centrale "in-simulazione" (vedi
+        // Ant2KeyAuthority). Se true, i quattro parametri sopra vengono ignorati
+        // e le chiavi si ottengono chiamando il modulo Ant2KeyAuthority presente
+        // al livello top della rete, con questo nome.
+        bool useCentralAuthority = default(false);
+        string keyAuthorityName = default("keyAuthority");
+
+        // SOLO PER I TEST: se true, questo nodo si comporta da attaccante.
+        // Firma i propri messaggi con una chiave NON riconosciuta dagli altri
+        // nodi, simulando un drone compromesso che tenta di iniettare
+        // messaggi di routing falsi. Serve a dimostrare che la verifica
+        // crittografica discrimina davvero (test negativo).
+        bool isAttacker = default(false);
+
+        // Se true, ogni singolo evento di sicurezza viene stampato anche in
+        // console. Di default false: il dettaglio completo finisce comunque
+        // sempre nel file ant2_security_events.log, mentre la console resta
+        // leggibile (banner iniziale, avvio dei nodi, riepilogo finale).
+        bool securityConsoleVerbose = default(false);
         
         // Added for energy monitoring
 	    @signal[arrival](type="long");
@@ -66,4 +100,3 @@ simple Ant2 like IManetRouting
         input ipIn;
         output ipOut;
 }
-

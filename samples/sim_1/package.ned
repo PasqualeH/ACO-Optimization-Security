@@ -11,6 +11,7 @@ import simu5g.nodes.NR.gNodeB;
 import simu5g.nodes.NR.NRUe;
 import simu5g.nodes.backgroundCell.BackgroundCell;
 import simu5g.world.radio.LteChannelControl;
+import inet.routing.ant2.Ant2KeyAuthority;
 
 
 // ADDED
@@ -174,6 +175,8 @@ network sim1
             parameters:
                 @display("p=40,0;i=onedot");
         }
+        
+        keyAuthority: Ant2KeyAuthority;
 
 
     connections:
