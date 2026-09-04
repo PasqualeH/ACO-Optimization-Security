@@ -218,9 +218,19 @@ class INET_API Ant2 : public RoutingProtocolBase, public cListener, public Netfi
     // (ant2_security_events.log), mentre la console riceve solo l'essenziale,
     // a meno che consoleVerbose non sia attivo.
     static std::ofstream& securityEventLog();
+
+    // Compone un nome di file che include l'identificativo della run, cosi' che
+    // esecuzioni successive (ripetizioni, valori diversi dei parametri) non si
+    // sovrascrivano a vicenda. Es. "ant2_security_totals_r3.txt".
+    static std::string nomeFileRun(const char *base, const char *estensione);
     void logScarto(const char *tipo, Ipv4Address mittente, const char *motivo, long n);
     void logAccettato(const char *tipo, Ipv4Address mittente, long n);
     bool consoleVerbose = false;
+
+    // Se false, il livello di sicurezza e' completamente disattivato: nessuna
+    // firma, nessuna cifratura, messaggi delle dimensioni originali. Usato per
+    // ottenere il baseline nelle misure di overhead.
+    bool securityEnabled = true;
 
   protected:
     simtime_t helloInterval;
@@ -327,6 +337,26 @@ class INET_API Ant2 : public RoutingProtocolBase, public cListener, public Netfi
     long sec_fail_unknown = 0;    // mittente non presente nel registro delle identita'
     long sec_fail_signature = 0;  // identita' nota, ma firma Ed25519 non valida
     long sec_fail_aead = 0;       // firma valida, ma payload manomesso (tag Ascon errato)
+
+    // Contatori del traffico di CONTROLLO effettivamente immesso sul canale da
+    // questo nodo: sia i messaggi che origina, sia quelli che si limita a
+    // inoltrare. A differenza di MOS/ritardo, questa misura e' deterministica
+    // e non dipende dalla traiettoria casuale della simulazione: e' la
+    // quantificazione diretta dell'overhead introdotto dalla sicurezza.
+    long ctrl_fant_pkt = 0,  ctrl_bant_pkt = 0,  ctrl_req_pkt = 0;
+    long ctrl_fant_byte = 0, ctrl_bant_byte = 0, ctrl_req_byte = 0;
+
+    // --- Attacchi interni (solo per i test): un nodo legittimo, con chiavi
+    // valide, che dichiara dati falsi. Non rilevabili dalla crittografia.
+    bool attackFalseMetrics = false;   // mente su energia/banda nel payload cifrato
+    bool attackHopDistance = false;    // non incrementa hopdistance inoltrando
+
+    // Esito delle selezioni di recruiting effettuate da questo nodo: serve a
+    // misurare se l'attaccante viene scelto in modo sproporzionato.
+    long recruiting_totali = 0;
+
+    // Registra un messaggio di controllo trasmesso. 'tipo' e' FANT/BANT/REQ.
+    void contaTrafficoControllo(const char *tipo, int byte);
 
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
     virtual void finish() override;

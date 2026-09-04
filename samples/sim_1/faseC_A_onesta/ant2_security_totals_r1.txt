@@ -1,0 +1,26 @@
+=====================================================
+ TOTALI DI RETE - livello di sicurezza Ant2
+ (nodi conteggiati finora: 19)
+=====================================================
+ FANT   verificati: 62429   scartati: 0
+ BANT   verificati: 114176   scartati: 0
+ REQ    verificati: 640   scartati: 0
+-----------------------------------------------------
+ TOTALE verificati: 177245   scartati: 0
+ Percentuale pacchetti rifiutati: 0%
+-----------------------------------------------------
+ Motivi degli scarti:
+   identita' sconosciuta (non nel registro): 0
+   firma Ed25519 non valida:                 0
+   payload manomesso (tag Ascon errato):     0
+=====================================================
+ TRAFFICO DI CONTROLLO immesso sul canale
+ (messaggi originati + inoltrati, da tutti i nodi)
+-----------------------------------------------------
+ FANT : 15222 messaggi, 1217760 byte
+ BANT : 28100 messaggi, 4299300 byte
+ REQ  : 167 messaggi, 20207 byte
+-----------------------------------------------------
+ TOTALE: 43489 messaggi, 5537267 byte
+ Dimensione media: 127.326 byte/messaggio
+=====================================================

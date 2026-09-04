@@ -9,15 +9,15 @@
 #   ok        = firma verificata e payload decifrato correttamente
 #   scartati  = pacchetto rifiutato PRIMA di aggiornare qualsiasi tabella
 # ================================================================
-sim1.adh[0].routing  FANT: ok=218 scartati=3 | BANT: ok=187 scartati=25 | REQ: ok=53 scartati=0   [motivi scarti -> identita' sconosciuta: 0, firma non valida: 28, payload manomesso: 0]
-sim1.adh[1].routing  FANT: ok=123 scartati=0 | BANT: ok=141 scartati=0 | REQ: ok=29 scartati=0
-sim1.adh[2].routing  FANT: ok=220 scartati=3 | BANT: ok=193 scartati=25 | REQ: ok=52 scartati=0   [motivi scarti -> identita' sconosciuta: 0, firma non valida: 28, payload manomesso: 0]
-sim1.adh[3].routing  FANT: ok=125 scartati=0 | BANT: ok=143 scartati=0 | REQ: ok=29 scartati=0
-sim1.adh[4].routing  FANT: ok=218 scartati=3 | BANT: ok=190 scartati=25 | REQ: ok=52 scartati=0   [motivi scarti -> identita' sconosciuta: 0, firma non valida: 28, payload manomesso: 0]
-sim1.adh[5].routing  FANT: ok=174 scartati=3 | BANT: ok=162 scartati=25 | REQ: ok=40 scartati=0   [motivi scarti -> identita' sconosciuta: 0, firma non valida: 28, payload manomesso: 0]
-sim1.adh[6].routing  FANT: ok=174 scartati=3 | BANT: ok=163 scartati=25 | REQ: ok=40 scartati=0   [motivi scarti -> identita' sconosciuta: 0, firma non valida: 28, payload manomesso: 0]
-sim1.adh[7].routing  FANT: ok=173 scartati=0 | BANT: ok=183 scartati=0 | REQ: ok=40 scartati=0
-sim1.adh[8].routing  FANT: ok=174 scartati=3 | BANT: ok=165 scartati=25 | REQ: ok=41 scartati=0   [motivi scarti -> identita' sconosciuta: 0, firma non valida: 28, payload manomesso: 0]
-sim1.gat1.routing  FANT: ok=219 scartati=3 | BANT: ok=191 scartati=25 | REQ: ok=53 scartati=0   [motivi scarti -> identita' sconosciuta: 0, firma non valida: 28, payload manomesso: 0]
-sim1.gat2.routing  FANT: ok=2 scartati=0 | BANT: ok=1 scartati=0 | REQ: ok=0 scartati=0
-sim1.gat3.routing  FANT: ok=2 scartati=0 | BANT: ok=1 scartati=0 | REQ: ok=0 scartati=0
+sim1.adh[0].routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0
+sim1.adh[1].routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0
+sim1.adh[2].routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0
+sim1.adh[3].routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0
+sim1.adh[4].routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0
+sim1.adh[5].routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0
+sim1.adh[6].routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0
+sim1.adh[7].routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0
+sim1.adh[8].routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0
+sim1.gat1.routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0
+sim1.gat2.routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0
+sim1.gat3.routing  FANT: ok=0 scartati=0 | BANT: ok=0 scartati=0 | REQ: ok=0 scartati=0

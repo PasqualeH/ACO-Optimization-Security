@@ -48,6 +48,8 @@
 
 
 // Libraries added to enable dynamic moblity of UAVs while simulation is running
+#include <sstream>   // per comporre i nomi dei file di output per run
+#include <cstring>   // strcmp/memcpy/memset usati dal livello di sicurezza
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
@@ -225,7 +227,38 @@ void Ant2::start()
     // il nodo si ferma subito con un errore chiaro: e' preferibile a farlo
     // partire "silenziosamente insicuro".
     consoleVerbose = par("securityConsoleVerbose").boolValue();
+    securityEnabled = par("securityEnabled").boolValue();
 
+    // Attacchi interni: a differenza di isAttacker (che invalida l'identita'
+    // crittografica), questi restano attivi anche con la sicurezza disattivata,
+    // perche' agiscono sul CONTENUTO e non sulle chiavi. Sono quindi
+    // indipendenti dal livello crittografico, ed e' proprio questo il punto.
+    attackFalseMetrics = par("attackFalseMetrics").boolValue();
+    attackHopDistance = par("attackHopDistance").boolValue();
+
+    if (attackFalseMetrics || attackHopDistance) {
+        std::cout << "\n[SEC][ATTACCANTE INTERNO] *** " << getFullPath() << " ***\n";
+        if (attackFalseMetrics)
+            std::cout << "    dichiara metriche FALSE (energia 100, throughput 0, banda doppia)\n"
+                      << "    nel payload cifrato: firma e tag restano validi.\n";
+        if (attackHopDistance)
+            std::cout << "    non incrementa hopdistance inoltrando: appare adiacente a tutti.\n";
+        std::cout << "    Nessuno dei due e' rilevabile dal livello crittografico.\n" << std::endl;
+    }
+
+    // Baseline: con la sicurezza disattivata non si carica alcuna chiave e non
+    // si esegue alcuna operazione crittografica. Il protocollo si comporta
+    // esattamente come prima delle modifiche.
+    if (!securityEnabled) {
+        static bool avvisoStampato = false;
+        if (!avvisoStampato) {
+            avvisoStampato = true;
+            std::cout << "\n[SEC] *** LIVELLO DI SICUREZZA DISATTIVATO (securityEnabled=false) ***\n"
+                      << "      Nessuna firma, nessuna cifratura, messaggi alle dimensioni originali.\n"
+                      << "      Configurazione di BASELINE per le misure di overhead.\n" << std::endl;
+        }
+    }
+    else
     try {
         if (par("useCentralAuthority").boolValue()) {
             auto authorityModule = getSimulation()->getSystemModule()->getSubmodule(par("keyAuthorityName").stringValue());
@@ -249,9 +282,9 @@ void Ant2::start()
                           << "                     verificata prima di accettare un pacchetto\n"
                           << " Provisioning chiavi: autorita' centrale in-simulazione\n"
                           << " File prodotti a fine run (nella cartella della simulazione):\n"
-                          << "   ant2_security_events.log   -> ogni singolo evento, con motivo\n"
-                          << "   ant2_security_summary.txt  -> riepilogo per nodo\n"
-                          << "   ant2_security_totals.txt   -> totali di rete\n"
+                          << "   ant2_security_events_rN.log   -> ogni singolo evento, con motivo\n"
+                          << "   ant2_security_summary_rN.txt  -> riepilogo per nodo\n"
+                          << "   ant2_security_totals_rN.txt   -> totali di rete (N = numero di run)\n"
                           << " (in console solo l'essenziale; per il dettaglio completo a\n"
                           << "  schermo: **.routing.securityConsoleVerbose = true)\n"
                           << "============================================================\n"
@@ -289,7 +322,7 @@ void Ant2::start()
     // dell'indirizzo wlan con cui si e' registrato. Lo dichiariamo come alias
     // della stessa identita', altrimenti quei pacchetti - pur autentici -
     // verrebbero scartati dagli altri nodi come "mittente sconosciuto".
-    if (x2ppp_address != Ipv4Address::UNSPECIFIED_ADDRESS) {
+    if (securityEnabled && x2ppp_address != Ipv4Address::UNSPECIFIED_ADDRESS) {
         crypto.registerOwnAlias(x2ppp_address.getInt());
         securityEventLog() << simTime() << "  " << getFullPath()
                            << "  AVVIO   secondo indirizzo (interfaccia X2 verso il gNodeB): "
@@ -301,7 +334,7 @@ void Ant2::start()
     // Da qui in avanti continuera' a inviare FANT/BANT/REQ regolarmente, ma
     // ogni ricevente ne rifiutera' la firma. Si fa DOPO il provisioning proprio
     // per simulare una compromissione avvenuta dopo il rilascio in campo.
-    if (par("isAttacker").boolValue()) {
+    if (securityEnabled && par("isAttacker").boolValue()) {
         crypto.useRogueIdentity();
         std::cout << "\n[SEC][ATTACCANTE] *** " << getFullPath() << " e' stato COMPROMESSO ***\n"
                   << "                  Da ora firma i propri messaggi con una chiave NON riconosciuta.\n"
@@ -331,7 +364,27 @@ void Ant2::finish()
     static long tot_req_ok = 0, tot_req_fail = 0;
     static long tot_fant_ok = 0, tot_fant_fail = 0;
     static long tot_unknown = 0, tot_signature = 0, tot_aead = 0;
+    static long tot_cf_pkt = 0, tot_cb_pkt = 0, tot_cr_pkt = 0;
+    static long tot_cf_byte = 0, tot_cb_byte = 0, tot_cr_byte = 0;
     static int nodiConteggiati = 0;
+    static int runAccumulata = -1;
+
+    // Gli accumulatori sono static, quindi condivisi da tutti i nodi: e' cosi'
+    // che si ottengono i totali di rete. Ma sopravvivono anche fra una run e
+    // l'altra all'interno dello stesso processo: senza azzerarli, i totali
+    // della seconda run comprenderebbero quelli della prima.
+    int runCorrente = getEnvir()->getConfigEx()->getActiveRunNumber();
+    if (runAccumulata != runCorrente) {
+        runAccumulata = runCorrente;
+        firstCall = true;
+        nodiConteggiati = 0;
+        tot_bant_ok = tot_bant_fail = 0;
+        tot_req_ok = tot_req_fail = 0;
+        tot_fant_ok = tot_fant_fail = 0;
+        tot_unknown = tot_signature = tot_aead = 0;
+        tot_cf_pkt = tot_cb_pkt = tot_cr_pkt = 0;
+        tot_cf_byte = tot_cb_byte = tot_cr_byte = 0;
+    }
 
     tot_bant_ok += sec_bant_ok;   tot_bant_fail += sec_bant_fail;
     tot_req_ok  += sec_req_ok;    tot_req_fail  += sec_req_fail;
@@ -339,11 +392,14 @@ void Ant2::finish()
     tot_unknown += sec_fail_unknown;
     tot_signature += sec_fail_signature;
     tot_aead += sec_fail_aead;
+    tot_cf_pkt += ctrl_fant_pkt;   tot_cf_byte += ctrl_fant_byte;
+    tot_cb_pkt += ctrl_bant_pkt;   tot_cb_byte += ctrl_bant_byte;
+    tot_cr_pkt += ctrl_req_pkt;    tot_cr_byte += ctrl_req_byte;
     nodiConteggiati++;
 
     std::ofstream out;
     if (firstCall) {
-        out.open("ant2_security_summary.txt", std::ios::trunc);
+        out.open(nomeFileRun("ant2_security_summary", ".txt"), std::ios::trunc);
         out << "# ================================================================\n";
         out << "# Riepilogo livello di sicurezza Ant2 (Ascon-AEAD128 + Ed25519)\n";
         out << "# ================================================================\n";
@@ -358,10 +414,12 @@ void Ant2::finish()
         firstCall = false;
     }
     else
-        out.open("ant2_security_summary.txt", std::ios::app);
+        out.open(nomeFileRun("ant2_security_summary", ".txt"), std::ios::app);
 
     if (out) {
         out << getFullPath()
+            << "  [traffico controllo: " << (ctrl_fant_pkt + ctrl_bant_pkt + ctrl_req_pkt)
+            << " msg, " << (ctrl_fant_byte + ctrl_bant_byte + ctrl_req_byte) << " byte]"
             << "  FANT: ok=" << sec_fant_ok << " scartati=" << sec_fant_fail
             << " | BANT: ok=" << sec_bant_ok << " scartati=" << sec_bant_fail
             << " | REQ: ok=" << sec_req_ok << " scartati=" << sec_req_fail;
@@ -375,7 +433,7 @@ void Ant2::finish()
 
     // File separato con i TOTALI di rete: viene riscritto ad ogni finish(),
     // quindi al termine contiene l'aggregato completo di tutti i nodi.
-    std::ofstream tot("ant2_security_totals.txt", std::ios::trunc);
+    std::ofstream tot(nomeFileRun("ant2_security_totals", ".txt"), std::ios::trunc);
     if (tot) {
         long okTot = tot_fant_ok + tot_bant_ok + tot_req_ok;
         long failTot = tot_fant_fail + tot_bant_fail + tot_req_fail;
@@ -396,6 +454,19 @@ void Ant2::finish()
         tot << "   identita' sconosciuta (non nel registro): " << tot_unknown << "\n";
         tot << "   firma Ed25519 non valida:                 " << tot_signature << "\n";
         tot << "   payload manomesso (tag Ascon errato):     " << tot_aead << "\n";
+        tot << "=====================================================\n";
+        tot << " TRAFFICO DI CONTROLLO immesso sul canale\n";
+        tot << " (messaggi originati + inoltrati, da tutti i nodi)\n";
+        tot << "-----------------------------------------------------\n";
+        long pkt_tot = tot_cf_pkt + tot_cb_pkt + tot_cr_pkt;
+        long byte_tot = tot_cf_byte + tot_cb_byte + tot_cr_byte;
+        tot << " FANT : " << tot_cf_pkt << " messaggi, " << tot_cf_byte << " byte\n";
+        tot << " BANT : " << tot_cb_pkt << " messaggi, " << tot_cb_byte << " byte\n";
+        tot << " REQ  : " << tot_cr_pkt << " messaggi, " << tot_cr_byte << " byte\n";
+        tot << "-----------------------------------------------------\n";
+        tot << " TOTALE: " << pkt_tot << " messaggi, " << byte_tot << " byte\n";
+        if (pkt_tot > 0)
+            tot << " Dimensione media: " << (double)byte_tot / pkt_tot << " byte/messaggio\n";
         tot << "=====================================================\n";
     }
 
@@ -944,7 +1015,12 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         packet->addTag<DispatchProtocolReq>()->setProtocol(&Protocol::ipv4);
 
                         recHello->setNextAddress(source);
-                        numHops++;
+                        // ATTACCO (solo test): non incrementando il conteggio dei salti, i nodi
+                        // a valle credono che il mittente sia adiacente. hopdistance e' un campo
+                        // in chiaro non coperto dalla firma, quindi la manomissione e' invisibile
+                        // al livello crittografico.
+                        if (!attackHopDistance)
+                            numHops++;
 
                         recHello->setHopdistance(numHops);
                         recHello->setSrcAddress(src);
@@ -954,6 +1030,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         double waitTime = intuniform(1, 100);
                         waitTime = waitTime / 10000;
                         EV_DETAIL << "Forwarding Fant " << endl;
+                        // inoltro: il messaggio viene ritrasmesso, quindi occupa di nuovo il canale
+                        contaTrafficoControllo("FANT", B(recHello->getChunkLength()).get());
                         packet->insertAtBack(recHello);
                         packet->setKind(FANT_PACKET); // Set the packet type
                         sendDelayed(packet, waitTime, "ipOut");
@@ -1174,7 +1252,12 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         // riguardano il mittente originale, non il nodo che inoltra,
                         // e vivono cifrati dentro il payload sigillato dalla sua firma.
                         auto forwardedBant = staticPtrCast<BantM2>(recHello->dupShared());
-                        numHops++;
+                        // ATTACCO (solo test): non incrementando il conteggio dei salti, i nodi
+                        // a valle credono che il mittente sia adiacente. hopdistance e' un campo
+                        // in chiaro non coperto dalla firma, quindi la manomissione e' invisibile
+                        // al livello crittografico.
+                        if (!attackHopDistance)
+                            numHops++;
                         forwardedBant->setNextAddress(source);
                         forwardedBant->setHopdistance(numHops);
                         forwardedBant->setGateway(next_gateway);
@@ -1182,6 +1265,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         double waitTime = intuniform(1, 100);
                         waitTime = waitTime / 10000;
                         EV_DETAIL << "Forwarding Bant " << endl;
+                        // inoltro: il messaggio viene ritrasmesso, quindi occupa di nuovo il canale
+                        contaTrafficoControllo("BANT", B(forwardedBant->getChunkLength()).get());
                         packet->insertAtBack(forwardedBant);
                         packet->setKind(BANT_PACKET);  // Set the correct packet type
                         sendDelayed(packet, waitTime, "ipOut");
@@ -1400,7 +1485,12 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         packet->addTag<DispatchProtocolReq>()->setProtocol(&Protocol::ipv4);
 
                         recHello->setNextAddress(source);
-                        numHops++;
+                        // ATTACCO (solo test): non incrementando il conteggio dei salti, i nodi
+                        // a valle credono che il mittente sia adiacente. hopdistance e' un campo
+                        // in chiaro non coperto dalla firma, quindi la manomissione e' invisibile
+                        // al livello crittografico.
+                        if (!attackHopDistance)
+                            numHops++;
                         recHello->setHopdistance(numHops);
                         recHello->setSrcAddress(src);
                         recHello->setDstAddress(dst);
@@ -1409,6 +1499,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         double waitTime = intuniform(1, 100);
                         waitTime = waitTime / 10000;
                         EV_DETAIL << "Forwarding Req " << endl;
+                        // inoltro: il messaggio viene ritrasmesso, quindi occupa di nuovo il canale
+                        contaTrafficoControllo("REQ", B(recHello->getChunkLength()).get());
                         packet->insertAtBack(recHello);
                         packet->setKind(REQ_PACKET); // Set the packet type
                         sendDelayed(packet, waitTime, "ipOut");
@@ -1659,7 +1751,12 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
                         ///////////// sent to wlan0 ////////////
                         recHello1->setNextAddress(source_a);
-                        numHops++;
+                        // ATTACCO (solo test): non incrementando il conteggio dei salti, i nodi
+                        // a valle credono che il mittente sia adiacente. hopdistance e' un campo
+                        // in chiaro non coperto dalla firma, quindi la manomissione e' invisibile
+                        // al livello crittografico.
+                        if (!attackHopDistance)
+                            numHops++;
                         recHello1->setHopdistance(numHops);
                         recHello1->setSrcAddress(src);
                         recHello1->setDstAddress(dst);
@@ -1668,6 +1765,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         double waitTime = intuniform(1, 100);
                         waitTime = waitTime / 10000;
                         EV_DETAIL << "Forwarding Fant " << endl;
+                        // inoltro: il messaggio viene ritrasmesso, quindi occupa di nuovo il canale
+                        contaTrafficoControllo("FANT", B(recHello1->getChunkLength()).get());
                         packet1->insertAtBack(recHello1);
                         packet1->setKind(FANT_PACKET); // Set the packet type
                         sendDelayed(packet1, waitTime, "ipOut");
@@ -1684,6 +1783,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         double waitTime2 = intuniform(1, 100);
                         waitTime2 = waitTime2 / 10000;
                         EV_DETAIL << "Forwarding Fant " << endl;
+                        // inoltro: il messaggio viene ritrasmesso, quindi occupa di nuovo il canale
+                        contaTrafficoControllo("FANT", B(recHello2->getChunkLength()).get());
                         packet2->insertAtBack(recHello2);
                         packet2->setKind(FANT_PACKET); // Set the packet type
                         sendDelayed(packet2, waitTime2, "ipOut");
@@ -1928,12 +2029,19 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
                         ////////// send to wlan0 ////////////////
                         recHello1->setNextAddress(source_a);
-                        numHops++;
+                        // ATTACCO (solo test): non incrementando il conteggio dei salti, i nodi
+                        // a valle credono che il mittente sia adiacente. hopdistance e' un campo
+                        // in chiaro non coperto dalla firma, quindi la manomissione e' invisibile
+                        // al livello crittografico.
+                        if (!attackHopDistance)
+                            numHops++;
                         recHello1->setHopdistance(numHops);
                         recHello1->setGateway(next_gateway);
                         double waitTime = intuniform(1, 100);
                         waitTime = waitTime / 10000;
                         EV_DETAIL << "Forwarding Bant " << endl;
+                        // inoltro: il messaggio viene ritrasmesso, quindi occupa di nuovo il canale
+                        contaTrafficoControllo("BANT", B(recHello1->getChunkLength()).get());
                         packet1->insertAtBack(recHello1);
                         packet1->setKind(BANT_PACKET);  // Set the correct packet type
                         sendDelayed(packet1, waitTime, "ipOut");
@@ -1946,6 +2054,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         double waitTime2 = intuniform(1, 100);
                         waitTime2 = waitTime2 / 10000;
                         EV_DETAIL << "Forwarding Bant " << endl;
+                        // inoltro: il messaggio viene ritrasmesso, quindi occupa di nuovo il canale
+                        contaTrafficoControllo("BANT", B(recHello2->getChunkLength()).get());
                         packet2->insertAtBack(recHello2);
                         packet2->setKind(BANT_PACKET);  // Set the correct packet type
                         sendDelayed(packet2, waitTime2, "ipOut");
@@ -2127,7 +2237,12 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
                         ////////////// sent to wlan0 ////////////
                         recHello1->setNextAddress(source_a);
-                        numHops++;
+                        // ATTACCO (solo test): non incrementando il conteggio dei salti, i nodi
+                        // a valle credono che il mittente sia adiacente. hopdistance e' un campo
+                        // in chiaro non coperto dalla firma, quindi la manomissione e' invisibile
+                        // al livello crittografico.
+                        if (!attackHopDistance)
+                            numHops++;
                         recHello1->setHopdistance(numHops);
                         recHello1->setSrcAddress(src);
                         recHello1->setDstAddress(dst);
@@ -2136,6 +2251,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         double waitTime = intuniform(1, 100);
                         waitTime = waitTime / 10000;
                         EV_DETAIL << "Forwarding Req " << endl;
+                        // inoltro: il messaggio viene ritrasmesso, quindi occupa di nuovo il canale
+                        contaTrafficoControllo("REQ", B(recHello1->getChunkLength()).get());
                         packet1->insertAtBack(recHello1);
                         packet1->setKind(REQ_PACKET); // Set the packet type
                         sendDelayed(packet1, waitTime, "ipOut");
@@ -2152,6 +2269,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                         double waitTime2 = intuniform(1, 100);
                         waitTime2 = waitTime2 / 10000;
                         EV_DETAIL << "Forwarding Req " << endl;
+                        // inoltro: il messaggio viene ritrasmesso, quindi occupa di nuovo il canale
+                        contaTrafficoControllo("REQ", B(recHello2->getChunkLength()).get());
                         packet2->insertAtBack(recHello2);
                         packet2->setKind(REQ_PACKET); // Set the packet type
                         sendDelayed(packet2, waitTime2, "ipOut");
@@ -2392,13 +2511,33 @@ void Ant2::computeBestNextHops() {
 
         // Compute probabilities and determine the best next hop
         for (const auto& entry : entries) {
-            double probability = (std::pow(entry.pheromone, a) * std::pow(heuristic, b)) / sumProbabilities;
+            // CORREZIONE (bug preesistente): se sumProbabilities e' 0 - cioe' se
+            // tutti i feromoni verso questa destinazione si sono azzerati - la
+            // divisione produce NaN. In C++ ogni confronto con NaN e' falso,
+            // quindi bestNextHop resterebbe una stringa vuota e piu' avanti
+            // Ipv4Address("") interromperebbe la simulazione con
+            // "Invalid Ipv4 address string ''".
+            // Con sumProbabilities a zero i feromoni non danno alcuna
+            // informazione: si ripiega sul confronto diretto fra i valori,
+            // che equivale a scegliere il next hop col feromone piu' alto.
+            double probability = (sumProbabilities > 0)
+                ? (std::pow(entry.pheromone, a) * std::pow(heuristic, b)) / sumProbabilities
+                : entry.pheromone;
 
             // Find the maximum probability
             if (probability > maxProbability) {
                 maxProbability = probability;
                 bestNextHop = entry.nextHop;
             }
+        }
+
+        // Ulteriore rete di sicurezza: se per qualunque ragione non e' stato
+        // selezionato alcun next hop (lista vuota, valori non finiti), si salta
+        // questa destinazione invece di inserire una stringa vuota.
+        if (bestNextHop.empty()) {
+            EV_WARN << "Ant2: nessun next hop valido per la destinazione "
+                    << destination << ", voce ignorata" << endl;
+            continue;
         }
 
         // Store the best next hop for this destination
@@ -2637,6 +2776,15 @@ void Ant2::sendRecruiting()
                     }
                 }
 
+                // Registra l'esito della selezione: serve a misurare se un nodo
+                // viene scelto in modo sproporzionato rispetto agli altri, che e'
+                // il sintomo osservabile degli attacchi sul contenuto.
+                recruiting_totali++;
+                securityEventLog() << simTime() << "  " << getFullPath()
+                                   << "  RECRUITING  vincitore " << bestAddress
+                                   << "  punteggio " << maxResult
+                                   << "  su " << results.size() << " candidati\n";
+
                 int a, b, c, d;
                 char dot; // to discard the dot separator
                 std::istringstream stream(bestAddress);
@@ -2820,14 +2968,36 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
     // hopdistance (il numero di salti attraversati), che deve poter essere
     // aggiornato ad ogni hop e quindi resta un campo in chiaro del pacchetto,
     // non puo' stare dentro un payload sigillato dalla firma del mittente originale.
-    append(&node_throughput, sizeof(double));
-    append(&node_energy, sizeof(double));
+
+    // Valori realmente dichiarati. Un nodo onesto trasmette il proprio stato;
+    // un attaccante con attackFalseMetrics attivo dichiara invece valori
+    // artificiosamente favorevoli, per massimizzare il punteggio che gli altri
+    // nodi gli assegneranno in sendRecruiting().
+    //
+    // Si osservi che il payload resta cifrato e firmato in modo ineccepibile:
+    // il livello crittografico non ha alcun modo di accorgersi che il
+    // CONTENUTO e' falso. E' esattamente il limite che la metrica di trust
+    // deve colmare.
+    double dich_throughput = node_throughput;
+    double dich_energy     = node_energy;
+    double dich_max_band   = max_band;
+    bool   dich_allowed    = allowed_accept_request;
+
+    if (attackFalseMetrics) {
+        dich_throughput = 0.0;                  // "sono completamente scarico"
+        dich_energy     = 100.0;                // "ho la batteria piena"
+        dich_max_band   = max_band * 2.0;       // "ho il doppio della banda"
+        dich_allowed    = true;                 // "sono sempre disponibile"
+    }
+
+    append(&dich_throughput, sizeof(double));
+    append(&dich_energy, sizeof(double));
     append(&node_position.x, sizeof(double));
     append(&node_position.y, sizeof(double));
     append(&node_position.z, sizeof(double));
-    append(&max_band, sizeof(double));
+    append(&dich_max_band, sizeof(double));
     append(&cluster_id, sizeof(int));
-    uint8_t allowedByte = allowed_accept_request ? 1 : 0;
+    uint8_t allowedByte = dich_allowed ? 1 : 0;
     append(&allowedByte, sizeof(uint8_t));
 
     // 2) AAD (Associated Data): i campi di routing restano in chiaro (servono
@@ -2851,19 +3021,35 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
     // 4) Cifratura + tag di autenticita'/integrita' (Ascon-AEAD128).
     std::vector<uint8_t> ciphertext;
     uint8_t tag[Ant2Crypto::TAG_LEN];
-    if (!crypto.encrypt(plaintext, aad, nonce, ciphertext, tag))
-        throw cRuntimeError("Ant2: cifratura del BANT fallita");
-
-    // 5) Firma Ed25519 su AAD||ciphertext||tag: lega il tutto all'identita' del mittente.
-    std::vector<uint8_t> toSign = aad;
-    toSign.insert(toSign.end(), ciphertext.begin(), ciphertext.end());
-    toSign.insert(toSign.end(), tag, tag + Ant2Crypto::TAG_LEN);
     uint8_t signature[Ant2Crypto::SIG_LEN];
-    crypto.sign(toSign, signature);
+
+    if (securityEnabled) {
+        if (!crypto.encrypt(plaintext, aad, nonce, ciphertext, tag))
+            throw cRuntimeError("Ant2: cifratura del BANT fallita");
+
+        // 5) Firma Ed25519 su AAD||ciphertext||tag: lega il tutto all'identita' del mittente.
+        std::vector<uint8_t> toSign = aad;
+        toSign.insert(toSign.end(), ciphertext.begin(), ciphertext.end());
+        toSign.insert(toSign.end(), tag, tag + Ant2Crypto::TAG_LEN);
+        crypto.sign(toSign, signature);
+    }
+    else {
+        // BASELINE: il payload viaggia IN CHIARO nello stesso campo, senza tag
+        // ne' firma. I dati arrivano comunque a destinazione (il ricevente li
+        // legge senza decifrare), ma il messaggio torna alle dimensioni originali.
+        ciphertext = plaintext;
+        memset(tag, 0, Ant2Crypto::TAG_LEN);
+        memset(signature, 0, Ant2Crypto::SIG_LEN);
+    }
 
     // 6) Popolamento del messaggio OMNeT: solo campi di routing in chiaro + blob cifrati.
     auto bant_message = makeShared<BantM2>();
-    bant_message->setChunkLength(B(20 + ciphertext.size() + Ant2Crypto::TAG_LEN + Ant2Crypto::SIG_LEN));
+    // Con la sicurezza attiva la lunghezza dichiarata include tag e firma; nel
+    // baseline resta quella originale del protocollo (128 bit).
+    if (securityEnabled)
+        bant_message->setChunkLength(B(20 + ciphertext.size() + Ant2Crypto::TAG_LEN + Ant2Crypto::SIG_LEN));
+    else
+        bant_message->setChunkLength(b(128));
     bant_message->setSrcAddress(source);
     bant_message->setDstAddress(dstAddress);
     bant_message->setNextAddress(source);
@@ -2879,6 +3065,8 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
     for (int i = 0; i < Ant2Crypto::SIG_LEN; i++)
         bant_message->setSignature(i, signature[i]);
 
+    contaTrafficoControllo("BANT", B(bant_message->getChunkLength()).get());
+
     auto bant_packet = new Packet("Bant", bant_message);
     bant_packet->setKind(BANT_PACKET);
     return bant_packet;
@@ -2893,6 +3081,27 @@ bool Ant2::verifyAndDecryptBant(const Ptr<const BantM2>& recHello,
     uint32_t srcInt = recHello->getSrcAddress().getInt();
     uint32_t dstInt = recHello->getDstAddress().getInt();
     unsigned int seq = recHello->getSequencenumber();
+
+    // BASELINE: senza sicurezza il payload viaggia in chiaro nello stesso campo.
+    // Si salta ogni controllo e lo si legge direttamente.
+    if (!securityEnabled) {
+        std::vector<uint8_t> pt(recHello->getCiphertextArraySize());
+        for (size_t i = 0; i < pt.size(); i++)
+            pt[i] = recHello->getCiphertext(i);
+        if (pt.size() != 6 * sizeof(double) + sizeof(int) + sizeof(uint8_t))
+            return false;
+        size_t off = 0;
+        auto rd = [&pt, &off]() { double v; memcpy(&v, pt.data() + off, sizeof(double)); off += sizeof(double); return v; };
+        throughputOut = rd();
+        energyOut = rd();
+        double x0 = rd(), y0 = rd(), z0 = rd();
+        positionOut = Coord(x0, y0, z0);
+        maxThroughputOut = rd();
+        memcpy(&clusterIdOut, pt.data() + off, sizeof(int));
+        off += sizeof(int);
+        allowedAcceptOut = pt[off] != 0;
+        return true;
+    }
 
     // 1) Il mittente deve essere un nodo noto della flotta (nel fleet roster).
     //    Questo e' il primo controllo, prima di qualunque altra elaborazione:
@@ -3029,17 +3238,29 @@ Packet *Ant2::buildSecureReq(Ipv4Address dstAddress, unsigned int seq, Ipv4Addre
 
     std::vector<uint8_t> ciphertext;
     uint8_t tag[Ant2Crypto::TAG_LEN];
-    if (!crypto.encrypt(plaintext, aad, nonce, ciphertext, tag))
-        throw cRuntimeError("Ant2: cifratura del REQ fallita");
-
-    std::vector<uint8_t> toSign = aad;
-    toSign.insert(toSign.end(), ciphertext.begin(), ciphertext.end());
-    toSign.insert(toSign.end(), tag, tag + Ant2Crypto::TAG_LEN);
     uint8_t signature[Ant2Crypto::SIG_LEN];
-    crypto.sign(toSign, signature);
+
+    if (securityEnabled) {
+        if (!crypto.encrypt(plaintext, aad, nonce, ciphertext, tag))
+            throw cRuntimeError("Ant2: cifratura del REQ fallita");
+
+        std::vector<uint8_t> toSign = aad;
+        toSign.insert(toSign.end(), ciphertext.begin(), ciphertext.end());
+        toSign.insert(toSign.end(), tag, tag + Ant2Crypto::TAG_LEN);
+        crypto.sign(toSign, signature);
+    }
+    else {
+        // BASELINE: payload in chiaro, nessun tag, nessuna firma.
+        ciphertext = plaintext;
+        memset(tag, 0, Ant2Crypto::TAG_LEN);
+        memset(signature, 0, Ant2Crypto::SIG_LEN);
+    }
 
     auto req_message = makeShared<ReqM2>();
-    req_message->setChunkLength(B(16 + ciphertext.size() + Ant2Crypto::TAG_LEN + Ant2Crypto::SIG_LEN));
+    if (securityEnabled)
+        req_message->setChunkLength(B(16 + ciphertext.size() + Ant2Crypto::TAG_LEN + Ant2Crypto::SIG_LEN));
+    else
+        req_message->setChunkLength(b(128));
     req_message->setSrcAddress(source);
     req_message->setDstAddress(dstAddress);
     req_message->setSequencenumber(seq);
@@ -3055,6 +3276,8 @@ Packet *Ant2::buildSecureReq(Ipv4Address dstAddress, unsigned int seq, Ipv4Addre
     for (int i = 0; i < Ant2Crypto::SIG_LEN; i++)
         req_message->setSignature(i, signature[i]);
 
+    contaTrafficoControllo("REQ", B(req_message->getChunkLength()).get());
+
     auto req_packet = new Packet("Request", req_message);
     req_packet->setKind(REQ_PACKET);
     return req_packet;
@@ -3066,6 +3289,22 @@ bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
     uint32_t srcInt = recHello->getSrcAddress().getInt();
     uint32_t dstInt = recHello->getDstAddress().getInt();
     unsigned int seq = recHello->getSequencenumber();
+
+    // BASELINE: payload in chiaro, nessun controllo.
+    if (!securityEnabled) {
+        std::vector<uint8_t> pt(recHello->getCiphertextArraySize());
+        for (size_t i = 0; i < pt.size(); i++)
+            pt[i] = recHello->getCiphertext(i);
+        if (pt.size() != 3 * sizeof(double) + sizeof(uint8_t))
+            return false;
+        double x0, y0, z0;
+        memcpy(&x0, pt.data(), sizeof(double));
+        memcpy(&y0, pt.data() + sizeof(double), sizeof(double));
+        memcpy(&z0, pt.data() + 2 * sizeof(double), sizeof(double));
+        coordOut = Coord(x0, y0, z0);
+        allowedAcceptOut = pt[3 * sizeof(double)] != 0;
+        return true;
+    }
 
     if (!crypto.isKnownNode(srcInt)) {
         sec_req_fail++;
@@ -3153,12 +3392,31 @@ bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
 // limiti: il file e' pensato per essere analizzato con grep/contatori a fine run.
 // La console riceve invece solo l'essenziale, per non essere intasata
 // (il buffer dell'IDE tronca gli output lunghi, perdendo le righe iniziali).
+// Compone un nome di file legato alla run corrente, per evitare che
+// esecuzioni successive si sovrascrivano. Usa il numero di run assegnato da
+// OMNeT++, che identifica univocamente la combinazione di parametri iterati
+// e di ripetizione.
+std::string Ant2::nomeFileRun(const char *base, const char *estensione)
+{
+    std::ostringstream nome;
+    nome << base << "_r" << getEnvir()->getConfigEx()->getActiveRunNumber() << estensione;
+    return nome.str();
+}
+
 std::ofstream& Ant2::securityEventLog()
 {
-    static std::ofstream log("ant2_security_events.log", std::ios::trunc);
-    static bool intestazione = false;
-    if (!intestazione) {
-        intestazione = true;
+    // Il file va riaperto quando cambia la run: OMNeT++ puo' eseguire piu' run
+    // nello stesso processo, e una variabile static verrebbe inizializzata una
+    // volta sola, facendo confluire tutte le esecuzioni nello stesso file.
+    static std::ofstream log;
+    static int runAperta = -1;
+    int runCorrente = getEnvir()->getConfigEx()->getActiveRunNumber();
+
+    if (runAperta != runCorrente) {
+        if (log.is_open())
+            log.close();
+        log.open(nomeFileRun("ant2_security_events", ".log"), std::ios::trunc);
+        runAperta = runCorrente;
         log << "# Log dettagliato degli eventi del livello di sicurezza Ant2\n";
         log << "# formato: <tempo_simulato> <nodo> <ESITO> <tipo_messaggio> <mittente> [motivo]\n";
         log << "# tipi: FANT=scoperta rotta, BANT=risposta con stato, REQ=richiesta recruiting\n";
@@ -3220,6 +3478,19 @@ static std::vector<uint8_t> buildFantSignedData(uint32_t srcInt, uint32_t dstInt
 
 void Ant2::signFant(const Ptr<FantM2>& fant)
 {
+    if (!securityEnabled) {
+        // baseline: nessuna firma, il messaggio resta alle dimensioni originali.
+        // Il traffico va comunque contabilizzato, per poterlo confrontare.
+        contaTrafficoControllo("FANT", B(fant->getChunkLength()).get());
+        return;
+    }
+
+    // La firma aggiunge 64 byte al messaggio: la chunkLength dichiarata deve
+    // rifletterlo, altrimenti la simulazione sottostima il tempo di occupazione
+    // del canale e le misure di overhead risultano falsate.
+    fant->setChunkLength(fant->getChunkLength() + B(Ant2Crypto::SIG_LEN));
+    contaTrafficoControllo("FANT", B(fant->getChunkLength()).get());
+
     auto data = buildFantSignedData(fant->getSrcAddress().getInt(),
                                      fant->getDstAddress().getInt(),
                                      fant->getSequencenumber());
@@ -3231,6 +3502,9 @@ void Ant2::signFant(const Ptr<FantM2>& fant)
 
 bool Ant2::verifyFant(const Ptr<const FantM2>& fant)
 {
+    if (!securityEnabled)
+        return true;   // baseline: nessuna verifica, ogni pacchetto viene accettato
+
     uint32_t srcInt = fant->getSrcAddress().getInt();
 
     if (!crypto.isKnownNode(srcInt)) {
@@ -3264,6 +3538,14 @@ bool Ant2::verifyFant(const Ptr<const FantM2>& fant)
     logAccettato("FANT", fant->getSrcAddress(), sec_fant_ok);
     EV_INFO << "Ant2/security: FANT OK da " << fant->getSrcAddress() << endl;
     return true;
+}
+
+// Registra un messaggio di controllo immesso sul canale (originato o inoltrato).
+void Ant2::contaTrafficoControllo(const char *tipo, int byte)
+{
+    if (strcmp(tipo, "FANT") == 0)      { ctrl_fant_pkt++; ctrl_fant_byte += byte; }
+    else if (strcmp(tipo, "BANT") == 0) { ctrl_bant_pkt++; ctrl_bant_byte += byte; }
+    else if (strcmp(tipo, "REQ") == 0)  { ctrl_req_pkt++;  ctrl_req_byte  += byte; }
 }
 
 void Ant2::updateEnergy()

@@ -78,7 +78,31 @@ simple Ant2 like IManetRouting
         // nodi, simulando un drone compromesso che tenta di iniettare
         // messaggi di routing falsi. Serve a dimostrare che la verifica
         // crittografica discrimina davvero (test negativo).
+        // Interruttore generale del livello di sicurezza. Con false il protocollo
+        // si comporta esattamente come prima delle modifiche: nessuna firma,
+        // nessuna cifratura, e messaggi delle DIMENSIONI ORIGINALI (128 bit).
+        // Serve per ottenere un baseline pulito nelle misure di overhead:
+        // stesso identico codice, unica variabile la presenza della sicurezza.
+        bool securityEnabled = default(true);
+
         bool isAttacker = default(false);
+
+        // --- ATTACCHI NON RILEVABILI DAL LIVELLO CRITTOGRAFICO (solo per i test) ---
+        // Modellano un nodo LEGITTIMO, in possesso di chiavi valide, che abusa
+        // della propria posizione nel protocollo. Firma e cifratura restano
+        // corrette: e' il CONTENUTO a essere falso. Servono a motivare la
+        // necessita' di una metrica di trust, che opera dove la crittografia
+        // non puo' arrivare.
+
+        // Dichiara nei propri BANT valori di energia e banda disponibile
+        // artificiosamente favorevoli, per vincere sempre la selezione del
+        // recruiting. I dati viaggiano cifrati e firmati correttamente.
+        bool attackFalseMetrics = default(false);
+
+        // Non incrementa hopdistance quando inoltra: i nodi a valle credono
+        // che il mittente sia adiacente. Sfrutta il fatto che hopdistance e'
+        // un campo in chiaro non coperto dalla firma.
+        bool attackHopDistance = default(false);
 
         // Se true, ogni singolo evento di sicurezza viene stampato anche in
         // console. Di default false: il dettaglio completo finisce comunque
