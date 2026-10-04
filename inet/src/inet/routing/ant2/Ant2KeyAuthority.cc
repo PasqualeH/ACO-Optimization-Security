@@ -2,6 +2,7 @@
 #include "inet/routing/ant2/Ant2KeyAuthority.h"
 #include <cstring>
 
+#include "inet/routing/ant2/Ant2Sign.h"
 extern "C" {
     #include "inet/routing/ant2/crypto/ed25519/ed25519.h"
 }
@@ -20,36 +21,63 @@ void Ant2KeyAuthority::initialize(int stage)
 }
 
 void Ant2KeyAuthority::provisionNode(uint32_t address,
+                                      size_t groupKeyLen,
+                                      int signAlg,
                                       std::vector<uint8_t>& outGroupKey,
                                       std::vector<uint8_t>& outOwnPublicKey,
                                       std::vector<uint8_t>& outOwnPrivateKey)
 {
+    if (groupKeyLen == 0 || groupKeyLen > sizeof(groupKey))
+        throw cRuntimeError("Ant2KeyAuthority: lunghezza di chiave di gruppo non valida (%zu byte)", groupKeyLen);
+
     // 1) Chiave di gruppo: generata UNA sola volta, la prima volta che un
     // qualsiasi nodo la richiede; tutti i nodi successivi ricevono la stessa.
     if (!groupKeyGenerated) {
         unsigned char randomBytes[32];
         if (ed25519_create_seed(randomBytes) != 0)
             throw cRuntimeError("Ant2KeyAuthority: generazione della chiave di gruppo fallita");
-        memcpy(groupKey, randomBytes, 16);
+        memcpy(groupKey, randomBytes, sizeof(groupKey));
         groupKeyGenerated = true;
-        EV_INFO << "Ant2KeyAuthority: chiave di gruppo generata" << endl;
+        groupKeyLenInUse = groupKeyLen;
+        signAlgInUse = signAlg;
+        EV_INFO << "Ant2KeyAuthority: chiave di gruppo generata (" << groupKeyLen << " byte in uso)" << endl;
     }
-    outGroupKey.assign(groupKey, groupKey + 16);
+    else if (signAlgInUse != signAlg) {
+        throw cRuntimeError("Ant2KeyAuthority: il nodo con indirizzo %u chiede un algoritmo di firma "
+                            "diverso da quello gia' in uso nella flotta. "
+                            "Verificare che **.routing.signatureAlgorithm sia impostato allo stesso "
+                            "valore per TUTTI i nodi.", address);
+    }
+    else if (groupKeyLenInUse != groupKeyLen) {
+        // Tutti i nodi devono usare lo stesso algoritmo AEAD, altrimenti
+        // userebbero chiavi diverse e nessuno riuscirebbe a decifrare.
+        throw cRuntimeError("Ant2KeyAuthority: il nodo con indirizzo %u chiede una chiave di gruppo di %zu byte, "
+                            "ma la flotta ne sta gia' usando una di %zu byte. "
+                            "Verificare che **.routing.aeadAlgorithm sia impostato allo stesso valore per TUTTI i nodi.",
+                            address, groupKeyLen, groupKeyLenInUse);
+    }
+    outGroupKey.assign(groupKey, groupKey + groupKeyLen);
 
-    // 2) Coppia di chiavi Ed25519 per QUESTO indirizzo: generata solo se non
+    // 2) Coppia di chiavi individuale per QUESTO indirizzo: generata solo se non
     // esiste ancora (un nodo che richiama provisionNode() piu' volte, ad
     // esempio dopo un riavvio simulato, riceve sempre la stessa identita').
+    // Il tipo di coppia dipende dall'algoritmo di firma configurato.
     auto it = publicKeys.find(address);
     if (it == publicKeys.end()) {
-        unsigned char seed[32], pub[32], priv[64];
+        ant2sign::Algorithm alg = static_cast<ant2sign::Algorithm>(signAlg);
+        unsigned char seed[32];
+        unsigned char pub[ant2sign::MAX_PUBKEY_LEN] = {0};
+        unsigned char priv[ant2sign::MAX_PRIVKEY_LEN] = {0};
         if (ed25519_create_seed(seed) != 0)
             throw cRuntimeError("Ant2KeyAuthority: generazione del seed fallita per l'indirizzo %u", address);
-        ed25519_create_keypair(pub, priv, seed);
+        if (!ant2sign::generateKeypair(alg, seed, pub, priv))
+            throw cRuntimeError("Ant2KeyAuthority: generazione della coppia di chiavi fallita per l'indirizzo %u", address);
 
-        publicKeys[address] = std::vector<uint8_t>(pub, pub + 32);
-        privateKeys[address] = std::vector<uint8_t>(priv, priv + 64);
+        publicKeys[address]  = std::vector<uint8_t>(pub,  pub  + ant2sign::pubKeyLen(alg));
+        privateKeys[address] = std::vector<uint8_t>(priv, priv + ant2sign::privKeyLen(alg));
 
-        EV_INFO << "Ant2KeyAuthority: nuova identita' generata per l'indirizzo " << address << endl;
+        EV_INFO << "Ant2KeyAuthority: nuova identita' " << ant2sign::name(alg)
+                << " generata per l'indirizzo " << address << endl;
     }
 
     outOwnPublicKey = publicKeys[address];

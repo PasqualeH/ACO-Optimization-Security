@@ -1,0 +1,7 @@
+tabella;configurazione;carico;ripetizioni;mos;mos_ic95;delay_ms;delay_ic95_ms;loss_pct;throughput_mbps
+rete;ascon128;20;10;3.5791;0.1423;509.88295;337.96273;4.18273;0.9
+rete;ascon128_ecdsap256;20;10;3.5791;0.1423;509.88295;337.96273;4.18273;0.9
+sicurezza;ascon128;20;10;162134;0;43578;5559018;127.56;
+sicurezza;ascon128_ecdsap256;20;10;162134;0;43578;5559018;127.56;
+cpu;ascon128;-;;101.80;0.301;16537.61;1.0000x;;
+cpu;ascon128_ecdsap256;-;;351.57;0.301;57034.11;3.4488x;;

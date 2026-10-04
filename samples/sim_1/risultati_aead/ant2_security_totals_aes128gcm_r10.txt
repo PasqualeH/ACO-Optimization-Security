@@ -1,0 +1,29 @@
+=====================================================
+ TOTALI DI RETE - livello di sicurezza Ant2
+ Configurazione: AES-128-GCM (confidenzialita' + integrita') + Ed25519 (autenticazione)
+ (nodi conteggiati finora: 19)
+=====================================================
+ config: aead=aes128gcm firma=ed25519 securityEnabled=true
+=====================================================
+ FANT   verificati: 69585   scartati: 0
+ BANT   verificati: 116839   scartati: 0
+ REQ    verificati: 843   scartati: 0
+-----------------------------------------------------
+ TOTALE verificati: 187267   scartati: 0
+ Percentuale pacchetti rifiutati: 0%
+-----------------------------------------------------
+ Motivi degli scarti:
+   identita' sconosciuta (non nel registro): 0
+   firma Ed25519 non valida:                 0
+   payload manomesso (tag AEAD errato):      0
+=====================================================
+ TRAFFICO DI CONTROLLO immesso sul canale
+ (messaggi originati + inoltrati, da tutti i nodi)
+-----------------------------------------------------
+ FANT : 16232 messaggi, 1298560 byte
+ BANT : 27219 messaggi, 4164507 byte
+ REQ  : 208 messaggi, 25168 byte
+-----------------------------------------------------
+ TOTALE: 43659 messaggi, 5488235 byte
+ Dimensione media: 125.707 byte/messaggio
+=====================================================

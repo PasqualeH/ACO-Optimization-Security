@@ -1,8 +1,9 @@
 // Ant2Crypto.h
 //
-// Wrapper C++ minimale che espone ad Ant2.cc le due primitive scelte:
-//   - Ascon-AEAD128 (lo standard NIST SP 800-232, discendente diretto di Ascon-128a)
-//     per confidenzialita' + integrita' del payload sensibile
+// Wrapper C++ minimale che espone ad Ant2.cc le primitive di sicurezza:
+//   - un algoritmo AEAD (confidenzialita' + integrita' del payload sensibile),
+//     SCEGLIBILE a tempo di configurazione fra Ascon-AEAD128, AES-128/192/256-GCM
+//     e ChaCha20-Poly1305. La scelta si fa dal file .ini, senza ricompilare.
 //   - Ed25519 per l'autenticazione: chi ha davvero generato il messaggio
 //
 // Non contiene crittografia "fatta in casa": si appoggia solo alle
@@ -18,27 +19,66 @@
 #include <unordered_map>
 #include <stdexcept>
 
+#include "inet/routing/ant2/Ant2Aead.h"
+#include "inet/routing/ant2/Ant2Sign.h"
+
 namespace inet {
 
 namespace ant2 { class Ant2KeyAuthority; }  // forward declaration, vedi useCentralAuthority()
 
 class Ant2Crypto {
   public:
-    static const int GROUP_KEY_LEN = 16;   // chiave simmetrica ASCON
-    static const int NONCE_LEN     = 16;   // nonce ASCON (derivato, non trasmesso)
-    static const int TAG_LEN       = 16;   // tag di autenticazione ASCON
-    static const int PUBKEY_LEN    = 32;   // chiave pubblica Ed25519
-    static const int PRIVKEY_LEN   = 64;   // chiave privata Ed25519 (formato esteso seed+pub)
-    static const int SIG_LEN       = 64;   // firma Ed25519
+    // La chiave di gruppo ha lunghezza diversa a seconda dell'AEAD scelto
+    // (16 B per Ascon e AES-128, 24 B per AES-192, 32 B per AES-256 e ChaCha20).
+    // Il buffer e' dimensionato sul caso peggiore; la lunghezza realmente in uso
+    // si legge con groupKeyLen().
+    static const int MAX_GROUP_KEY_LEN = ant2aead::MAX_KEY_LEN;   // 32
+    // Anche il nonce cambia (16 B per Ascon, 12 B per GCM e ChaCha20-Poly1305).
+    // La costante resta 16 perche' e' il caso peggiore e perche' Ant2.cc la usa
+    // per dimensionare i buffer sullo stack: i byte in eccesso restano a zero.
+    static const int NONCE_LEN     = ant2aead::MAX_NONCE_LEN;     // 16
+    static const int TAG_LEN       = ant2aead::TAG_LEN;           // 16, uguale per tutti gli AEAD
+    // Le chiavi di firma hanno lunghezza diversa a seconda dell'algoritmo:
+    //   Ed25519      pubblica 32 B, privata 64 B
+    //   ECDSA P-256  pubblica 64 B, privata 32 B
+    // I buffer sono dimensionati sul caso peggiore; le lunghezze realmente in
+    // uso si leggono con pubKeyLen() e privKeyLen().
+    static const int MAX_PUBKEY_LEN  = ant2sign::MAX_PUBKEY_LEN;   // 64
+    static const int MAX_PRIVKEY_LEN = ant2sign::MAX_PRIVKEY_LEN;  // 64
+    // La firma e' di 64 byte con ENTRAMBI gli algoritmi: il formato dei
+    // messaggi non cambia al variare della scelta.
+    static const int SIG_LEN         = ant2sign::SIG_LEN;          // 64
 
     // Identificano il tipo di messaggio nella derivazione del nonce,
     // cosi' un FANT e un BANT dello stesso nodo con lo stesso sequencenumber
     // non riusano mai lo stesso nonce (fondamentale per la sicurezza di un AEAD).
     enum MsgType : uint8_t { MSG_FANT = 1, MSG_BANT = 2, MSG_REQ = 3 };
 
+    // --- Scelta dell'algoritmo AEAD ---
+    // DA CHIAMARE PRIMA di qualunque caricamento di chiavi: determina quanti
+    // byte di chiave di gruppo servono e quanto lungo sara' il nonce.
+    // Se il nome non e' riconosciuto solleva un'eccezione: meglio fermarsi che
+    // misurare un algoritmo diverso da quello che si crede di aver configurato.
+    void setAeadAlgorithm(const std::string& name);
+
+    // --- Scelta dell'algoritmo di firma ---
+    // Anche questa DA CHIAMARE PRIMA del caricamento delle chiavi.
+    void setSignatureAlgorithm(const std::string& name);
+
+    ant2sign::Algorithm signatureAlgorithm() const { return sig; }
+    const char *signatureName() const { return ant2sign::name(sig); }
+    int pubKeyLen() const { return ant2sign::pubKeyLen(sig); }
+    int privKeyLen() const { return ant2sign::privKeyLen(sig); }
+
+    ant2aead::Algorithm aeadAlgorithm() const { return aead; }
+    const char *aeadName() const { return ant2aead::name(aead); }
+    int groupKeyLen() const { return ant2aead::keyLen(aead); }
+    int nonceLen() const { return ant2aead::nonceLen(aead); }
+
     // --- Caricamento chiavi (da chiamare una volta in initialize(), per nodo) ---
 
-    // File binario di 16 byte grezzi: la chiave di gruppo condivisa da tutta la flotta.
+    // File binario grezzo con la chiave di gruppo condivisa da tutta la flotta.
+    // La lunghezza attesa dipende dall'AEAD scelto: vedi groupKeyLen().
     void loadGroupKey(const std::string& path);
 
     // File binari con la propria coppia di chiavi Ed25519 (32B pubblica, 64B privata).
@@ -103,15 +143,17 @@ class Ant2Crypto {
 
     // Verifica la firma usando la chiave pubblica di srcAddress presa dal fleet roster.
     // Ritorna false anche se srcAddress non e' nel roster (nodo sconosciuto -> non fidato).
-    bool verify(const std::vector<uint8_t>& msg, const uint8_t sig[SIG_LEN],
+    bool verify(const std::vector<uint8_t>& msg, const uint8_t signature[SIG_LEN],
                 uint32_t srcAddress) const;
 
     bool isKnownNode(uint32_t srcAddress) const;
 
   private:
-    uint8_t groupKey[GROUP_KEY_LEN] = {0};
-    uint8_t ownPublicKey[PUBKEY_LEN] = {0};
-    uint8_t ownPrivateKey[PRIVKEY_LEN] = {0};
+    ant2aead::Algorithm aead = ant2aead::ASCON128;   // default: comportamento identico a prima
+    uint8_t groupKey[MAX_GROUP_KEY_LEN] = {0};
+    ant2sign::Algorithm sig = ant2sign::ED25519;   // default: comportamento identico a prima
+    uint8_t ownPublicKey[MAX_PUBKEY_LEN] = {0};
+    uint8_t ownPrivateKey[MAX_PRIVKEY_LEN] = {0};
     std::unordered_map<uint32_t, std::vector<uint8_t>> fleetRoster;
 
     // Se non nullptr, isKnownNode()/verify() interrogano questo modulo invece

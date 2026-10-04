@@ -1,0 +1,29 @@
+=====================================================
+ TOTALI DI RETE - livello di sicurezza Ant2
+ Configurazione: Ascon-AEAD128 (confidenzialita' + integrita') + Ed25519 (autenticazione)
+ (nodi conteggiati finora: 19)
+=====================================================
+ config: aead=ascon128 firma=ed25519 securityEnabled=true
+=====================================================
+ FANT   verificati: 49509   scartati: 0
+ BANT   verificati: 97725   scartati: 0
+ REQ    verificati: 613   scartati: 0
+-----------------------------------------------------
+ TOTALE verificati: 147847   scartati: 0
+ Percentuale pacchetti rifiutati: 0%
+-----------------------------------------------------
+ Motivi degli scarti:
+   identita' sconosciuta (non nel registro): 0
+   firma Ed25519 non valida:                 0
+   payload manomesso (tag AEAD errato):      0
+=====================================================
+ TRAFFICO DI CONTROLLO immesso sul canale
+ (messaggi originati + inoltrati, da tutti i nodi)
+-----------------------------------------------------
+ FANT : 14556 messaggi, 1164480 byte
+ BANT : 28807 messaggi, 4407471 byte
+ REQ  : 157 messaggi, 18997 byte
+-----------------------------------------------------
+ TOTALE: 43520 messaggi, 5590948 byte
+ Dimensione media: 128.468 byte/messaggio
+=====================================================

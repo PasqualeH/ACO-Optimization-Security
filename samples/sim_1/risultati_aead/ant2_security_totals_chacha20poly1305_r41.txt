@@ -1,0 +1,29 @@
+=====================================================
+ TOTALI DI RETE - livello di sicurezza Ant2
+ Configurazione: ChaCha20-Poly1305 (confidenzialita' + integrita') + Ed25519 (autenticazione)
+ (nodi conteggiati finora: 19)
+=====================================================
+ config: aead=chacha20poly1305 firma=ed25519 securityEnabled=true
+=====================================================
+ FANT   verificati: 50075   scartati: 0
+ BANT   verificati: 95582   scartati: 0
+ REQ    verificati: 503   scartati: 0
+-----------------------------------------------------
+ TOTALE verificati: 146160   scartati: 0
+ Percentuale pacchetti rifiutati: 0%
+-----------------------------------------------------
+ Motivi degli scarti:
+   identita' sconosciuta (non nel registro): 0
+   firma Ed25519 non valida:                 0
+   payload manomesso (tag AEAD errato):      0
+=====================================================
+ TRAFFICO DI CONTROLLO immesso sul canale
+ (messaggi originati + inoltrati, da tutti i nodi)
+-----------------------------------------------------
+ FANT : 14511 messaggi, 1160880 byte
+ BANT : 28339 messaggi, 4335867 byte
+ REQ  : 138 messaggi, 16698 byte
+-----------------------------------------------------
+ TOTALE: 42988 messaggi, 5513445 byte
+ Dimensione media: 128.255 byte/messaggio
+=====================================================

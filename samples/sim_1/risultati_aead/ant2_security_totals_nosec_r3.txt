@@ -1,0 +1,28 @@
+=====================================================
+ TOTALI DI RETE - livello di sicurezza Ant2
+ Configurazione: livello di sicurezza DISATTIVATO (baseline senza crittografia)
+ (nodi conteggiati finora: 19)
+=====================================================
+ config: aead=nessuno firma=nessuna securityEnabled=false
+=====================================================
+ FANT   verificati: 0   scartati: 0
+ BANT   verificati: 0   scartati: 0
+ REQ    verificati: 0   scartati: 0
+-----------------------------------------------------
+ TOTALE verificati: 0   scartati: 0
+-----------------------------------------------------
+ Motivi degli scarti:
+   identita' sconosciuta (non nel registro): 0
+   firma Ed25519 non valida:                 0
+   payload manomesso (tag AEAD errato):      0
+=====================================================
+ TRAFFICO DI CONTROLLO immesso sul canale
+ (messaggi originati + inoltrati, da tutti i nodi)
+-----------------------------------------------------
+ FANT : 14926 messaggi, 238816 byte
+ BANT : 33399 messaggi, 534384 byte
+ REQ  : 85 messaggi, 1360 byte
+-----------------------------------------------------
+ TOTALE: 48410 messaggi, 774560 byte
+ Dimensione media: 16 byte/messaggio
+=====================================================

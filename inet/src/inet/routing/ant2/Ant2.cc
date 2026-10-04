@@ -49,6 +49,8 @@
 
 // Libraries added to enable dynamic moblity of UAVs while simulation is running
 #include <sstream>   // per comporre i nomi dei file di output per run
+#include <sys/stat.h>   // mkdir(), per creare la cartella dei risultati se manca
+#include <cerrno>
 #include <cstring>   // strcmp/memcpy/memset usati dal livello di sicurezza
 #include <cstdlib>
 #include <ctime>
@@ -61,6 +63,16 @@ namespace inet {
 namespace ant2 {
 
 Define_Module(Ant2);
+
+// Definizione dei membri statici usati dalle intestazioni dei file di output.
+std::string Ant2::secDescrizione;
+std::string Ant2::secTagFile;
+
+const std::string& Ant2::descrizioneSicurezza()
+{
+    static const std::string nonInizializzata = "configurazione non ancora nota";
+    return secDescrizione.empty() ? nonInizializzata : secDescrizione;
+}
 
 enum PacketType {
     FANT_PACKET,
@@ -229,6 +241,35 @@ void Ant2::start()
     consoleVerbose = par("securityConsoleVerbose").boolValue();
     securityEnabled = par("securityEnabled").boolValue();
 
+    // Descrizione della configurazione, usata nelle intestazioni dei file di
+    // output. Va valorizzata QUI, prima di qualunque scrittura su file.
+    if (secDescrizione.empty()) {
+        if (!securityEnabled) {
+            secDescrizione = "livello di sicurezza DISATTIVATO (baseline senza crittografia)";
+            secTagFile = "nosec";
+        }
+        else {
+            const std::string nomeParAead = par("aeadAlgorithm").stdstringValue();
+            const std::string nomeParFirma = par("signatureAlgorithm").stdstringValue();
+
+            // Etichetta per i nomi dei file. L'algoritmo di firma compare solo
+            // se non e' quello predefinito, cosi' i file delle campagne gia'
+            // svolte con Ed25519 mantengono lo stesso schema di nome.
+            secTagFile = nomeParAead;
+            if (nomeParFirma != "ed25519")
+                secTagFile += "_" + nomeParFirma;
+
+            ant2aead::Algorithm a;
+            const char *nomeAead = ant2aead::parseName(nomeParAead, a)
+                                   ? ant2aead::name(a) : nomeParAead.c_str();
+            ant2sign::Algorithm f;
+            const char *nomeFirma = ant2sign::parseName(nomeParFirma, f)
+                                    ? ant2sign::name(f) : nomeParFirma.c_str();
+            secDescrizione = std::string(nomeAead) + " (confidenzialita' + integrita')"
+                             + " + " + nomeFirma + " (autenticazione)";
+        }
+    }
+
     // Attacchi interni: a differenza di isAttacker (che invalida l'identita'
     // crittografica), questi restano attivi anche con la sicurezza disattivata,
     // perche' agiscono sul CONTENUTO e non sulle chiavi. Sono quindi
@@ -267,6 +308,11 @@ void Ant2::start()
                                     par("keyAuthorityName").stringValue());
             auto authority = check_and_cast<ant2::Ant2KeyAuthority *>(authorityModule);
 
+            // La scelta dell'AEAD va fatta PRIMA di chiedere le chiavi:
+            // determina quanti byte di chiave di gruppo servono.
+            crypto.setAeadAlgorithm(par("aeadAlgorithm").stdstringValue());
+            crypto.setSignatureAlgorithm(par("signatureAlgorithm").stdstringValue());
+
             Ipv4Address myAddress = interface80211ptr->getProtocolData<Ipv4InterfaceData>()->getIPAddress();
             crypto.useCentralAuthority(authority, myAddress.getInt());
             // Banner esplicativo, stampato una sola volta dal primo nodo che si avvia.
@@ -276,9 +322,15 @@ void Ant2::start()
                 std::cout << "\n"
                           << "============================================================\n"
                           << " LIVELLO DI SICUREZZA Ant2 attivo\n"
-                          << "   - Ascon-AEAD128 : cifra e protegge il contenuto dei messaggi\n"
+                          << "   - AEAD          : " << crypto.aeadName()
+                          << "  (chiave " << crypto.groupKeyLen() << " B, nonce "
+                          << crypto.nonceLen() << " B, tag 16 B)\n"
+                          << "                     cifra e protegge il contenuto dei messaggi\n"
                           << "                     (coordinate, energia, throughput, cluster)\n"
-                          << "   - Ed25519       : firma digitale individuale di ogni nodo,\n"
+                          << "   - Firma         : " << crypto.signatureName()
+                          << "  (pubblica " << crypto.pubKeyLen() << " B, privata "
+                          << crypto.privKeyLen() << " B, firma 64 B)\n"
+                          << "                     firma digitale individuale di ogni nodo,\n"
                           << "                     verificata prima di accettare un pacchetto\n"
                           << " Provisioning chiavi: autorita' centrale in-simulazione\n"
                           << " File prodotti a fine run (nella cartella della simulazione):\n"
@@ -297,6 +349,8 @@ void Ant2::start()
             EV_INFO << "Ant2/security: chiavi ottenute dall'autorita' centrale per " << myAddress << endl;
         }
         else {
+            crypto.setAeadAlgorithm(par("aeadAlgorithm").stdstringValue());
+            crypto.setSignatureAlgorithm(par("signatureAlgorithm").stdstringValue());
             crypto.loadGroupKey(par("groupKeyFile").stdstringValue());
             crypto.loadOwnKeypair(par("ownPubKeyFile").stdstringValue(), par("ownPrivKeyFile").stdstringValue());
             crypto.loadFleetRoster(par("fleetRosterFile").stdstringValue());
@@ -401,7 +455,12 @@ void Ant2::finish()
     if (firstCall) {
         out.open(nomeFileRun("ant2_security_summary", ".txt"), std::ios::trunc);
         out << "# ================================================================\n";
-        out << "# Riepilogo livello di sicurezza Ant2 (Ascon-AEAD128 + Ed25519)\n";
+        out << "# Riepilogo livello di sicurezza Ant2\n";
+        out << "# Configurazione: " << descrizioneSicurezza() << "\n";
+        // Riga in formato macchina, pensata per analizza_risultati.py:
+        out << "# config: aead=" << (securityEnabled ? par("aeadAlgorithm").stringValue() : "nessuno")
+            << " firma=" << (securityEnabled ? par("signatureAlgorithm").stringValue() : "nessuna")
+            << " securityEnabled=" << (securityEnabled ? "true" : "false") << "\n";
         out << "# ================================================================\n";
         out << "# Una riga per nodo. Per ogni tipo di messaggio del protocollo:\n";
         out << "#   FANT = scoperta di rotta       (solo firmato)\n";
@@ -439,7 +498,13 @@ void Ant2::finish()
         long failTot = tot_fant_fail + tot_bant_fail + tot_req_fail;
         tot << "=====================================================\n";
         tot << " TOTALI DI RETE - livello di sicurezza Ant2\n";
+        tot << " Configurazione: " << descrizioneSicurezza() << "\n";
         tot << " (nodi conteggiati finora: " << nodiConteggiati << ")\n";
+        tot << "=====================================================\n";
+        // Riga in formato macchina per analizza_risultati.py
+        tot << " config: aead=" << (securityEnabled ? par("aeadAlgorithm").stringValue() : "nessuno")
+            << " firma=" << (securityEnabled ? par("signatureAlgorithm").stringValue() : "nessuna")
+            << " securityEnabled=" << (securityEnabled ? "true" : "false") << "\n";
         tot << "=====================================================\n";
         tot << " FANT   verificati: " << tot_fant_ok  << "   scartati: " << tot_fant_fail << "\n";
         tot << " BANT   verificati: " << tot_bant_ok  << "   scartati: " << tot_bant_fail << "\n";
@@ -453,7 +518,7 @@ void Ant2::finish()
         tot << " Motivi degli scarti:\n";
         tot << "   identita' sconosciuta (non nel registro): " << tot_unknown << "\n";
         tot << "   firma Ed25519 non valida:                 " << tot_signature << "\n";
-        tot << "   payload manomesso (tag Ascon errato):     " << tot_aead << "\n";
+        tot << "   payload manomesso (tag AEAD errato):      " << tot_aead << "\n";
         tot << "=====================================================\n";
         tot << " TRAFFICO DI CONTROLLO immesso sul canale\n";
         tot << " (messaggi originati + inoltrati, da tutti i nodi)\n";
@@ -2943,7 +3008,7 @@ double Ant2::calculateEuclideanDistance(const Coord& coord1, const Coord& coord2
 }
 
 // ============================================================================
-// Aggiunto per il livello di sicurezza (Ascon-AEAD128 + Ed25519).
+// Aggiunto per il livello di sicurezza (AEAD configurabile + Ed25519).
 //
 // Le due funzioni sotto centralizzano TUTTA la logica crittografica per i
 // messaggi BANT, cosi' non va ripetuta nei vari punti di Ant2.cc che oggi
@@ -3018,7 +3083,7 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
     uint8_t nonce[Ant2Crypto::NONCE_LEN];
     crypto.deriveNonce(srcInt, seq, Ant2Crypto::MSG_BANT, nonce);
 
-    // 4) Cifratura + tag di autenticita'/integrita' (Ascon-AEAD128).
+    // 4) Cifratura + tag di autenticita'/integrita' (AEAD configurato).
     std::vector<uint8_t> ciphertext;
     uint8_t tag[Ant2Crypto::TAG_LEN];
     uint8_t signature[Ant2Crypto::SIG_LEN];
@@ -3396,10 +3461,52 @@ bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
 // esecuzioni successive si sovrascrivano. Usa il numero di run assegnato da
 // OMNeT++, che identifica univocamente la combinazione di parametri iterati
 // e di ripetizione.
+// Crea una cartella e, se serve, tutte quelle intermedie ("mkdir -p").
+// Non usa <filesystem> per non dipendere dallo standard C++ con cui e'
+// compilato INET; mkdir() basta e funziona su Linux e su Windows/MinGW.
+static void creaCartella(const std::string& percorso)
+{
+    if (percorso.empty())
+        return;
+    for (size_t i = 1; i <= percorso.size(); i++) {
+        if (i == percorso.size() || percorso[i] == '/') {
+            std::string parziale = percorso.substr(0, i);
+            if (parziale.empty() || parziale == ".")
+                continue;
+#ifdef _WIN32
+            ::mkdir(parziale.c_str());
+#else
+            ::mkdir(parziale.c_str(), 0755);
+#endif
+            // Se esiste gia' mkdir fallisce con EEXIST: e' il caso normale,
+            // non e' un errore e non va segnalato.
+        }
+    }
+}
+
 std::string Ant2::nomeFileRun(const char *base, const char *estensione)
 {
+    // I file di riepilogo del livello di sicurezza vengono scritti nella stessa
+    // cartella dei risultati di OMNeT++ (result-dir), non nella cartella da cui
+    // si lancia la simulazione. Cosi' una campagna da decine di run non
+    // riempie samples/sim_1, e i .txt stanno accanto ai .sca a cui si
+    // riferiscono. "resultdir" e' una variabile predefinita di OMNeT++.
+    std::string cartella;
+    const char *rd = getEnvir()->getConfigEx()->getVariable("resultdir");
+    if (rd != nullptr && *rd != '\0') {
+        cartella = rd;
+        if (cartella.back() != '/')
+            cartella += '/';
+        creaCartella(cartella);
+    }
+    // Se result-dir non e' definito, si ricade sul comportamento precedente
+    // (cartella corrente): il file viene comunque prodotto.
+
     std::ostringstream nome;
-    nome << base << "_r" << getEnvir()->getConfigEx()->getActiveRunNumber() << estensione;
+    nome << cartella << base;
+    if (!secTagFile.empty())
+        nome << "_" << secTagFile;
+    nome << "_r" << getEnvir()->getConfigEx()->getActiveRunNumber() << estensione;
     return nome.str();
 }
 
@@ -3418,6 +3525,7 @@ std::ofstream& Ant2::securityEventLog()
         log.open(nomeFileRun("ant2_security_events", ".log"), std::ios::trunc);
         runAperta = runCorrente;
         log << "# Log dettagliato degli eventi del livello di sicurezza Ant2\n";
+        log << "# Configurazione: " << descrizioneSicurezza() << "\n";
         log << "# formato: <tempo_simulato> <nodo> <ESITO> <tipo_messaggio> <mittente> [motivo]\n";
         log << "# tipi: FANT=scoperta rotta, BANT=risposta con stato, REQ=richiesta recruiting\n";
         log << "#\n";

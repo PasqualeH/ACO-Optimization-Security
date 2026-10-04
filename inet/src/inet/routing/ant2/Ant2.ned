@@ -85,6 +85,28 @@ simple Ant2 like IManetRouting
         // stesso identico codice, unica variabile la presenza della sicurezza.
         bool securityEnabled = default(true);
 
+        // Algoritmo AEAD usato per confidenzialita' + integrita' del payload.
+        // Valori ammessi (devono essere UGUALI per tutti i nodi della rete):
+        //   "ascon128"          Ascon-AEAD128, NIST SP 800-232 (chiave 16 B, nonce 16 B)
+        //   "aes128gcm"         AES-128-GCM,   FIPS 197 + SP 800-38D (chiave 16 B, nonce 12 B)
+        //   "aes192gcm"         AES-192-GCM                    (chiave 24 B, nonce 12 B)
+        //   "aes256gcm"         AES-256-GCM                    (chiave 32 B, nonce 12 B)
+        //   "chacha20poly1305"  ChaCha20-Poly1305, RFC 8439    (chiave 32 B, nonce 12 B)
+        // Tutti producono un tag da 16 byte e un ciphertext della stessa
+        // lunghezza del plaintext: la DIMENSIONE DEI PACCHETTI NON CAMBIA al
+        // variare dell'algoritmo, quindi le differenze osservate riguardano solo
+        // il costo computazionale, non l'overhead di banda.
+        string aeadAlgorithm = default("ascon128");
+
+        // Algoritmo di firma digitale usato per l'autenticazione dell'origine.
+        // Valori ammessi (uguali per tutti i nodi):
+        //   "ed25519"    Ed25519, RFC 8032 (pubblica 32 B, privata 64 B)
+        //   "ecdsap256"  ECDSA su curva P-256 con SHA-256, FIPS 186-4
+        //                (pubblica 64 B, privata 32 B)
+        // La firma e' di 64 byte con entrambi: la DIMENSIONE DEI PACCHETTI NON
+        // CAMBIA, quindi anche qui la differenza e' solo computazionale.
+        string signatureAlgorithm = default("ed25519");
+
         bool isAttacker = default(false);
 
         // --- ATTACCHI NON RILEVABILI DAL LIVELLO CRITTOGRAFICO (solo per i test) ---

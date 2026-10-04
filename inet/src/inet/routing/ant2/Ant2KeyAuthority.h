@@ -37,7 +37,19 @@ class Ant2KeyAuthority : public cSimpleModule
     // esiste ancora, anche la chiave di gruppo Ascon, condivisa da tutti).
     // Riempie i tre buffer di output con le chiavi in chiaro, pronte per essere
     // caricate in un Ant2Crypto locale al nodo chiamante.
+    // 'groupKeyLen' e' il numero di byte di chiave di gruppo richiesti dal
+    // nodo chiamante, e dipende dall'algoritmo AEAD configurato (16 per
+    // Ascon/AES-128, 24 per AES-192, 32 per AES-256/ChaCha20). L'autorita'
+    // genera sempre 32 byte casuali una volta sola e ne restituisce il
+    // prefisso richiesto, cosi' tutti i nodi condividono la stessa chiave.
+    // Se due nodi chiedono lunghezze diverse la simulazione si ferma: e'
+    // sintomo di un .ini incoerente (algoritmi diversi sullo stesso scenario).
+    // 'signAlg' e' il valore numerico di ant2sign::Algorithm richiesto dal
+    // nodo: determina il tipo di coppia di chiavi generata. Come per la chiave
+    // di gruppo, tutti i nodi devono chiedere lo stesso algoritmo.
     void provisionNode(uint32_t address,
+                        size_t groupKeyLen,
+                        int signAlg,
                         std::vector<uint8_t>& outGroupKey,
                         std::vector<uint8_t>& outOwnPublicKey,
                         std::vector<uint8_t>& outOwnPrivateKey);
@@ -62,7 +74,9 @@ class Ant2KeyAuthority : public cSimpleModule
 
   private:
     bool groupKeyGenerated = false;
-    uint8_t groupKey[16] = {0};
+    uint8_t groupKey[32] = {0};      // caso peggiore: AES-256 / ChaCha20
+    size_t  groupKeyLenInUse = 0;    // lunghezza richiesta dal primo nodo
+    int     signAlgInUse = -1;       // algoritmo di firma richiesto dal primo nodo
 
     std::unordered_map<uint32_t, std::vector<uint8_t>> publicKeys;   // indirizzo -> chiave pubblica (32B)
     std::unordered_map<uint32_t, std::vector<uint8_t>> privateKeys;  // indirizzo -> chiave privata (64B)

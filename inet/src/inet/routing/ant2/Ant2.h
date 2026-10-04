@@ -214,6 +214,21 @@ class INET_API Ant2 : public RoutingProtocolBase, public cListener, public Netfi
     void signFant(const Ptr<FantM2>& fant);
     bool verifyFant(const Ptr<const FantM2>& fant);
 
+    // Descrizione testuale della configurazione di sicurezza in uso, es.
+    // "AES-256-GCM (confidenzialita' + integrita') + Ed25519 (autenticazione)".
+    // E' STATICA perche' serve anche a securityEventLog(), che e' una funzione
+    // statica; viene valorizzata una sola volta dal primo nodo che si avvia, e
+    // tutti i nodi della rete usano per forza la stessa configurazione (lo
+    // garantisce Ant2KeyAuthority, che rifiuta lunghezze di chiave incoerenti).
+    static std::string secDescrizione;
+    static const std::string& descrizioneSicurezza();
+
+    // Etichetta breve, adatta a un nome di file, della configurazione di
+    // sicurezza: "ascon128", "aes256gcm", "nosec", ... Viene inserita nei nomi
+    // dei file di riepilogo, cosi' che una campagna con piu' algoritmi produca
+    // file distinguibili a colpo d'occhio senza dover risalire al numero di run.
+    static std::string secTagFile;
+
     // Logging del livello di sicurezza: il DETTAGLIO completo va sempre su file
     // (ant2_security_events.log), mentre la console riceve solo l'essenziale,
     // a meno che consoleVerbose non sia attivo.

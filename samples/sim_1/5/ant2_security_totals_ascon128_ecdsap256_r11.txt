@@ -1,0 +1,29 @@
+=====================================================
+ TOTALI DI RETE - livello di sicurezza Ant2
+ Configurazione: Ascon-AEAD128 (confidenzialita' + integrita') + ECDSA-P256 (SHA-256) (autenticazione)
+ (nodi conteggiati finora: 19)
+=====================================================
+ config: aead=ascon128 firma=ecdsap256 securityEnabled=true
+=====================================================
+ FANT   verificati: 24003   scartati: 0
+ BANT   verificati: 46861   scartati: 0
+ REQ    verificati: 536   scartati: 0
+-----------------------------------------------------
+ TOTALE verificati: 71400   scartati: 0
+ Percentuale pacchetti rifiutati: 0%
+-----------------------------------------------------
+ Motivi degli scarti:
+   identita' sconosciuta (non nel registro): 0
+   firma Ed25519 non valida:                 0
+   payload manomesso (tag AEAD errato):      0
+=====================================================
+ TRAFFICO DI CONTROLLO immesso sul canale
+ (messaggi originati + inoltrati, da tutti i nodi)
+-----------------------------------------------------
+ FANT : 7631 messaggi, 610480 byte
+ BANT : 14929 messaggi, 2284137 byte
+ REQ  : 146 messaggi, 17666 byte
+-----------------------------------------------------
+ TOTALE: 22706 messaggi, 2912283 byte
+ Dimensione media: 128.261 byte/messaggio
+=====================================================
