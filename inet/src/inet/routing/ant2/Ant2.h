@@ -22,6 +22,7 @@
 
 #include <list>
 #include <map>
+#include <set>
 #include <vector>
 
 #include "inet/common/packet/Packet.h"
@@ -372,6 +373,45 @@ class INET_API Ant2 : public RoutingProtocolBase, public cListener, public Netfi
 
     // Registra un messaggio di controllo trasmesso. 'tipo' e' FANT/BANT/REQ.
     void contaTrafficoControllo(const char *tipo, int byte);
+
+    // --- DIARIO DELLO SCENARIO (vedi Ant2Scenario.cc) ---
+    // Solo osservazione: nessuna di queste funzioni modifica lo stato del
+    // protocollo, programma eventi o usa numeri casuali.
+    bool scenarioLogEnabled = false;
+    static std::ofstream& scenarioLogFile();
+    static std::map<uint32_t, std::string>& scenRegistroNomi();
+    std::string scenNome() const;
+    static std::string scenNomeDi(const Ipv4Address& a);
+    static std::string scenNomeDi(const std::string& ipTestuale);
+    void scen(const char *evento, const std::string& testo);
+    void scenAvvio();
+    void scenFant(double chargeStatus, double residualJ);
+    void scenBant(const std::string& srcIp, double energiaMittente, bool mittenteDisponibile);
+    void scenAiuto(const std::vector<std::pair<std::string, double>>& candidati,
+                   const std::string& scelto, double punteggio);
+    void scenAiutoNonPossibile();
+    void scenSos(double chargeStatus);
+    void scenRichiestaRicevuta(const Ipv4Address& src, const Ipv4Address& dst, bool rivoltaAMe,
+                               bool disponibile, const Coord& coordRichiedente);
+    void scenSpostamento(const Coord& da, const Coord& a);
+    void scenEnergia(double chargeStatus);
+    void scenRicarica();
+    void scenStop();
+    void scenFine();
+    // stato osservato, usato solo per il diario
+    int scen_avvii = 0;
+    long scen_fant_round = 0;
+    simtime_t scen_first_fant = -1, scen_last_fant = -1;
+    std::map<std::string, int> scen_bant_da;   // BANT ricevuti dal FANT precedente, per mittente
+    long scen_bant_tot = 0;
+    int scen_reclutato = 0, scen_rifiuti = 0, scen_richieste = 0, scen_sos = 0;
+    std::set<uint32_t> scen_sos_visti;
+    long scen_ricariche = 0;
+    simtime_t scen_t_ricarica = -1, scen_t15 = -1;
+    int scen_spegnimenti = 0;
+    double scen_last_charge = -1, scen_min_charge = 1e9, scen_max_charge = -1e9;
+    bool scen_sotto15 = false, scen_sotto10 = false, scen_risalita = false;
+    bool scen_finito = false;
 
     virtual int numInitStages() const override { return NUM_INIT_STAGES; }
     virtual void finish() override;

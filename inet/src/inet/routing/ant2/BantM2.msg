@@ -7,7 +7,7 @@
 // Instituto Superior Tecnico
 // Lisboa - Portugal
 //
-// --- MODIFICATO: livello di sicurezza (ASCON-AEAD128 + Ed25519) ---
+// --- MODIFICATO: livello di sicurezza (AEAD configurabile + firma Ed25519/ECDSA) ---
 // I campi sensibili (energia, throughput, coordinate, cluster_id, ecc.)
 // NON sono piu' campi in chiaro: vengono impacchettati, cifrati e
 // autenticati prima dell'invio, e viaggiano solo dentro 'ciphertext'.
@@ -36,8 +36,13 @@ class BantM2 extends FieldsChunk
     // viaggiano i campi che nella versione originale erano in chiaro:
     // throughput, energy, coordenates (convertite in 3 double x/y/z),
     // hops, max_throughput, cluster_id, allowed_accept_request.
-    uint8_t ciphertext[];       // lunghezza = lunghezza del payload in chiaro (Ascon e' "length-preserving")
-    uint8_t authTag[16];        // tag di autenticazione Ascon-AEAD128 (16 byte fissi)
+    uint8_t ciphertext[];       // lunghezza = lunghezza del payload in chiaro (tutti gli AEAD usati sono "length-preserving")
+    // Tag di autenticazione dell'AEAD configurato. Array DINAMICO (prima era
+    // authTag[16]): la sua lunghezza dipende dall'algoritmo, 16 byte per
+    // Ascon/AES-GCM/ChaCha20-Poly1305/Xoodyak e 8 byte per TinyJAMBU-128.
+    // Chi costruisce il messaggio chiama setAuthTagArraySize(crypto.tagLen());
+    // chi lo riceve controlla che getAuthTagArraySize() sia quella attesa.
+    uint8_t authTag[];
 
     // --- Autenticazione del mittente: firma Ed25519 su srcAddress||sequencenumber||ciphertext||authTag.
     // Chi non ha la chiave privata del nodo dichiarato in srcAddress non puo' produrla.

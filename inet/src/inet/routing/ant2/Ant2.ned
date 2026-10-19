@@ -92,11 +92,27 @@ simple Ant2 like IManetRouting
         //   "aes192gcm"         AES-192-GCM                    (chiave 24 B, nonce 12 B)
         //   "aes256gcm"         AES-256-GCM                    (chiave 32 B, nonce 12 B)
         //   "chacha20poly1305"  ChaCha20-Poly1305, RFC 8439    (chiave 32 B, nonce 12 B)
-        // Tutti producono un tag da 16 byte e un ciphertext della stessa
-        // lunghezza del plaintext: la DIMENSIONE DEI PACCHETTI NON CAMBIA al
-        // variare dell'algoritmo, quindi le differenze osservate riguardano solo
-        // il costo computazionale, non l'overhead di banda.
+        //   "xoodyak"           Xoodyak, finalista NIST LWC    (chiave 16 B, nonce 16 B, tag 16 B)
+        //   "tinyjambu128"      TinyJAMBU-128 (v2), finalista NIST LWC
+        //                                                      (chiave 16 B, nonce 12 B, tag  8 B)
+        // Tutti producono un ciphertext della stessa lunghezza del plaintext.
+        // I primi sei hanno un tag da 16 byte: con loro la DIMENSIONE DEI
+        // PACCHETTI NON CAMBIA (BANT 153 B, REQ 121 B, FANT 80 B), quindi le
+        // differenze riguardano solo il costo computazionale.
+        // ECCEZIONE: TinyJAMBU-128 ha un tag da 8 byte, quindi BANT e REQ sono
+        // 8 byte piu' corti (BANT 145 B, REQ 113 B; il FANT, solo firmato, resta 80 B).
+        // Xoodyak e TinyJAMBU-128 usano i primi 16 byte della chiave di gruppo,
+        // esattamente come Ascon.
         string aeadAlgorithm = default("ascon128");
+
+        // Diario dello scenario (Ant2Scenario.cc): scrive nella cartella dei
+        // risultati il file ant2_scenario_<config>_rN.log, con la cronologia di
+        // ogni drone (avvio, FANT e BANT ricevuti, richieste d'aiuto,
+        // reclutamenti, spostamenti, soglie di energia, ricarica, spegnimento) e
+        // un riepilogo finale. Solo osservazione: con true o false i risultati
+        // della simulazione sono identici. Per disattivarlo:
+        //   **.routing.scenarioLog = false
+        bool scenarioLog = default(true);
 
         // Algoritmo di firma digitale usato per l'autenticazione dell'origine.
         // Valori ammessi (uguali per tutti i nodi):

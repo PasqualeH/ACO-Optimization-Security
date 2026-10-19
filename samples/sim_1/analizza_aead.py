@@ -17,7 +17,11 @@ che servono per la Fase E:
      darla, perche' per OMNeT++ le operazioni crittografiche sono istantanee.
 
 Uso:
-    python3 analizza_aead.py <cartella_risultati> [opzioni]
+    python3 analizza_aead.py <cartella_risultati> [<altra_cartella> ...] [opzioni]
+
+Si possono passare PIU' cartelle: i risultati vengono messi nella stessa
+tabella. Serve per confrontare le run gia' fatte (risultati_aead/) con quelle
+dei due finalisti NIST LWC (risultati_aead_lwc/) senza spostare file.
 
 Opzioni:
     --microbench FILE   output salvato di ./microbench, per la stima di CPU
@@ -26,6 +30,13 @@ Opzioni:
 Esempi:
     python3 analizza_aead.py risultati_aead/
     python3 analizza_aead.py risultati_aead/ --microbench microbench.txt --csv fase_e.csv
+    python3 analizza_aead.py risultati_aead/ risultati_aead_lwc/ --microbench microbench.txt
+
+Algoritmi riconosciuti: ascon128, aes128gcm, aes192gcm, aes256gcm,
+chacha20poly1305, xoodyak, tinyjambu128 (piu' la baseline 'nosec').
+ATTENZIONE: TinyJAMBU-128 ha un tag da 8 byte invece di 16, quindi i suoi
+BANT e REQ sono 8 byte piu' corti (145 e 113 B invece di 153 e 121 B). Il
+controllo di coerenza sulle dimensioni tiene conto di questa differenza.
 """
 
 import sys
@@ -311,14 +322,44 @@ NOMI_MICROBENCH = {
     'AES-192-GCM': 'aes192gcm',
     'AES-256-GCM': 'aes256gcm',
     'ChaCha20-Poly1305': 'chacha20poly1305',
+    'Xoodyak': 'xoodyak',
+    'TinyJAMBU-128': 'tinyjambu128',
 }
+
+# Lunghezza del tag AEAD (byte). Tutti 16 tranne TinyJAMBU-128.
+TAG_LEN = {'ascon128': 16, 'aes128gcm': 16, 'aes192gcm': 16, 'aes256gcm': 16,
+           'chacha20poly1305': 16, 'xoodyak': 16, 'tinyjambu128': 8}
+
+
+def dimensioni_attese(tag):
+    """
+    Dimensione attesa (byte) di FANT, BANT e REQ per una configurazione,
+    con la stessa formula usata in Ant2.cc:
+      FANT = 16 + firma(64)                         = 80 B  (non cifrato)
+      BANT = 20 + payload(53) + tag + firma(64)      = 137 + tag
+      REQ  = 16 + payload(25) + tag + firma(64)      = 105 + tag
+    Baseline senza sicurezza: 16 B per tutti e tre.
+    Restituisce None se l'AEAD non e' riconosciuto.
+    """
+    if tag == 'nosec':
+        return {'fant': 16.0, 'bant': 16.0, 'req': 16.0}
+    aead, _ = scomponi(tag)
+    if aead not in TAG_LEN:
+        return None
+    t = TAG_LEN[aead]
+    return {'fant': 80.0, 'bant': 137.0 + t, 'req': 105.0 + t}
 
 
 def parse_microbench(path):
     """
     Legge l'output di ./microbench e restituisce:
       tempi[tag_aead] = {'dec_bant': us, 'dec_req': us}
-      verifiche = {'ed25519': us, 'ecdsap256': us}
+      verifiche = {'ed25519': us, 'ecdsap256': us,
+                   'ed25519_tag8': us, 'ecdsap256_tag8': us}
+    Le voci '_tag8' sono la verifica del blocco firmato del BANT quando il
+    tag e' di 8 byte (TinyJAMBU-128): 73 B invece di 81. Le scrive solo la
+    versione aggiornata di microbench.cc; con un output vecchio mancano e si
+    usa il valore a 81 B (differenza trascurabile, ma va detto).
 
     ATTENZIONE al punto delicato: l'output contiene DUE righe
     "verifica blocco BANT", una nella sezione Ed25519 e una in quella ECDSA.
@@ -341,7 +382,10 @@ def parse_microbench(path):
 
         m = re.search(r'verifica\s+blocco BANT.*?:\s*([0-9.]+)\s*us', riga)
         if m:
-            verifiche[sezione] = float(m.group(1))
+            # Anche qui: la riga del blocco da 73 B (tag 8 B) NON deve
+            # sovrascrivere quella da 81 B, che e' il caso di tutti gli altri AEAD.
+            chiave = sezione + '_tag8' if '73 B' in riga else sezione
+            verifiche[chiave] = float(m.group(1))
     return tempi, verifiche
 
 
@@ -362,7 +406,8 @@ def fmt_ic(m, ic, cifre=3, scala=1.0):
 
 
 ORDINE = ['nosec', 'ascon128', 'ascon128_ecdsap256',
-          'chacha20poly1305', 'aes128gcm', 'aes192gcm', 'aes256gcm']
+          'chacha20poly1305', 'aes128gcm', 'aes192gcm', 'aes256gcm',
+          'xoodyak', 'tinyjambu128']
 
 
 def chiave_ordine(tag):
@@ -374,7 +419,19 @@ def main():
         print(__doc__)
         sys.exit(1)
 
-    cartella = sys.argv[1]
+    # Tutti gli argomenti posizionali (cioe' quelli che non sono opzioni o
+    # valori di opzioni) sono cartelle di risultati.
+    opzioni_con_valore = ('--microbench', '--csv', '--aead')
+    cartelle, salta = [], False
+    for a in sys.argv[1:]:
+        if salta:
+            salta = False
+            continue
+        if a in opzioni_con_valore:
+            salta = True
+            continue
+        cartelle.append(a)
+    cartella = ', '.join(cartelle)
     file_microbench = None
     if '--microbench' in sys.argv:
         file_microbench = sys.argv[sys.argv.index('--microbench') + 1]
@@ -385,7 +442,8 @@ def main():
         aead_forzato = sys.argv[sys.argv.index('--aead') + 1]
 
     # ---- 1. metriche di rete dai .sca ------------------------------------
-    file_sca = sorted(glob.glob(os.path.join(cartella, '**', '*.sca'), recursive=True))
+    file_sca = sorted(f for c in cartelle
+                      for f in glob.glob(os.path.join(c, '**', '*.sca'), recursive=True))
     if not file_sca:
         print(f"Nessun file .sca trovato in '{cartella}'.")
         sys.exit(1)
@@ -406,8 +464,9 @@ def main():
                 pass
 
     # ---- 2. conteggi di sicurezza dai .txt --------------------------------
-    file_tot = sorted(glob.glob(os.path.join(cartella, '**', 'ant2_security_totals_*.txt'),
-                                recursive=True))
+    file_tot = sorted(f for c in cartelle
+                      for f in glob.glob(os.path.join(c, '**', 'ant2_security_totals_*.txt'),
+                                         recursive=True))
     tot_per_tag = defaultdict(list)
     for percorso in file_tot:
         d = parse_totals(percorso)
@@ -545,11 +604,13 @@ def main():
         # La media complessiva NON e' un buon indicatore: dipende dalla
         # proporzione fra FANT, BANT e REQ, che cambia da run a run per effetto
         # della casualita'. La dimensione media di CIASCUN TIPO, invece, deve
-        # essere identica per tutti gli algoritmi, perche' tag e ciphertext
-        # hanno la stessa lunghezza in tutti e cinque.
+        # coincidere con quella attesa per la lunghezza del tag dell'algoritmo:
+        # identica per i sei AEAD con tag da 16 B, 8 B in meno su BANT e REQ
+        # per TinyJAMBU-128 (tag da 8 B).
         print()
         print("  Controllo di coerenza: dimensione media per TIPO di messaggio (byte)")
-        testa2 = f"    {'configurazione':<20}{'FANT':>10}{'BANT':>10}{'REQ':>10}"
+        testa2 = (f"    {'configurazione':<20}{'FANT':>10}{'BANT':>10}{'REQ':>10}"
+                  f"{'attesi F/B/R':>16}")
         print(testa2)
         print('    ' + '-' * (len(testa2) - 4))
         per_tipo = defaultdict(dict)
@@ -562,26 +623,28 @@ def main():
                 byte = sum(x[tipo + '_byte'] or 0 for x in d)
                 riga[tipo] = byte / msg if msg else None
             etichetta = f"{tag} ({carico})" if carico != '-' else tag
+            attese = dimensioni_attese(tag)
+            testo_attese = (f"{attese['fant']:.0f}/{attese['bant']:.0f}/{attese['req']:.0f}"
+                            if attese else 'n/d')
             print(f"    {etichetta:<20}{fmt(riga['fant'], 2):>10}"
-                  f"{fmt(riga['bant'], 2):>10}{fmt(riga['req'], 2):>10}")
-            if tag != 'nosec':
+                  f"{fmt(riga['bant'], 2):>10}{fmt(riga['req'], 2):>10}{testo_attese:>16}")
+            if attese:
                 for tipo, v in riga.items():
-                    if v is not None:
-                        per_tipo[tipo][etichetta] = v
+                    # Un tipo di messaggio mai trasmesso (v None) non e' un errore.
+                    if v is not None and abs(v - attese[tipo]) > 0.05:
+                        per_tipo[tipo][etichetta] = (v, attese[tipo])
 
         print()
-        problemi = []
-        for tipo, valori in per_tipo.items():
-            if len(valori) >= 2 and (max(valori.values()) - min(valori.values())) > 0.05:
-                problemi.append(tipo.upper())
-        if problemi:
-            print("    ATTENZIONE: la dimensione dei messaggi " + ', '.join(problemi) +
-                  " differisce fra algoritmi.")
+        if per_tipo:
+            for tipo, valori in per_tipo.items():
+                for etichetta, (v, att) in valori.items():
+                    print(f"    ATTENZIONE: {tipo.upper()} di {etichetta} misura {v:.2f} B, "
+                          f"attesi {att:.0f} B.")
             print("    Non dovrebbe accadere: verificare la configurazione.")
         else:
-            print("    CONTROLLO SUPERATO: per ogni tipo di messaggio la dimensione e'")
-            print("    identica in tutte le configurazioni, come atteso (tag da 16 B e")
-            print("    ciphertext lungo quanto il plaintext per tutti e cinque gli AEAD).")
+            print("    CONTROLLO SUPERATO: per ogni tipo di messaggio la dimensione coincide")
+            print("    con quella attesa (FANT 80 B; BANT 153 B e REQ 121 B per i sei AEAD con")
+            print("    tag da 16 B; BANT 145 B e REQ 113 B per TinyJAMBU-128, tag da 8 B).")
             print("    La media complessiva della tabella sopra varia solo perche' cambia")
             print("    la PROPORZIONE fra FANT, BANT e REQ da una run all'altra.")
 
@@ -626,6 +689,10 @@ def main():
                 if aead not in tempi or firma not in verifiche:
                     continue
                 v = verifiche[firma]
+                # Con tag da 8 B (TinyJAMBU-128) il blocco firmato e' piu' corto:
+                # si usa il tempo misurato su quel blocco, se disponibile.
+                if TAG_LEN.get(aead) == 8:
+                    v = verifiche.get(firma + '_tag8', v)
                 d = tempi[aead]['dec_bant']
                 cpu_ms = (rif_ver * v + rif_dec * d) / 1000.0
                 righe.append((tag, v, d, cpu_ms))
@@ -651,6 +718,10 @@ def main():
                     print("  La verifica della firma e' identica in tutte le configurazioni:")
                     print("  e' la voce dominante e non dipende dall'AEAD. La differenza fra")
                     print("  le righe viene solo dalla colonna 'decifra'.")
+                    if any(TAG_LEN.get(scomponi(t)[0]) == 8 for t, _, _, _ in righe):
+                        print("  Unica eccezione: con TinyJAMBU-128 (tag da 8 B) il blocco firmato")
+                        print("  del BANT e' di 73 B invece di 81, quindi la verifica e' misurata")
+                        print("  su un blocco leggermente piu' corto (effetto minimo).")
 
             print()
             print("  Conteggi effettivi osservati (NON usati per il confronto sopra):")

@@ -1,0 +1,29 @@
+=====================================================
+ TOTALI DI RETE - livello di sicurezza Ant2
+ Configurazione: TinyJAMBU-128 (confidenzialita' + integrita') + Ed25519 (autenticazione)
+ (nodi conteggiati finora: 19)
+=====================================================
+ config: aead=tinyjambu128 firma=ed25519 securityEnabled=true
+=====================================================
+ FANT   verificati: 54703   scartati: 0
+ BANT   verificati: 107762   scartati: 0
+ REQ    verificati: 712   scartati: 0
+-----------------------------------------------------
+ TOTALE verificati: 163177   scartati: 0
+ Percentuale pacchetti rifiutati: 0%
+-----------------------------------------------------
+ Motivi degli scarti:
+   identita' sconosciuta (non nel registro): 0
+   firma Ed25519 non valida:                 0
+   payload manomesso (tag AEAD errato):      0
+=====================================================
+ TRAFFICO DI CONTROLLO immesso sul canale
+ (messaggi originati + inoltrati, da tutti i nodi)
+-----------------------------------------------------
+ FANT : 15198 messaggi, 1215840 byte
+ BANT : 29091 messaggi, 4218195 byte
+ REQ  : 183 messaggi, 20679 byte
+-----------------------------------------------------
+ TOTALE: 44472 messaggi, 5454714 byte
+ Dimensione media: 122.655 byte/messaggio
+=====================================================

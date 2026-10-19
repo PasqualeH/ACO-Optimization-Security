@@ -7,7 +7,7 @@
 // Instituto Superior Tecnico
 // Lisboa - Portugal
 //
-// --- MODIFICATO: livello di sicurezza (ASCON-AEAD128 + Ed25519) ---
+// --- MODIFICATO: livello di sicurezza (AEAD configurabile + firma Ed25519/ECDSA) ---
 // 'coordenates' e 'allowed_accept_request' sono dati sensibili (la posizione
 // di un drone in difficolta', e se un candidato e' disponibile): vanno cifrati.
 // hopAddresses[] resta in chiaro: cambia ad ogni hop, non puo' essere protetto
@@ -33,7 +33,8 @@ class ReqM2 extends FieldsChunk
 
     // --- Payload cifrato: coordenates (3 double x/y/z) + allowed_accept_request.
     uint8_t ciphertext[];
-    uint8_t authTag[16];
+    // Tag AEAD a lunghezza variabile: 16 byte, oppure 8 con TinyJAMBU-128 (vedi BantM2.msg).
+    uint8_t authTag[];
 
     // --- Firma Ed25519 del mittente originale.
     uint8_t signature[64];

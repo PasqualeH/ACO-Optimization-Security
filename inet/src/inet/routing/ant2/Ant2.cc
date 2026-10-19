@@ -169,6 +169,9 @@ void Ant2::initialize(int stage)
         //  added for energy
         nominalCapacity = par("nominalCapacity");
 
+        // Diario dello scenario (solo osservazione, vedi Ant2Scenario.cc)
+        scenarioLogEnabled = par("scenarioLog").boolValue();
+
         // added for name
         name = par("name");
 
@@ -324,7 +327,7 @@ void Ant2::start()
                           << " LIVELLO DI SICUREZZA Ant2 attivo\n"
                           << "   - AEAD          : " << crypto.aeadName()
                           << "  (chiave " << crypto.groupKeyLen() << " B, nonce "
-                          << crypto.nonceLen() << " B, tag 16 B)\n"
+                          << crypto.nonceLen() << " B, tag " << crypto.tagLen() << " B)\n"
                           << "                     cifra e protegge il contenuto dei messaggi\n"
                           << "                     (coordinate, energia, throughput, cluster)\n"
                           << "   - Firma         : " << crypto.signatureName()
@@ -403,11 +406,13 @@ void Ant2::start()
     //if (name == 0){
     //    scheduleAfter(uniform(0.0, 2.0), event);
     //}
+    scenAvvio();   // diario dello scenario: solo scrittura su file
     scheduleAfter(uniform(0.0, 2.0), event);
 }
 
 void Ant2::finish()
 {
+    scenFine();    // diario dello scenario: riepilogo del drone
     // Riepilogo del livello di sicurezza, a fine run, per OGNI nodo.
     //
     // Scritto su file dedicati (nella working directory della simulazione) e non
@@ -544,6 +549,7 @@ void Ant2::finish()
 
 void Ant2::stop()
 {
+    scenStop();   // diario dello scenario
     cancelEvent(event);
     while (!forwardList->empty()) {
         ForwardEntry *fh = forwardList->front();
@@ -570,6 +576,7 @@ void Ant2::handleSelfMessage(cMessage *msg)
 
     if (charge_status <= 15.0 && allowed_send_request == true) {
         allowed_accept_request = false;
+        scenSos(charge_status);   // diario dello scenario
         int counter = 1;
         for (auto& interface80211ptr : wirelessInterfaces) {
             // MODIFICATO per sicurezza: cifratura + firma centralizzate in buildSecureReq().
@@ -807,6 +814,7 @@ void Ant2::handleSelfMessage(cMessage *msg)
 
         }
         scheduleAfter(helloInterval, event);
+        scenFant(charge_status, residualEnergy);   // diario dello scenario
     }
 
 
@@ -822,6 +830,7 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
     double residualEnergy = energylevel.get();
     double charge_status = (int)((residualEnergy/nominalCapacity) * 100);
     //EV_DETAIL << "Energy level is: " << charge_status << "%" << endl;
+    scenEnergia(charge_status);   // diario dello scenario: registra le soglie
 
 
 
@@ -850,6 +859,7 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
     if (charge_status <= 15.0 && allowed_send_request == true) {
         allowed_accept_request = false;
+        scenSos(charge_status);   // diario dello scenario
         int counter = 1;
         for (auto& interface80211ptr : wirelessInterfaces) {
             // MODIFICATO per sicurezza: cifratura + firma centralizzate in buildSecureReq().
@@ -1262,6 +1272,7 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                                     << ", Energy: " << energy << ", Throughput: " << throughput
                                     << ", Distance: " << distance << ", Hops: " << hops << "\n";
                         }
+                        scenBant(src_string, energy, allowed_accept_request_node);   // diario dello scenario
 
                         /////////////////////////////////////////////////////////////////////////////////////
                         ///////// Save routing table Ant ////////////////////////////////////
@@ -1486,6 +1497,9 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
                     //////////////////////////////////////////
 
+                    // diario dello scenario: esito di una richiesta d'aiuto (prima che cambi lo stato)
+                    scenRichiestaRicevuta(src, dst, (dst == source) || (dst == x2ppp_address),
+                                          allowed_accept_request, coordenates_to_be_recruited_coord);
                     if ((allowed_accept_request == true) && ((dst == source) || (dst == x2ppp_address))) {
                         EV_INFO << "PETICION" << endl;
                         double timer = 1;
@@ -2033,6 +2047,7 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                                     << ", Energy: " << energy << ", Throughput: " << throughput
                                     << ", Distance: " << distance << ", Hops: " << hops << "\n";
                         }
+                        scenBant(src_string, energy, allowed_accept_request_node);   // diario dello scenario
 
                         /////////////////////////////////////////////////////////////////////////////////////
                         ///////// Save routing table Ant ////////////////////////////////////
@@ -2276,6 +2291,9 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     ///////////////// Processing when Unicast Fant arrives to destination ///////////////
 
 
+                    // diario dello scenario: esito di una richiesta d'aiuto (prima che cambi lo stato)
+                    scenRichiestaRicevuta(src, dst, (dst == source_a) || (dst == source_b) || (dst == x2ppp_address),
+                                          allowed_accept_request, coordenates_to_be_recruited_coord_dual);
                     if ((allowed_accept_request == true) && ((dst == source_a) || (dst == source_b) || (dst == x2ppp_address))) {
                         EV_INFO << "PETICION" << endl;
                         double timer = 1;
@@ -2427,6 +2445,7 @@ void Ant2::updatePheromoneValues()
 
     if (charge_status <= 15.0 && allowed_send_request == true) {
         allowed_accept_request = false;
+        scenSos(charge_status);   // diario dello scenario
 
         // MODIFICATO per sicurezza: cifratura + firma centralizzate in buildSecureReq().
         Ipv4Address source = (interface80211ptr->getProtocolData<Ipv4InterfaceData>()->getIPAddress());
@@ -2825,8 +2844,12 @@ void Ant2::sendRecruiting()
 
             }
 
+            // diario dello scenario: copia (in sola lettura) dei candidati con il punteggio
+            std::vector<std::pair<std::string, double>> scenCandidati(results.begin(), results.end());
+
             if (results.empty()) {
                 EV_INFO << "No candidates to recruit" << endl;
+                scenAiuto(scenCandidati, "", 0.0);   // diario dello scenario
             } else {
                 EV_INFO << "Find candidate to recruit" << endl;
                 std::string bestAddress;
@@ -2845,6 +2868,7 @@ void Ant2::sendRecruiting()
                 // viene scelto in modo sproporzionato rispetto agli altri, che e'
                 // il sintomo osservabile degli attacchi sul contenuto.
                 recruiting_totali++;
+                scenAiuto(scenCandidati, bestAddress, maxResult);   // diario dello scenario
                 securityEventLog() << simTime() << "  " << getFullPath()
                                    << "  RECRUITING  vincitore " << bestAddress
                                    << "  punteggio " << maxResult
@@ -2890,6 +2914,8 @@ void Ant2::sendRecruiting()
             }
 
         }
+        else
+            scenAiutoNonPossibile();   // diario dello scenario
 
 
     }
@@ -2966,6 +2992,7 @@ void Ant2::moveUav()
         newPosition1 = Coord(500, 300, 50);
     }*/
 
+    scenSpostamento(node_position, newPosition1);   // diario dello scenario
     mobility->setPosition(newPosition1);  // Manually set position
     allowed_accept_request = false;
     allowed_send_request = true;
@@ -2974,6 +3001,7 @@ void Ant2::moveUav()
 void Ant2::moveUav_charge()
 {
     EV_DETAIL << "Moving UAV to charge" << endl;
+    scenRicarica();   // diario dello scenario
     Coord newPosition1 = Coord(1000, 1000, 50);
     mobility->setPosition(newPosition1);  // Manually set position
     allowed_accept_request = false;
@@ -3085,7 +3113,9 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
 
     // 4) Cifratura + tag di autenticita'/integrita' (AEAD configurato).
     std::vector<uint8_t> ciphertext;
-    uint8_t tag[Ant2Crypto::TAG_LEN];
+    // Il buffer e' dimensionato sul caso peggiore (16 B); se ne usano
+    // crypto.tagLen() byte: 16 per tutti gli AEAD tranne TinyJAMBU-128 (8).
+    uint8_t tag[Ant2Crypto::MAX_TAG_LEN];
     uint8_t signature[Ant2Crypto::SIG_LEN];
 
     if (securityEnabled) {
@@ -3095,7 +3125,7 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
         // 5) Firma Ed25519 su AAD||ciphertext||tag: lega il tutto all'identita' del mittente.
         std::vector<uint8_t> toSign = aad;
         toSign.insert(toSign.end(), ciphertext.begin(), ciphertext.end());
-        toSign.insert(toSign.end(), tag, tag + Ant2Crypto::TAG_LEN);
+        toSign.insert(toSign.end(), tag, tag + crypto.tagLen());
         crypto.sign(toSign, signature);
     }
     else {
@@ -3103,7 +3133,7 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
         // ne' firma. I dati arrivano comunque a destinazione (il ricevente li
         // legge senza decifrare), ma il messaggio torna alle dimensioni originali.
         ciphertext = plaintext;
-        memset(tag, 0, Ant2Crypto::TAG_LEN);
+        memset(tag, 0, Ant2Crypto::MAX_TAG_LEN);
         memset(signature, 0, Ant2Crypto::SIG_LEN);
     }
 
@@ -3112,7 +3142,7 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
     // Con la sicurezza attiva la lunghezza dichiarata include tag e firma; nel
     // baseline resta quella originale del protocollo (128 bit).
     if (securityEnabled)
-        bant_message->setChunkLength(B(20 + ciphertext.size() + Ant2Crypto::TAG_LEN + Ant2Crypto::SIG_LEN));
+        bant_message->setChunkLength(B(20 + ciphertext.size() + crypto.tagLen() + Ant2Crypto::SIG_LEN));
     else
         bant_message->setChunkLength(b(128));
     bant_message->setSrcAddress(source);
@@ -3125,7 +3155,8 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
     bant_message->setCiphertextArraySize(ciphertext.size());
     for (size_t i = 0; i < ciphertext.size(); i++)
         bant_message->setCiphertext(i, ciphertext[i]);
-    for (int i = 0; i < Ant2Crypto::TAG_LEN; i++)
+    bant_message->setAuthTagArraySize(crypto.tagLen());
+    for (int i = 0; i < crypto.tagLen(); i++)
         bant_message->setAuthTag(i, tag[i]);
     for (int i = 0; i < Ant2Crypto::SIG_LEN; i++)
         bant_message->setSignature(i, signature[i]);
@@ -3195,8 +3226,21 @@ bool Ant2::verifyAndDecryptBant(const Ptr<const BantM2>& recHello,
     for (size_t i = 0; i < ciphertext.size(); i++)
         ciphertext[i] = recHello->getCiphertext(i);
 
-    uint8_t tag[Ant2Crypto::TAG_LEN];
-    for (int i = 0; i < Ant2Crypto::TAG_LEN; i++)
+    // Il tag deve avere esattamente la lunghezza prevista dall'AEAD configurato
+    // (16 B, oppure 8 B con TinyJAMBU-128). Il controllo viene PRIMA di leggerlo:
+    // un array piu' corto farebbe leggere fuori dai limiti. Con una rete
+    // configurata in modo coerente non scatta mai; scatterebbe solo con un
+    // messaggio malformato o con nodi configurati con AEAD diversi.
+    if (recHello->getAuthTagArraySize() != static_cast<size_t>(crypto.tagLen())) {
+        sec_bant_fail++;
+        sec_fail_aead++;
+        logScarto("BANT", recHello->getSrcAddress(), "tag AEAD di lunghezza inattesa", sec_bant_fail);
+        EV_WARN << "Ant2/security: BANT scartato, tag di " << recHello->getAuthTagArraySize()
+                << " byte invece di " << crypto.tagLen() << endl;
+        return false;
+    }
+    uint8_t tag[Ant2Crypto::MAX_TAG_LEN];
+    for (int i = 0; i < crypto.tagLen(); i++)
         tag[i] = recHello->getAuthTag(i);
 
     uint8_t signature[Ant2Crypto::SIG_LEN];
@@ -3205,7 +3249,7 @@ bool Ant2::verifyAndDecryptBant(const Ptr<const BantM2>& recHello,
 
     std::vector<uint8_t> toVerify = aad;
     toVerify.insert(toVerify.end(), ciphertext.begin(), ciphertext.end());
-    toVerify.insert(toVerify.end(), tag, tag + Ant2Crypto::TAG_LEN);
+    toVerify.insert(toVerify.end(), tag, tag + crypto.tagLen());
 
     // 3) Verifica della firma: solo chi possiede la chiave privata di srcAddress
     //    puo' averla prodotta. Fatta PRIMA di decifrare e PRIMA di toccare
@@ -3302,7 +3346,9 @@ Packet *Ant2::buildSecureReq(Ipv4Address dstAddress, unsigned int seq, Ipv4Addre
     crypto.deriveNonce(srcInt, seq, Ant2Crypto::MSG_REQ, nonce);
 
     std::vector<uint8_t> ciphertext;
-    uint8_t tag[Ant2Crypto::TAG_LEN];
+    // Il buffer e' dimensionato sul caso peggiore (16 B); se ne usano
+    // crypto.tagLen() byte: 16 per tutti gli AEAD tranne TinyJAMBU-128 (8).
+    uint8_t tag[Ant2Crypto::MAX_TAG_LEN];
     uint8_t signature[Ant2Crypto::SIG_LEN];
 
     if (securityEnabled) {
@@ -3311,19 +3357,19 @@ Packet *Ant2::buildSecureReq(Ipv4Address dstAddress, unsigned int seq, Ipv4Addre
 
         std::vector<uint8_t> toSign = aad;
         toSign.insert(toSign.end(), ciphertext.begin(), ciphertext.end());
-        toSign.insert(toSign.end(), tag, tag + Ant2Crypto::TAG_LEN);
+        toSign.insert(toSign.end(), tag, tag + crypto.tagLen());
         crypto.sign(toSign, signature);
     }
     else {
         // BASELINE: payload in chiaro, nessun tag, nessuna firma.
         ciphertext = plaintext;
-        memset(tag, 0, Ant2Crypto::TAG_LEN);
+        memset(tag, 0, Ant2Crypto::MAX_TAG_LEN);
         memset(signature, 0, Ant2Crypto::SIG_LEN);
     }
 
     auto req_message = makeShared<ReqM2>();
     if (securityEnabled)
-        req_message->setChunkLength(B(16 + ciphertext.size() + Ant2Crypto::TAG_LEN + Ant2Crypto::SIG_LEN));
+        req_message->setChunkLength(B(16 + ciphertext.size() + crypto.tagLen() + Ant2Crypto::SIG_LEN));
     else
         req_message->setChunkLength(b(128));
     req_message->setSrcAddress(source);
@@ -3336,7 +3382,8 @@ Packet *Ant2::buildSecureReq(Ipv4Address dstAddress, unsigned int seq, Ipv4Addre
     req_message->setCiphertextArraySize(ciphertext.size());
     for (size_t i = 0; i < ciphertext.size(); i++)
         req_message->setCiphertext(i, ciphertext[i]);
-    for (int i = 0; i < Ant2Crypto::TAG_LEN; i++)
+    req_message->setAuthTagArraySize(crypto.tagLen());
+    for (int i = 0; i < crypto.tagLen(); i++)
         req_message->setAuthTag(i, tag[i]);
     for (int i = 0; i < Ant2Crypto::SIG_LEN; i++)
         req_message->setSignature(i, signature[i]);
@@ -3393,8 +3440,21 @@ bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
     for (size_t i = 0; i < ciphertext.size(); i++)
         ciphertext[i] = recHello->getCiphertext(i);
 
-    uint8_t tag[Ant2Crypto::TAG_LEN];
-    for (int i = 0; i < Ant2Crypto::TAG_LEN; i++)
+    // Il tag deve avere esattamente la lunghezza prevista dall'AEAD configurato
+    // (16 B, oppure 8 B con TinyJAMBU-128). Il controllo viene PRIMA di leggerlo:
+    // un array piu' corto farebbe leggere fuori dai limiti. Con una rete
+    // configurata in modo coerente non scatta mai; scatterebbe solo con un
+    // messaggio malformato o con nodi configurati con AEAD diversi.
+    if (recHello->getAuthTagArraySize() != static_cast<size_t>(crypto.tagLen())) {
+        sec_req_fail++;
+        sec_fail_aead++;
+        logScarto("REQ", recHello->getSrcAddress(), "tag AEAD di lunghezza inattesa", sec_req_fail);
+        EV_WARN << "Ant2/security: REQ scartato, tag di " << recHello->getAuthTagArraySize()
+                << " byte invece di " << crypto.tagLen() << endl;
+        return false;
+    }
+    uint8_t tag[Ant2Crypto::MAX_TAG_LEN];
+    for (int i = 0; i < crypto.tagLen(); i++)
         tag[i] = recHello->getAuthTag(i);
 
     uint8_t signature[Ant2Crypto::SIG_LEN];
@@ -3403,7 +3463,7 @@ bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
 
     std::vector<uint8_t> toVerify = aad;
     toVerify.insert(toVerify.end(), ciphertext.begin(), ciphertext.end());
-    toVerify.insert(toVerify.end(), tag, tag + Ant2Crypto::TAG_LEN);
+    toVerify.insert(toVerify.end(), tag, tag + crypto.tagLen());
 
     if (!crypto.verify(toVerify, signature, srcInt)) {
         sec_req_fail++;

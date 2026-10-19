@@ -1,0 +1,17 @@
+# Log dettagliato degli eventi del livello di sicurezza Ant2
+# Configurazione: livello di sicurezza DISATTIVATO (baseline senza crittografia)
+# formato: <tempo_simulato> <nodo> <ESITO> <tipo_messaggio> <mittente> [motivo]
+# tipi: FANT=scoperta rotta, BANT=risposta con stato, REQ=richiesta recruiting
+#
+# Esempi di analisi a fine run:
+#   grep -c OK ant2_security_events.log            -> pacchetti accettati
+#   grep SCARTO ant2_security_events.log           -> tutti i rifiuti, con motivo
+#   grep SCARTO ant2_security_events.log | grep 10.0.0.248   -> rifiuti di un dato mittente
+#
+21.956980679192  sim1.adh[3].routing  RECRUITING  vincitore 10.0.1.105  punteggio 1.34307  su 9 candidati
+26.56308516022  sim1.adh[2].routing  RECRUITING  vincitore 10.0.1.102  punteggio 1.43379  su 9 candidati
+31.207699319348  sim1.adh[0].routing  RECRUITING  vincitore 10.0.1.108  punteggio 1.39347  su 6 candidati
+32.755774161774  sim1.adh[4].routing  RECRUITING  vincitore 10.0.1.106  punteggio 1.25208  su 7 candidati
+38.47193774209  sim1.adh[11].routing  RECRUITING  vincitore 10.0.1.111  punteggio 1.21146  su 6 candidati
+42.424267124384  sim1.adh[1].routing  RECRUITING  vincitore 10.0.1.111  punteggio 1.21582  su 6 candidati
+47.519759533004  sim1.adh[9].routing  RECRUITING  vincitore 10.0.1.104  punteggio 1.30722  su 5 candidati

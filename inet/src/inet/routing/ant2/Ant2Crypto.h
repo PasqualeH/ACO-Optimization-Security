@@ -2,8 +2,9 @@
 //
 // Wrapper C++ minimale che espone ad Ant2.cc le primitive di sicurezza:
 //   - un algoritmo AEAD (confidenzialita' + integrita' del payload sensibile),
-//     SCEGLIBILE a tempo di configurazione fra Ascon-AEAD128, AES-128/192/256-GCM
-//     e ChaCha20-Poly1305. La scelta si fa dal file .ini, senza ricompilare.
+//     SCEGLIBILE a tempo di configurazione fra Ascon-AEAD128, AES-128/192/256-GCM,
+//     ChaCha20-Poly1305, Xoodyak e TinyJAMBU-128. La scelta si fa dal file .ini,
+//     senza ricompilare.
 //   - Ed25519 per l'autenticazione: chi ha davvero generato il messaggio
 //
 // Non contiene crittografia "fatta in casa": si appoggia solo alle
@@ -29,15 +30,22 @@ namespace ant2 { class Ant2KeyAuthority; }  // forward declaration, vedi useCent
 class Ant2Crypto {
   public:
     // La chiave di gruppo ha lunghezza diversa a seconda dell'AEAD scelto
-    // (16 B per Ascon e AES-128, 24 B per AES-192, 32 B per AES-256 e ChaCha20).
+    // (16 B per Ascon, AES-128, Xoodyak e TinyJAMBU-128; 24 B per AES-192;
+    // 32 B per AES-256 e ChaCha20).
     // Il buffer e' dimensionato sul caso peggiore; la lunghezza realmente in uso
     // si legge con groupKeyLen().
     static const int MAX_GROUP_KEY_LEN = ant2aead::MAX_KEY_LEN;   // 32
-    // Anche il nonce cambia (16 B per Ascon, 12 B per GCM e ChaCha20-Poly1305).
+    // Anche il nonce cambia (16 B per Ascon e Xoodyak, 12 B per GCM,
+    // ChaCha20-Poly1305 e TinyJAMBU-128).
     // La costante resta 16 perche' e' il caso peggiore e perche' Ant2.cc la usa
     // per dimensionare i buffer sullo stack: i byte in eccesso restano a zero.
     static const int NONCE_LEN     = ant2aead::MAX_NONCE_LEN;     // 16
-    static const int TAG_LEN       = ant2aead::TAG_LEN;           // 16, uguale per tutti gli AEAD
+    // Il tag di autenticazione NON ha piu' lunghezza fissa: 16 B per tutti gli
+    // AEAD tranne TinyJAMBU-128, che ne usa 8. MAX_TAG_LEN serve solo a
+    // dimensionare i buffer; i byte da usare davvero si leggono con tagLen().
+    // (La vecchia costante TAG_LEN = 16 e' stata eliminata apposta: cosi' ogni
+    // punto che la usava ha dovuto essere rivisto, e nessuno resta a presumere 16.)
+    static const int MAX_TAG_LEN   = ant2aead::MAX_TAG_LEN;       // 16
     // Le chiavi di firma hanno lunghezza diversa a seconda dell'algoritmo:
     //   Ed25519      pubblica 32 B, privata 64 B
     //   ECDSA P-256  pubblica 64 B, privata 32 B
@@ -74,6 +82,7 @@ class Ant2Crypto {
     const char *aeadName() const { return ant2aead::name(aead); }
     int groupKeyLen() const { return ant2aead::keyLen(aead); }
     int nonceLen() const { return ant2aead::nonceLen(aead); }
+    int tagLen() const { return ant2aead::tagLen(aead); }
 
     // --- Caricamento chiavi (da chiamare una volta in initialize(), per nodo) ---
 
@@ -118,7 +127,8 @@ class Ant2Crypto {
 
     // --- Operazioni usate ad ogni invio/ricezione ---
 
-    // Deriva un nonce a 16 byte, unico per (nodo mittente, sequencenumber, tipo messaggio).
+    // Deriva un nonce, unico per (nodo mittente, sequencenumber, tipo messaggio).
+    // Il buffer e' sempre di 16 byte; all'AEAD ne arrivano nonceLen() (16 o 12).
     // Non viene mai trasmesso: chi riceve lo ricalcola da campi gia' presenti nel pacchetto.
     void deriveNonce(uint32_t srcAddress, uint32_t sequencenumber, MsgType type,
                       uint8_t out[NONCE_LEN]) const;
@@ -130,10 +140,10 @@ class Ant2Crypto {
                  const std::vector<uint8_t>& aad,
                  const uint8_t nonce[NONCE_LEN],
                  std::vector<uint8_t>& outCiphertext,
-                 uint8_t outTag[TAG_LEN]) const;
+                 uint8_t outTag[MAX_TAG_LEN]) const;   // scrive tagLen() byte
 
     bool decrypt(const std::vector<uint8_t>& ciphertext,
-                 const uint8_t tag[TAG_LEN],
+                 const uint8_t tag[MAX_TAG_LEN],       // legge tagLen() byte
                  const std::vector<uint8_t>& aad,
                  const uint8_t nonce[NONCE_LEN],
                  std::vector<uint8_t>& outPlaintext) const;

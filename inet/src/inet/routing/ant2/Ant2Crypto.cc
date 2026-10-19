@@ -21,7 +21,8 @@ void Ant2Crypto::setAeadAlgorithm(const std::string& name) {
     ant2aead::Algorithm parsed;
     if (!ant2aead::parseName(name, parsed))
         throw std::runtime_error("Ant2Crypto: algoritmo AEAD sconosciuto: '" + name +
-            "'. Valori ammessi: ascon128, aes128gcm, aes192gcm, aes256gcm, chacha20poly1305");
+            "'. Valori ammessi: ascon128, aes128gcm, aes192gcm, aes256gcm, chacha20poly1305, "
+            "xoodyak, tinyjambu128");
     aead = parsed;
 }
 
@@ -96,8 +97,12 @@ void Ant2Crypto::deriveNonce(uint32_t srcAddress, uint32_t sequencenumber, MsgTy
     // Il buffer e' sempre di 16 byte, ma solo i primi nonceLen() vengono
     // effettivamente passati all'AEAD; il resto resta a zero.
     //
-    // Ascon (16 B):  src(4) || seq(4) || "ANT2"(4) || tipo(1) || zeri(3)
-    // GCM/ChaCha (12 B): src(4) || seq(4) || tipo(1) || zeri(3)
+    // Ascon, Xoodyak (16 B):                src(4) || seq(4) || "ANT2"(4) || tipo(1) || zeri(3)
+    // GCM, ChaCha20, TinyJAMBU-128 (12 B):  src(4) || seq(4) || tipo(1) || zeri(3)
+    //
+    // La scelta del formato dipende SOLO da nonceLen(), non dal nome
+    // dell'algoritmo: Xoodyak riceve quindi esattamente lo stesso nonce di
+    // Ascon e TinyJAMBU-128 lo stesso di AES-GCM, a parita' di messaggio.
     //
     // La costante di dominio "ANT2" serve solo alla separazione di dominio e
     // viene omessa nella variante a 12 byte: l'UNICITA' del nonce, che e' la
@@ -119,7 +124,7 @@ bool Ant2Crypto::encrypt(const std::vector<uint8_t>& plaintext,
                           const std::vector<uint8_t>& aad,
                           const uint8_t nonce[NONCE_LEN],
                           std::vector<uint8_t>& outCiphertext,
-                          uint8_t outTag[TAG_LEN]) const {
+                          uint8_t outTag[MAX_TAG_LEN]) const {
     outCiphertext.resize(plaintext.size());
     return ant2aead::encrypt(aead, groupKey, nonce,
                              aad.data(), aad.size(),
@@ -128,7 +133,7 @@ bool Ant2Crypto::encrypt(const std::vector<uint8_t>& plaintext,
 }
 
 bool Ant2Crypto::decrypt(const std::vector<uint8_t>& ciphertext,
-                          const uint8_t tag[TAG_LEN],
+                          const uint8_t tag[MAX_TAG_LEN],
                           const std::vector<uint8_t>& aad,
                           const uint8_t nonce[NONCE_LEN],
                           std::vector<uint8_t>& outPlaintext) const {

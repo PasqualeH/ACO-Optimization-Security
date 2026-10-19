@@ -35,10 +35,19 @@
 // processore. E' una scelta voluta, perche' il bersaglio del progetto e' un
 // drone con microcontrollore (senza acceleratore AES), non un x86.
 //
-// Compilazione (dalla cartella inet/src/inet/routing/ant2/):
-//   g++ -std=c++17 -O2 -I. -I../../.. -o microbench microbench.cc \
-//       Ant2Aead.cc crypto/ascon/*.cc crypto/aead/*.cc crypto/ed25519/*.cc
-//   ./microbench
+// Compilazione (dalla cartella inet/src/inet/routing/ant2/), con lo STESSO
+// compilatore usato per INET (clang), perche' i tempi dipendono dal compilatore:
+//   clang++ -std=c++17 -O2 -DANT2_MICROBENCH_STANDALONE -I. -I../../.. -o /tmp/microbench \
+//       microbench.cc Ant2Aead.cc Ant2Sign.cc \
+//       crypto/ascon/*.cc crypto/aead/*.cc crypto/ed25519/*.cc crypto/ecdsa/uECC.cc \
+//       crypto/xoodyak/*.cc crypto/tinyjambu/*.cc crypto/lwc-common/*.cc
+//   /tmp/microbench
+//
+// Aggiornamento (Xoodyak, TinyJAMBU-128): il tag non e' piu' sempre di 16 B.
+// Con TinyJAMBU-128 e' di 8 B, quindi anche il blocco firmato del BANT
+// (AAD || ciphertext || tag) passa da 81 a 73 B e quello del REQ da 53 a 45 B.
+// Per confrontare a parita' di lavoro REALE, la verifica della firma viene
+// misurata sul blocco della lunghezza giusta per ciascun AEAD.
 // =============================================================================
 
 #include <chrono>
@@ -47,6 +56,9 @@
 #include <cstdio>
 #include <vector>
 #include <algorithm>
+#include <fstream>
+#include <map>
+#include <string>
 
 #include "inet/routing/ant2/Ant2Aead.h"
 #include "inet/routing/ant2/Ant2Sign.h"
@@ -79,8 +91,23 @@ static double misura(F&& op, int iter, int campioni = 11)
 
 struct Risultato {
     const char *nome;
+    ant2aead::Algorithm alg;
     double encBant, decBant, encReq, decReq;
 };
+
+// Modello del processore, letto da /proc/cpuinfo (Linux): va riportato nella
+// didascalia delle tabelle in tesi, perche' i tempi assoluti dipendono dalla macchina.
+static std::string modelloCpu()
+{
+    std::ifstream f("/proc/cpuinfo");
+    std::string line;
+    while (std::getline(f, line))
+        if (line.rfind("model name", 0) == 0) {
+            size_t p = line.find(':');
+            return p == std::string::npos ? line : line.substr(p + 2);
+        }
+    return "sconosciuto (non Linux?)";
+}
 
 static Risultato benchAead(ant2aead::Algorithm alg)
 {
@@ -92,7 +119,7 @@ static Risultato benchAead(ant2aead::Algorithm alg)
     std::vector<uint8_t> ptBant(PT_BANT, 0x5A), ptReq(PT_REQ, 0x5A);
     std::vector<uint8_t> ctBant(PT_BANT), ctReq(PT_REQ);
     std::vector<uint8_t> outBant(PT_BANT), outReq(PT_REQ);
-    uint8_t tagBant[16], tagReq[16];
+    uint8_t tagBant[ant2aead::MAX_TAG_LEN], tagReq[ant2aead::MAX_TAG_LEN];
 
     // Cifrature di riferimento, per poter poi misurare la decifratura
     ant2aead::encrypt(alg, key, nonce, aad.data(), aad.size(),
@@ -102,13 +129,14 @@ static Risultato benchAead(ant2aead::Algorithm alg)
 
     Risultato r;
     r.nome = ant2aead::name(alg);
-    r.encBant = misura([&]{ uint8_t t[16];
+    r.alg = alg;
+    r.encBant = misura([&]{ uint8_t t[ant2aead::MAX_TAG_LEN];
         ant2aead::encrypt(alg, key, nonce, aad.data(), aad.size(),
                           ptBant.data(), PT_BANT, ctBant.data(), t); }, 20000);
     r.decBant = misura([&]{
         ant2aead::decrypt(alg, key, nonce, aad.data(), aad.size(),
                           ctBant.data(), PT_BANT, tagBant, outBant.data()); }, 20000);
-    r.encReq  = misura([&]{ uint8_t t[16];
+    r.encReq  = misura([&]{ uint8_t t[ant2aead::MAX_TAG_LEN];
         ant2aead::encrypt(alg, key, nonce, aad.data(), aad.size(),
                           ptReq.data(), PT_REQ, ctReq.data(), t); }, 20000);
     r.decReq  = misura([&]{
@@ -125,22 +153,29 @@ int main()
     printf(" MICRO-BENCHMARK delle primitive crittografiche di Ant2\n");
     printf(" Tempi MEDIANI per singola operazione, misurati su QUESTA macchina.\n");
     printf(" Implementazioni software (nessuna istruzione AES-NI).\n");
+    printf(" Processore : %s\n", modelloCpu().c_str());
+#if defined(__clang__)
+    printf(" Compilatore: clang %s\n", __clang_version__);
+#elif defined(__GNUC__)
+    printf(" Compilatore: g++ %s\n", __VERSION__);
+#endif
     printf("=====================================================================\n\n");
 
     const ant2aead::Algorithm algs[] = {
         ant2aead::ASCON128, ant2aead::AES128GCM, ant2aead::AES192GCM,
-        ant2aead::AES256GCM, ant2aead::CHACHA20POLY1305
+        ant2aead::AES256GCM, ant2aead::CHACHA20POLY1305,
+        ant2aead::XOODYAK, ant2aead::TINYJAMBU128
     };
 
     printf("--- AEAD: confidenzialita' + integrita' -------------------------------------\n");
-    printf("%-20s %6s %6s | %11s %11s | %11s %11s\n",
-           "algoritmo", "chiave", "nonce", "cifra 53B", "decifra 53B", "cifra 25B", "decifra 25B");
+    printf("%-20s %6s %6s %5s | %11s %11s | %11s %11s\n",
+           "algoritmo", "chiave", "nonce", "tag", "cifra 53B", "decifra 53B", "cifra 25B", "decifra 25B");
     std::vector<Risultato> risultati;
     for (auto a : algs) {
         Risultato r = benchAead(a);
         risultati.push_back(r);
-        printf("%-20s %4d B %4d B | %8.3f us %8.3f us | %8.3f us %8.3f us\n",
-               r.nome, ant2aead::keyLen(a), ant2aead::nonceLen(a),
+        printf("%-20s %4d B %4d B %3d B | %8.3f us %8.3f us | %8.3f us %8.3f us\n",
+               r.nome, ant2aead::keyLen(a), ant2aead::nonceLen(a), ant2aead::tagLen(a),
                r.encBant, r.decBant, r.encReq, r.decReq);
     }
 
@@ -174,6 +209,15 @@ int main()
     printf("  firma    blocco REQ  (53 B)     : %8.3f us\n", signReq);
     printf("  verifica blocco REQ  (53 B)     : %8.3f us\n", verReq);
 
+    // Blocchi firmati con tag da 8 B (TinyJAMBU-128): 8 byte piu' corti.
+    std::vector<uint8_t> bantData8(AAD_LEN + PT_BANT + 8, 0x22); // 73 B
+    uint8_t sigBant8[64];
+    ed25519_sign(sigBant8, bantData8.data(), bantData8.size(), pub, priv);
+    double signBant8 = misura([&]{ uint8_t s[64]; ed25519_sign(s, bantData8.data(), bantData8.size(), pub, priv); }, 2000);
+    double verBant8  = misura([&]{ ed25519_verify(sigBant8, bantData8.data(), bantData8.size(), pub); }, 2000);
+    printf("  firma    blocco BANT (73 B, tag 8 B): %8.3f us\n", signBant8);
+    printf("  verifica blocco BANT (73 B, tag 8 B): %8.3f us\n", verBant8);
+
     // --- Costo complessivo per messaggio, per ogni AEAD ----------------------
     // ECDSA P-256 sugli stessi blocchi
     unsigned char pubE[ant2sign::MAX_PUBKEY_LEN] = {0};
@@ -187,9 +231,19 @@ int main()
     double verBantE  = misura([&]{
         ant2sign::verify(ant2sign::ECDSA_P256, pubE, bantData.data(), bantData.size(), sigE); }, 500);
 
+    std::vector<uint8_t> bantData8E(AAD_LEN + PT_BANT + 8, 0x22);
+    uint8_t sigE8[64];
+    ant2sign::sign(ant2sign::ECDSA_P256, privE, pubE, bantData8E.data(), bantData8E.size(), sigE8);
+    double signBantE8 = misura([&]{ uint8_t s2[64];
+        ant2sign::sign(ant2sign::ECDSA_P256, privE, pubE, bantData8E.data(), bantData8E.size(), s2); }, 500);
+    double verBantE8  = misura([&]{
+        ant2sign::verify(ant2sign::ECDSA_P256, pubE, bantData8E.data(), bantData8E.size(), sigE8); }, 500);
+
     printf("\n--- ECDSA P-256 con SHA-256: autenticazione dell'origine -------------\n");
     printf("  firma    blocco BANT (81 B)     : %8.3f us   (%.1fx Ed25519)\n", signBantE, signBantE / signBant);
     printf("  verifica blocco BANT (81 B)     : %8.3f us   (%.1fx Ed25519)\n", verBantE, verBantE / verBant);
+    printf("  firma    blocco BANT (73 B)     : %8.3f us   (tag 8 B)\n", signBantE8);
+    printf("  verifica blocco BANT (73 B)     : %8.3f us   (tag 8 B)\n", verBantE8);
     printf("  chiavi: pubblica 64 B, privata 32 B, firma 64 B\n");
     printf("  Nota: ECDSA richiede un valore casuale fresco a ogni firma; Ed25519\n");
     printf("  e' deterministico e non ha questo requisito.\n");
@@ -198,22 +252,29 @@ int main()
     printf("  (invio = cifra + firma; ricezione = verifica + decifra)\n\n");
     printf("%-20s %14s %14s %12s\n", "AEAD + Ed25519", "invio", "ricezione", "quota AEAD");
     for (auto& r : risultati) {
-        double invio = r.encBant + signBant;
-        double ricez = r.decBant + verBant;
+        const bool tag8 = ant2aead::tagLen(r.alg) == 8;
+        double invio = r.encBant + (tag8 ? signBant8 : signBant);
+        double ricez = r.decBant + (tag8 ? verBant8 : verBant);
         printf("%-20s %11.3f us %11.3f us %10.1f %%\n",
                r.nome, invio, ricez, 100.0 * r.decBant / ricez);
     }
     printf("\n%-20s %14s %14s %12s\n", "AEAD + ECDSA-P256", "invio", "ricezione", "quota AEAD");
     for (auto& r : risultati) {
-        double invio = r.encBant + signBantE;
-        double ricez = r.decBant + verBantE;
+        const bool tag8 = ant2aead::tagLen(r.alg) == 8;
+        double invio = r.encBant + (tag8 ? signBantE8 : signBantE);
+        double ricez = r.decBant + (tag8 ? verBantE8 : verBantE);
         printf("%-20s %11.3f us %11.3f us %10.1f %%\n",
                r.nome, invio, ricez, 100.0 * r.decBant / ricez);
     }
 
     printf("\n--- Osservazione ----------------------------------------------------\n");
+    // Rapporto minimo e massimo calcolati su TUTTI gli AEAD misurati (prima
+    // erano presi da posizioni fisse della lista, che con i nuovi algoritmi
+    // non sono piu' necessariamente il piu' lento e il piu' veloce).
+    double decMin = risultati[0].decBant, decMax = risultati[0].decBant;
+    for (auto& r : risultati) { decMin = std::min(decMin, r.decBant); decMax = std::max(decMax, r.decBant); }
     printf("  La verifica di una firma Ed25519 costa da %.0f a %.0f volte piu' della\n",
-           verBant / risultati[3].decBant, verBant / risultati[0].decBant);
+           verBant / decMax, verBant / decMin);
     printf("  decifratura AEAD dello stesso messaggio. Il costo computazionale del\n");
     printf("  livello di sicurezza e' dominato dalla parte asimmetrica: la scelta\n");
     printf("  dell'AEAD sposta il totale di pochi punti percentuali.\n\n");
