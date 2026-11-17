@@ -1,0 +1,13 @@
+# Regola 5 della metrica di trust: controllo sulla banda massima dichiarata nei BANT
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# La banda massima dichiarata non deve mai cambiare, perche' nel codice viene letta
+# all'avvio e non cambia piu'. Si conta solo la prima dichiarazione, che diventa il
+# riferimento, e ogni cambiamento successivo, che e' una violazione certa.
+# Il controllo non coglie chi dichiara un valore falso sempre uguale dal primo BANT:
+# vedi la documentazione per il controllo sulla richiesta d'aiuto, provato e scartato.
+# Esempi:  grep VIOLATO ant2_banda*.log
+#
+5.364798825915  gat2  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 1.731 s e ora dichiara 0.800 Mbps al timbro 4.463 s: la banda massima di un drone non cambia mai
+5.364798957476  adh[6]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 1.731 s e ora dichiara 0.800 Mbps al timbro 4.463 s: la banda massima di un drone non cambia mai
+5.364799231617  adh[9]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 1.731 s e ora dichiara 0.800 Mbps al timbro 4.463 s: la banda massima di un drone non cambia mai
+5.364799429207  adh[5]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 1.731 s e ora dichiara 0.800 Mbps al timbro 4.463 s: la banda massima di un drone non cambia mai

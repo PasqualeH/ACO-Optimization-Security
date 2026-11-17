@@ -1,0 +1,12 @@
+# Regola 2 della metrica di trust: controllo sulla posizione dichiarata nei BANT
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# esiti: SUPERATO        spostamento giustificato da un evento e coerente con esso
+#        VIOLATO         c'e' l'evento ma la destinazione non corrisponde (certo)
+#        DUBBIO          nessun evento compatibile: puo' essere un attacco, ma anche
+#                        un REQ che chi controlla non ha ricevuto
+#        NON_APPLICABILE misura ripetuta o in disordine, oppure partenza non nota
+# Un drone fermo non produce nessun esito: contarlo riempirebbe i contatori.
+# Le violazioni e i dubbi sono sempre registrati; i superati e i non applicabili
+# solo con positionCheckLogAll = true.
+# Esempi:  grep VIOLATO ant2_posizione*.log      grep DUBBIO ant2_posizione*.log
+#

@@ -1,0 +1,17 @@
+# Regola 3 (controllo sulla disponibilita'): totali di rete per drone osservato
+# drone  superati  violati  (di cui dalla GCS)  dubbi  non_applicabili  nodi_che_lo_hanno_controllato
+adh[0]  791  0  (0)  0  0  18
+adh[10]  506  0  (0)  0  0  18
+adh[11]  694  0  (0)  0  0  18
+adh[12]  652  0  (0)  0  3  18
+adh[13]  599  0  (0)  0  0  18
+adh[14]  629  0  (0)  0  10  18
+adh[1]  501  0  (0)  0  0  18
+adh[2]  604  0  (0)  0  0  18
+adh[3]  650  0  (0)  0  0  18
+adh[4]  631  0  (0)  0  0  18
+adh[5]  558  0  (0)  0  17  18
+adh[6]  708  0  (0)  0  0  18
+adh[7]  453  0  (0)  0  4  18
+adh[8]  528  0  (0)  0  10  18
+adh[9]  576  0  (0)  0  0  18

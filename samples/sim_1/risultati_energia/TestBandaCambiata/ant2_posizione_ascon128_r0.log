@@ -1,0 +1,24 @@
+# Regola 2 della metrica di trust: controllo sulla posizione dichiarata nei BANT
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# esiti: SUPERATO        spostamento giustificato da un evento e coerente con esso
+#        VIOLATO         c'e' l'evento ma la destinazione non corrisponde (certo)
+#        DUBBIO          nessun evento compatibile: puo' essere un attacco, ma anche
+#                        un REQ che chi controlla non ha ricevuto
+#        NON_APPLICABILE misura ripetuta o in disordine, oppure partenza non nota
+# Un drone fermo non produce nessun esito: contarlo riempirebbe i contatori.
+# Le violazioni e i dubbi sono sempre registrati; i superati e i non applicabili
+# solo con positionCheckLogAll = true.
+# Esempi:  grep VIOLATO ant2_posizione*.log      grep DUBBIO ant2_posizione*.log
+#
+20.171691134597  adh[6]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (17.329 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento
+20.171691211059  adh[9]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (14.711 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento
+20.379762133587  gat2  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (14.711 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento
+20.379762764408  satellite[0]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (14.711 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento
+20.721308817185  gat3  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (14.711 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento
+20.723071157355  adh[11]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (14.711 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento
+20.72307129361  adh[13]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (14.711 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento
+20.723071487641  adh[12]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (14.711 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento
+20.723071566035  adh[10]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (14.711 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento
+20.723071566035  adh[14]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (14.711 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento
+21.635723586305  adh[7]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (14.711 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento
+21.635724058036  adh[8]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (14.711 s) a (555.0, 410.3, 50.0) (19.947 s), spostamento 145.4 m: nessun evento osservato che giustifichi lo spostamento

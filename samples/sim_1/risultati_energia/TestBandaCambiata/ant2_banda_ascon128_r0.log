@@ -1,0 +1,27 @@
+# Regola 5 della metrica di trust: controllo sulla banda massima dichiarata nei BANT
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# La banda massima dichiarata non deve mai cambiare, perche' nel codice viene letta
+# all'avvio e non cambia piu'. Si conta solo la prima dichiarazione, che diventa il
+# riferimento, e ogni cambiamento successivo, che e' una violazione certa.
+# Il controllo non coglie chi dichiara un valore falso sempre uguale dal primo BANT:
+# vedi la documentazione per il controllo sulla richiesta d'aiuto, provato e scartato.
+# Esempi:  grep VIOLATO ant2_banda*.log
+#
+60.357398825915  gat2  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 1.731 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+60.357398957476  adh[6]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 1.731 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+60.696521250199  adh[5]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 1.731 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+60.902580308679  adh[2]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+60.902580777746  adh[4]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+60.902580806496  adh[0]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+60.90258080896  gat1  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+60.902580851595  adh[9]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 1.731 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+60.949981595102  satellite[0]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+60.958234347747  gat3  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+61.017005559864  adh[13]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+61.017005753895  adh[12]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+61.017005832289  adh[10]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+61.017005832289  adh[14]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+61.248189421468  adh[1]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+61.248189421468  adh[3]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 9.925 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+61.248189582928  adh[8]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 59.090 s: la banda massima di un drone non cambia mai
+74.327947791789  adh[11]  adh[7]  banda massima  VIOLATO  dichiarava 0.400 Mbps dal timbro 4.463 s e ora dichiara 0.800 Mbps al timbro 72.747 s: la banda massima di un drone non cambia mai

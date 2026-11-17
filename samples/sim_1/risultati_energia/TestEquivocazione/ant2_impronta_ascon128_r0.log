@@ -1,0 +1,804 @@
+# Regola 0 della metrica di trust: coerenza fra canali (equivocazione)
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# controlli: 'coerenza fra canali'   impronta del nodo contro quella pubblicata dalla GCS
+#            'coerenza fra messaggi' due messaggi arrivati a questo stesso nodo, stesso
+#                                    timbro e valori diversi (non serve la GCS)
+# esiti: SUPERATO        le due impronte della stessa lettura coincidono
+#        VIOLATO         non coincidono: il drone ha dichiarato due cose diverse (certo)
+#        NON_APPLICABILE la GCS ha pubblicato una lettura che questo nodo non ha
+# Quando una lettura risulta falsificata, gli esiti che le regole 1-5 ne avevano tratto
+# vengono annullati e la riga lo riporta: giudicare il contenuto di una dichiarazione
+# che sappiamo falsa non ha senso, e al loro posto resta questa violazione certa.
+# Esempi:  grep VIOLATO ant2_impronta*.log
+#
+9.180033068098  adh[0]  adh[1]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.737 coincidono con quelli arrivati alla GCS
+9.180033068098  adh[0]  adh[1]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.475 coincidono con quelli arrivati alla GCS
+9.180033068098  adh[0]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.012 coincidono con quelli arrivati alla GCS
+9.180033068098  adh[0]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.037 coincidono con quelli arrivati alla GCS
+9.180033068098  adh[0]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 0.697 coincidono con quelli arrivati alla GCS
+9.180033068098  adh[0]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.092 coincidono con quelli arrivati alla GCS
+9.180033068098  adh[0]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.790 coincidono con quelli arrivati alla GCS
+9.180033068098  adh[0]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.065 coincidono con quelli arrivati alla GCS
+9.180033068098  adh[0]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.196 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[1]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.146 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[1]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.433 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[1]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 6.719 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[1]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.012 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[1]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.037 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[1]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 0.697 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[1]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.092 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[1]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.790 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[1]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.065 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[1]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.196 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[2]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.146 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[2]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.433 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[2]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 6.719 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[2]  adh[1]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.737 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[2]  adh[1]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.475 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[2]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 0.697 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[2]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.092 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[2]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.790 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[2]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.065 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[2]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.196 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[3]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.146 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[3]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.433 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[3]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 6.719 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[3]  adh[1]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.737 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[3]  adh[1]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.475 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[3]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.012 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[3]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.037 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[3]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.065 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[3]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.196 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[4]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.146 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[4]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.433 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[4]  adh[0]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 6.719 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[4]  adh[1]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.737 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[4]  adh[1]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.475 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[4]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 1.012 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[4]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.037 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[4]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 0.697 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[4]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.092 coincidono con quelli arrivati alla GCS
+9.180033712119  adh[4]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 5.790 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 11.393 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 13.458 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.524 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 9.474 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 12.092 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.711 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 11.077 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 13.761 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.102 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.463 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 9.925 coincidono con quelli arrivati alla GCS
+15.958548394067  adh[0]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.388 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[1]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 11.393 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[1]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 13.458 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[1]  adh[4]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 15.524 ma questo nodo non l'ha ricevuta
+15.958549038088  adh[1]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 9.474 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[1]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 12.092 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[1]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.711 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[1]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 11.077 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[1]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 13.761 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[1]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.102 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[1]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.463 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[1]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 9.925 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[1]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.388 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 11.393 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 13.458 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.524 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 9.474 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 12.092 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.711 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 11.077 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 13.761 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.102 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.463 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 9.925 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[2]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.388 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[3]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 11.393 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[3]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 13.458 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[3]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.524 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[3]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 9.474 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[3]  adh[5]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 12.092 ma questo nodo non l'ha ricevuta
+15.958549038088  adh[3]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.711 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[3]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 11.077 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[3]  adh[6]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 13.761 ma questo nodo non l'ha ricevuta
+15.958549038088  adh[3]  adh[6]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 15.102 ma questo nodo non l'ha ricevuta
+15.958549038088  adh[3]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.463 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[3]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 9.925 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[3]  adh[7]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 15.388 ma questo nodo non l'ha ricevuta
+15.958549038088  adh[4]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 9.474 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[4]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 12.092 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[4]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.711 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[4]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 11.077 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[4]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 13.761 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[4]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.102 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[4]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 4.463 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[4]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 9.925 coincidono con quelli arrivati alla GCS
+15.958549038088  adh[4]  adh[7]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.388 coincidono con quelli arrivati alla GCS
+15.969548135478  adh[3]  adh[6]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.102 coincidono con quelli arrivati alla GCS
+16.429516940935  adh[1]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 15.524 coincidono con quelli arrivati alla GCS
+21.499419777447  adh[0]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.367 coincidono con quelli arrivati alla GCS
+21.499419777447  adh[0]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.538 coincidono con quelli arrivati alla GCS
+21.499419777447  adh[0]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.709 coincidono con quelli arrivati alla GCS
+21.499419777447  adh[0]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.617 coincidono con quelli arrivati alla GCS
+21.499419777447  adh[0]  adh[9]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 16.849 ma questo nodo non l'ha ricevuta
+21.499419777447  adh[0]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.080 coincidono con quelli arrivati alla GCS
+21.499419777447  adh[0]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.417 coincidono con quelli arrivati alla GCS
+21.499419777447  adh[0]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.594 coincidono con quelli arrivati alla GCS
+21.499419777447  adh[0]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 20.771 ma questo nodo non l'ha ricevuta
+21.499419777447  adh[0]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.312 coincidono con quelli arrivati alla GCS
+21.499419777447  adh[0]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.197 coincidono con quelli arrivati alla GCS
+21.499419777447  adh[0]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.640 coincidono con quelli arrivati alla GCS
+21.49941995079  adh[11]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.367 coincidono con quelli arrivati alla GCS
+21.49941995079  adh[11]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.538 coincidono con quelli arrivati alla GCS
+21.49941995079  adh[11]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.709 coincidono con quelli arrivati alla GCS
+21.49941995079  adh[11]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.617 coincidono con quelli arrivati alla GCS
+21.49941995079  adh[11]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.849 coincidono con quelli arrivati alla GCS
+21.49941995079  adh[11]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.080 coincidono con quelli arrivati alla GCS
+21.49941995079  adh[11]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.417 coincidono con quelli arrivati alla GCS
+21.49941995079  adh[11]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.594 coincidono con quelli arrivati alla GCS
+21.49941995079  adh[11]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 20.771 ma questo nodo non l'ha ricevuta
+21.499420421468  adh[1]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.367 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[1]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.538 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[1]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.709 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[1]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.617 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[1]  adh[9]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 16.849 ma questo nodo non l'ha ricevuta
+21.499420421468  adh[1]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.080 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[1]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.417 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[1]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.594 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[1]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 20.771 ma questo nodo non l'ha ricevuta
+21.499420421468  adh[1]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.312 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[1]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.197 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[1]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.640 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[2]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.367 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[2]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.538 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[2]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.709 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[2]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.617 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[2]  adh[9]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 16.849 ma questo nodo non l'ha ricevuta
+21.499420421468  adh[2]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.080 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[2]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.417 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[2]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.594 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[2]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 20.771 ma questo nodo non l'ha ricevuta
+21.499420421468  adh[2]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.312 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[2]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.197 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[2]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.640 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[3]  adh[8]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 16.367 ma questo nodo non l'ha ricevuta
+21.499420421468  adh[3]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.538 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[3]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.709 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[3]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.617 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[3]  adh[9]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 16.849 ma questo nodo non l'ha ricevuta
+21.499420421468  adh[3]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.080 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[3]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.417 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[3]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.594 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[3]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 20.771 ma questo nodo non l'ha ricevuta
+21.499420421468  adh[3]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.312 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[3]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.197 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[3]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.640 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[4]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.367 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[4]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.538 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[4]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.709 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[4]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.617 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[4]  adh[9]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 16.849 ma questo nodo non l'ha ricevuta
+21.499420421468  adh[4]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.080 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[4]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.417 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[4]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.594 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[4]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 20.771 ma questo nodo non l'ha ricevuta
+21.499420421468  adh[4]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.312 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[4]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.197 coincidono con quelli arrivati alla GCS
+21.499420421468  adh[4]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.640 coincidono con quelli arrivati alla GCS
+21.499560271893  adh[5]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.367 coincidono con quelli arrivati alla GCS
+21.499560271893  adh[5]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 18.538 coincidono con quelli arrivati alla GCS
+21.499560271893  adh[5]  adh[8]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.709 coincidono con quelli arrivati alla GCS
+21.499560271893  adh[5]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 14.617 coincidono con quelli arrivati alla GCS
+21.499560271893  adh[5]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.849 coincidono con quelli arrivati alla GCS
+21.499560271893  adh[5]  adh[9]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.080 coincidono con quelli arrivati alla GCS
+21.499560271893  adh[5]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 16.417 ma questo nodo non l'ha ricevuta
+21.499560271893  adh[5]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 18.594 ma questo nodo non l'ha ricevuta
+21.499560271893  adh[5]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 20.771 ma questo nodo non l'ha ricevuta
+21.499560271893  adh[5]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 16.312 coincidono con quelli arrivati alla GCS
+21.499560271893  adh[5]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 19.197 coincidono con quelli arrivati alla GCS
+21.499560271893  adh[5]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 20.640 ma questo nodo non l'ha ricevuta
+21.506033679295  adh[0]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.771 coincidono con quelli arrivati alla GCS
+21.506033852638  adh[11]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.771 coincidono con quelli arrivati alla GCS
+21.506034323316  adh[1]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.771 coincidono con quelli arrivati alla GCS
+21.506034323316  adh[2]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.771 coincidono con quelli arrivati alla GCS
+21.506034323316  adh[3]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.771 coincidono con quelli arrivati alla GCS
+21.506034323316  adh[4]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.771 coincidono con quelli arrivati alla GCS
+21.741212897492  adh[5]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.640 coincidono con quelli arrivati alla GCS
+21.921377572125  adh[5]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.771 coincidono con quelli arrivati alla GCS
+27.344152483209  adh[6]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+27.344152483209  adh[6]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.020 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[6]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.390 coincidono con quelli arrivati alla GCS
+27.344152483209  adh[6]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+27.344152483209  adh[6]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 24.411 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[6]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.366 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[6]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.265 coincidono con quelli arrivati alla GCS
+27.344152483209  adh[6]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 24.690 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[6]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.403 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[6]  gat1  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.225 coincidono con quelli arrivati alla GCS
+27.344152483209  adh[6]  gat1  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 24.188 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[6]  gat1  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.670 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[7]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+27.344152483209  adh[7]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.020 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[7]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.390 coincidono con quelli arrivati alla GCS
+27.344152483209  adh[7]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+27.344152483209  adh[7]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 24.411 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[7]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.366 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[7]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.265 coincidono con quelli arrivati alla GCS
+27.344152483209  adh[7]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 24.690 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[7]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.403 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[7]  gat1  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.225 coincidono con quelli arrivati alla GCS
+27.344152483209  adh[7]  gat1  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 24.188 ma questo nodo non l'ha ricevuta
+27.344152483209  adh[7]  gat1  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.670 ma questo nodo non l'ha ricevuta
+27.344152813495  adh[9]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+27.344152813495  adh[9]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.020 ma questo nodo non l'ha ricevuta
+27.344152813495  adh[9]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.390 coincidono con quelli arrivati alla GCS
+27.344152813495  adh[9]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+27.344152813495  adh[9]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 24.411 ma questo nodo non l'ha ricevuta
+27.344152813495  adh[9]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.366 ma questo nodo non l'ha ricevuta
+27.344152813495  adh[9]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.265 coincidono con quelli arrivati alla GCS
+27.344152813495  adh[9]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 24.690 ma questo nodo non l'ha ricevuta
+27.344152813495  adh[9]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.403 ma questo nodo non l'ha ricevuta
+27.344152813495  adh[9]  gat1  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.225 coincidono con quelli arrivati alla GCS
+27.344152813495  adh[9]  gat1  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 24.188 ma questo nodo non l'ha ricevuta
+27.344152813495  adh[9]  gat1  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.670 ma questo nodo non l'ha ricevuta
+29.078159620383  adh[0]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+29.078159620383  adh[0]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.020 ma questo nodo non l'ha ricevuta
+29.078159620383  adh[0]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.390 coincidono con quelli arrivati alla GCS
+29.078159620383  adh[0]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+29.078159620383  adh[0]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.411 coincidono con quelli arrivati alla GCS
+29.078159620383  adh[0]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.366 coincidono con quelli arrivati alla GCS
+29.078159620383  adh[0]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.265 coincidono con quelli arrivati alla GCS
+29.078159620383  adh[0]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.690 coincidono con quelli arrivati alla GCS
+29.078159620383  adh[0]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.403 coincidono con quelli arrivati alla GCS
+29.078159620383  adh[0]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.625 coincidono con quelli arrivati alla GCS
+29.078159620383  adh[0]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 22.788 coincidono con quelli arrivati alla GCS
+29.078159620383  adh[0]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.950 coincidono con quelli arrivati alla GCS
+29.078159793726  adh[11]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+29.078159793726  adh[11]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.020 ma questo nodo non l'ha ricevuta
+29.078159793726  adh[11]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.390 ma questo nodo non l'ha ricevuta
+29.078159793726  adh[11]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+29.078159793726  adh[11]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.411 coincidono con quelli arrivati alla GCS
+29.078159793726  adh[11]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.366 coincidono con quelli arrivati alla GCS
+29.078159793726  adh[11]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.265 coincidono con quelli arrivati alla GCS
+29.078159793726  adh[11]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.690 coincidono con quelli arrivati alla GCS
+29.078159793726  adh[11]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.403 ma questo nodo non l'ha ricevuta
+29.078159793726  adh[11]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.625 coincidono con quelli arrivati alla GCS
+29.078159793726  adh[11]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 22.788 coincidono con quelli arrivati alla GCS
+29.078159793726  adh[11]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.950 coincidono con quelli arrivati alla GCS
+29.07816019617  adh[5]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+29.07816019617  adh[5]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.020 ma questo nodo non l'ha ricevuta
+29.07816019617  adh[5]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.390 ma questo nodo non l'ha ricevuta
+29.07816019617  adh[5]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+29.07816019617  adh[5]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.411 coincidono con quelli arrivati alla GCS
+29.07816019617  adh[5]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.366 coincidono con quelli arrivati alla GCS
+29.07816019617  adh[5]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.265 coincidono con quelli arrivati alla GCS
+29.07816019617  adh[5]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.690 coincidono con quelli arrivati alla GCS
+29.07816019617  adh[5]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.403 ma questo nodo non l'ha ricevuta
+29.07816019617  adh[5]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.625 coincidono con quelli arrivati alla GCS
+29.07816019617  adh[5]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 22.788 coincidono con quelli arrivati alla GCS
+29.07816019617  adh[5]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.950 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[1]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[1]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.020 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[1]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.390 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[1]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[1]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.411 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[1]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.366 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[1]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.265 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[1]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.690 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[1]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.403 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[1]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.625 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[1]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 22.788 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[1]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.950 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[2]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[2]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.020 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[2]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.390 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[2]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[2]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.411 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[2]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.366 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[2]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.265 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[2]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.690 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[2]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.403 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[2]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.625 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[2]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 22.788 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[2]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.950 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[3]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[3]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.020 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[3]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.390 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[3]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[3]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.411 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[3]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.366 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[3]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.265 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[3]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.690 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[3]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.403 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[3]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.625 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[3]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 22.788 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[3]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.950 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[4]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[4]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.020 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[4]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.390 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[4]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[4]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.411 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[4]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.366 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[4]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.265 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[4]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.690 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[4]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.403 ma questo nodo non l'ha ricevuta
+29.078160264404  adh[4]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.625 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[4]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 22.788 coincidono con quelli arrivati alla GCS
+29.078160264404  adh[4]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.950 coincidono con quelli arrivati alla GCS
+29.078160276665  adh[14]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+29.078160276665  adh[14]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 25.020 coincidono con quelli arrivati alla GCS
+29.078160276665  adh[14]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.390 coincidono con quelli arrivati alla GCS
+29.078160276665  adh[14]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+29.078160276665  adh[14]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.411 coincidono con quelli arrivati alla GCS
+29.078160276665  adh[14]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 26.366 coincidono con quelli arrivati alla GCS
+29.078160276665  adh[14]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.625 coincidono con quelli arrivati alla GCS
+29.078160276665  adh[14]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 22.788 coincidono con quelli arrivati alla GCS
+29.078160276665  adh[14]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.950 coincidono con quelli arrivati alla GCS
+29.079148215571  adh[8]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.912 coincidono con quelli arrivati alla GCS
+29.079148215571  adh[8]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 25.020 ma questo nodo non l'ha ricevuta
+29.079148215571  adh[8]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.390 ma questo nodo non l'ha ricevuta
+29.079148215571  adh[8]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.502 coincidono con quelli arrivati alla GCS
+29.079148215571  adh[8]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.411 coincidono con quelli arrivati alla GCS
+29.079148215571  adh[8]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.366 ma questo nodo non l'ha ricevuta
+29.079148215571  adh[8]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 21.265 coincidono con quelli arrivati alla GCS
+29.079148215571  adh[8]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 24.690 coincidono con quelli arrivati alla GCS
+29.079148215571  adh[8]  adh[14]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 26.403 ma questo nodo non l'ha ricevuta
+29.079148215571  adh[8]  gat2  coerenza fra canali  SUPERATO  i valori della lettura con timbro 20.625 coincidono con quelli arrivati alla GCS
+29.079148215571  adh[8]  gat2  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 22.788 ma questo nodo non l'ha ricevuta
+29.079148215571  adh[8]  gat2  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 24.950 ma questo nodo non l'ha ricevuta
+41.911168931859  adh[0]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 37.236 coincidono con quelli arrivati alla GCS
+41.911168931859  adh[0]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.248 coincidono con quelli arrivati alla GCS
+41.911168931859  adh[0]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.260 coincidono con quelli arrivati alla GCS
+41.911168931859  adh[0]  adh[3]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.041 ma questo nodo non l'ha ricevuta
+41.911168931859  adh[0]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.738 coincidono con quelli arrivati alla GCS
+41.911168931859  adh[0]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.435 coincidono con quelli arrivati alla GCS
+41.911168931859  adh[0]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 36.178 coincidono con quelli arrivati alla GCS
+41.911168931859  adh[0]  adh[4]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.243 ma questo nodo non l'ha ricevuta
+41.911168931859  adh[0]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.309 coincidono con quelli arrivati alla GCS
+41.911168931859  adh[0]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 35.658 coincidono con quelli arrivati alla GCS
+41.911168931859  adh[0]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 38.276 coincidono con quelli arrivati alla GCS
+41.911168931859  adh[0]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.895 coincidono con quelli arrivati alla GCS
+41.914674383169  adh[11]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 37.236 coincidono con quelli arrivati alla GCS
+41.914674383169  adh[11]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.248 coincidono con quelli arrivati alla GCS
+41.914674383169  adh[11]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.260 coincidono con quelli arrivati alla GCS
+41.914674383169  adh[11]  adh[3]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.041 ma questo nodo non l'ha ricevuta
+41.914674383169  adh[11]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.738 coincidono con quelli arrivati alla GCS
+41.914674383169  adh[11]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.435 coincidono con quelli arrivati alla GCS
+41.914674383169  adh[11]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 36.178 coincidono con quelli arrivati alla GCS
+41.914674383169  adh[11]  adh[4]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.243 ma questo nodo non l'ha ricevuta
+41.914674383169  adh[11]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.309 coincidono con quelli arrivati alla GCS
+41.914674383169  adh[11]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 35.658 coincidono con quelli arrivati alla GCS
+41.914674383169  adh[11]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 38.276 coincidono con quelli arrivati alla GCS
+41.914674383169  adh[11]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.895 coincidono con quelli arrivati alla GCS
+41.914674785613  adh[5]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 37.236 coincidono con quelli arrivati alla GCS
+41.914674785613  adh[5]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.248 coincidono con quelli arrivati alla GCS
+41.914674785613  adh[5]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.260 coincidono con quelli arrivati alla GCS
+41.914674785613  adh[5]  adh[3]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.041 ma questo nodo non l'ha ricevuta
+41.914674785613  adh[5]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.738 coincidono con quelli arrivati alla GCS
+41.914674785613  adh[5]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.435 coincidono con quelli arrivati alla GCS
+41.914674785613  adh[5]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 36.178 coincidono con quelli arrivati alla GCS
+41.914674785613  adh[5]  adh[4]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.243 ma questo nodo non l'ha ricevuta
+41.914674785613  adh[5]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.309 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[1]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 37.236 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[1]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.248 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[1]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.260 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[1]  adh[3]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.041 ma questo nodo non l'ha ricevuta
+41.914674853847  adh[1]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.738 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[1]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.435 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[1]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 36.178 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[1]  adh[4]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.243 ma questo nodo non l'ha ricevuta
+41.914674853847  adh[1]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.309 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[1]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 35.658 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[1]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 38.276 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[1]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.895 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[2]  adh[3]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.041 ma questo nodo non l'ha ricevuta
+41.914674853847  adh[2]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.738 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[2]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.435 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[2]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 36.178 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[2]  adh[4]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.243 ma questo nodo non l'ha ricevuta
+41.914674853847  adh[2]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.309 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[2]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 35.658 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[2]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 38.276 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[2]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.895 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[3]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 37.236 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[3]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.248 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[3]  adh[2]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 41.260 ma questo nodo non l'ha ricevuta
+41.914674853847  adh[3]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 36.178 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[3]  adh[4]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.243 ma questo nodo non l'ha ricevuta
+41.914674853847  adh[3]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.309 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[3]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 35.658 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[3]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 38.276 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[3]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.895 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[4]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 37.236 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[4]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.248 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[4]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.260 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[4]  adh[3]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.041 ma questo nodo non l'ha ricevuta
+41.914674853847  adh[4]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.738 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[4]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.435 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[4]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 35.658 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[4]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 38.276 coincidono con quelli arrivati alla GCS
+41.914674853847  adh[4]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.895 coincidono con quelli arrivati alla GCS
+41.914674866108  adh[14]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 37.236 coincidono con quelli arrivati alla GCS
+41.914674866108  adh[14]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.248 coincidono con quelli arrivati alla GCS
+41.914674866108  adh[14]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.260 coincidono con quelli arrivati alla GCS
+41.914674866108  adh[14]  adh[3]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.041 ma questo nodo non l'ha ricevuta
+41.914674866108  adh[14]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.738 coincidono con quelli arrivati alla GCS
+41.914674866108  adh[14]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.435 coincidono con quelli arrivati alla GCS
+41.914674866108  adh[14]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 36.178 coincidono con quelli arrivati alla GCS
+41.914674866108  adh[14]  adh[4]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.243 ma questo nodo non l'ha ricevuta
+41.914674866108  adh[14]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.309 coincidono con quelli arrivati alla GCS
+41.914674866108  adh[14]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 35.658 coincidono con quelli arrivati alla GCS
+41.914674866108  adh[14]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 38.276 coincidono con quelli arrivati alla GCS
+41.914674866108  adh[14]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.895 coincidono con quelli arrivati alla GCS
+41.927693965003  adh[8]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 37.236 coincidono con quelli arrivati alla GCS
+41.927693965003  adh[8]  adh[2]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 39.248 ma questo nodo non l'ha ricevuta
+41.927693965003  adh[8]  adh[2]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 41.260 ma questo nodo non l'ha ricevuta
+41.927693965003  adh[8]  adh[3]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.041 ma questo nodo non l'ha ricevuta
+41.927693965003  adh[8]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.738 coincidono con quelli arrivati alla GCS
+41.927693965003  adh[8]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.435 coincidono con quelli arrivati alla GCS
+41.927693965003  adh[8]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 36.178 coincidono con quelli arrivati alla GCS
+41.927693965003  adh[8]  adh[4]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.243 ma questo nodo non l'ha ricevuta
+41.927693965003  adh[8]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.309 coincidono con quelli arrivati alla GCS
+41.927693965003  adh[8]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 35.658 coincidono con quelli arrivati alla GCS
+41.927693965003  adh[8]  adh[5]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.276 ma questo nodo non l'ha ricevuta
+41.927693965003  adh[8]  adh[5]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 40.895 ma questo nodo non l'ha ricevuta
+41.953743743264  adh[12]  adh[2]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 37.236 ma questo nodo non l'ha ricevuta
+41.953743743264  adh[12]  adh[2]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 39.248 ma questo nodo non l'ha ricevuta
+41.953743743264  adh[12]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.260 coincidono con quelli arrivati alla GCS
+41.953743743264  adh[12]  adh[3]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.041 ma questo nodo non l'ha ricevuta
+41.953743743264  adh[12]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.738 coincidono con quelli arrivati alla GCS
+41.953743743264  adh[12]  adh[3]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 41.435 ma questo nodo non l'ha ricevuta
+41.953743743264  adh[12]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 36.178 coincidono con quelli arrivati alla GCS
+41.953743743264  adh[12]  adh[4]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.243 ma questo nodo non l'ha ricevuta
+41.953743743264  adh[12]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.309 coincidono con quelli arrivati alla GCS
+41.953743743264  adh[12]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 35.658 coincidono con quelli arrivati alla GCS
+41.953743743264  adh[12]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 38.276 coincidono con quelli arrivati alla GCS
+41.953743743264  adh[12]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.895 coincidono con quelli arrivati alla GCS
+41.953743932377  adh[9]  adh[2]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 37.236 ma questo nodo non l'ha ricevuta
+41.953743932377  adh[9]  adh[2]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 39.248 ma questo nodo non l'ha ricevuta
+41.953743932377  adh[9]  adh[2]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.260 coincidono con quelli arrivati alla GCS
+41.953743932377  adh[9]  adh[3]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.041 ma questo nodo non l'ha ricevuta
+41.953743932377  adh[9]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 39.738 coincidono con quelli arrivati alla GCS
+41.953743932377  adh[9]  adh[3]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 41.435 coincidono con quelli arrivati alla GCS
+41.953743932377  adh[9]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 36.178 coincidono con quelli arrivati alla GCS
+41.953743932377  adh[9]  adh[4]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 38.243 ma questo nodo non l'ha ricevuta
+41.953743932377  adh[9]  adh[4]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.309 coincidono con quelli arrivati alla GCS
+41.953743932377  adh[9]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 35.658 coincidono con quelli arrivati alla GCS
+41.953743932377  adh[9]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 38.276 coincidono con quelli arrivati alla GCS
+41.953743932377  adh[9]  adh[5]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.895 coincidono con quelli arrivati alla GCS
+45.367298825915  gat2  adh[7]  coerenza fra messaggi  VIOLATO  due messaggi con lo stesso timbro 42.702 portano valori diversi (impronte 726b03d193da6df0 e 0ab79e6fc55be713): il drone ha dichiarato due cose diverse dalla stessa lettura
+45.404251041638  adh[6]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+45.404251700291  adh[9]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+53.439272286698  adh[13]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.073 coincidono con quelli arrivati alla GCS
+53.439272286698  adh[13]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.250 coincidono con quelli arrivati alla GCS
+53.439272286698  adh[13]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 40.837 ma questo nodo non l'ha ricevuta
+53.439272286698  adh[13]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.607 ma questo nodo non l'ha ricevuta
+53.439272286698  adh[13]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.492 coincidono con quelli arrivati alla GCS
+53.439272286698  adh[13]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 29.128 ma questo nodo non l'ha ricevuta
+53.439272286698  adh[13]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 30.498 coincidono con quelli arrivati alla GCS
+53.439272286698  adh[13]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.084 coincidono con quelli arrivati alla GCS
+53.439272286698  adh[13]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 29.828 coincidono con quelli arrivati alla GCS
+53.439272559123  adh[10]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 40.837 ma questo nodo non l'ha ricevuta
+53.439272559123  adh[10]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.607 ma questo nodo non l'ha ricevuta
+53.439272559123  adh[10]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 49.492 ma questo nodo non l'ha ricevuta
+53.439272559123  adh[10]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 29.128 ma questo nodo non l'ha ricevuta
+53.439272559123  adh[10]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 30.498 coincidono con quelli arrivati alla GCS
+53.439272559123  adh[10]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.084 coincidono con quelli arrivati alla GCS
+53.439272559123  adh[10]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+53.439272559123  adh[10]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.822 coincidono con quelli arrivati alla GCS
+53.439272559123  adh[10]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.777 coincidono con quelli arrivati alla GCS
+53.439272559123  adh[10]  adh[14]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 29.828 coincidono con quelli arrivati alla GCS
+55.068953034326  adh[0]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.365 coincidono con quelli arrivati alla GCS
+55.068953034326  adh[0]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.068953034326  adh[0]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.896 ma questo nodo non l'ha ricevuta
+55.068953034326  adh[0]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.607 coincidono con quelli arrivati alla GCS
+55.068953034326  adh[0]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.492 coincidono con quelli arrivati alla GCS
+55.068953034326  adh[0]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 50.935 coincidono con quelli arrivati alla GCS
+55.068953034326  adh[0]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.562 coincidono con quelli arrivati alla GCS
+55.068953034326  adh[0]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.932 coincidono con quelli arrivati alla GCS
+55.068953034326  adh[0]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.040 coincidono con quelli arrivati alla GCS
+55.068953034326  adh[0]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.068953034326  adh[0]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 43.958 ma questo nodo non l'ha ricevuta
+55.068953034326  adh[0]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.068953207669  adh[11]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.365 coincidono con quelli arrivati alla GCS
+55.068953207669  adh[11]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.068953207669  adh[11]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.896 ma questo nodo non l'ha ricevuta
+55.068953207669  adh[11]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.562 coincidono con quelli arrivati alla GCS
+55.068953207669  adh[11]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.932 coincidono con quelli arrivati alla GCS
+55.068953207669  adh[11]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.040 coincidono con quelli arrivati alla GCS
+55.068953207669  adh[11]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.068953207669  adh[11]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 43.958 ma questo nodo non l'ha ricevuta
+55.068953207669  adh[11]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.068953610113  adh[5]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.365 coincidono con quelli arrivati alla GCS
+55.068953610113  adh[5]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.068953610113  adh[5]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.896 ma questo nodo non l'ha ricevuta
+55.068953610113  adh[5]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.607 coincidono con quelli arrivati alla GCS
+55.068953610113  adh[5]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.492 coincidono con quelli arrivati alla GCS
+55.068953610113  adh[5]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 50.935 coincidono con quelli arrivati alla GCS
+55.068953610113  adh[5]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.562 coincidono con quelli arrivati alla GCS
+55.068953610113  adh[5]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.932 coincidono con quelli arrivati alla GCS
+55.068953610113  adh[5]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.040 coincidono con quelli arrivati alla GCS
+55.068953610113  adh[5]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.068953610113  adh[5]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 43.958 ma questo nodo non l'ha ricevuta
+55.068953610113  adh[5]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[1]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.365 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[1]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 44.719 ma questo nodo non l'ha ricevuta
+55.068953678347  adh[1]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.896 ma questo nodo non l'ha ricevuta
+55.068953678347  adh[1]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.607 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[1]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.492 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[1]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 50.935 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[1]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.562 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[1]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.932 ma questo nodo non l'ha ricevuta
+55.068953678347  adh[1]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.040 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[1]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[1]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 43.958 ma questo nodo non l'ha ricevuta
+55.068953678347  adh[1]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 45.913 ma questo nodo non l'ha ricevuta
+55.068953678347  adh[2]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.365 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[2]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[2]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.896 ma questo nodo non l'ha ricevuta
+55.068953678347  adh[2]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.607 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[2]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.492 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[2]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 50.935 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[2]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.562 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[2]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.932 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[2]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.040 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[2]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[2]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 43.958 ma questo nodo non l'ha ricevuta
+55.068953678347  adh[2]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[3]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.365 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[3]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[3]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.896 ma questo nodo non l'ha ricevuta
+55.068953678347  adh[3]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.607 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[3]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.492 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[3]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 50.935 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[3]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.562 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[3]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.932 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[3]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.040 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[3]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[3]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 43.958 ma questo nodo non l'ha ricevuta
+55.068953678347  adh[3]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[4]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.365 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[4]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[4]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.896 ma questo nodo non l'ha ricevuta
+55.068953678347  adh[4]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.607 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[4]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.492 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[4]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 50.935 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[4]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.562 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[4]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.932 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[4]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.040 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[4]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.068953678347  adh[4]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 43.958 ma questo nodo non l'ha ricevuta
+55.068953678347  adh[4]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.068953690608  adh[14]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.365 coincidono con quelli arrivati alla GCS
+55.068953690608  adh[14]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.068953690608  adh[14]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.896 ma questo nodo non l'ha ricevuta
+55.068953690608  adh[14]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.607 coincidono con quelli arrivati alla GCS
+55.068953690608  adh[14]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.492 coincidono con quelli arrivati alla GCS
+55.068953690608  adh[14]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 50.935 coincidono con quelli arrivati alla GCS
+55.068953690608  adh[14]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.562 coincidono con quelli arrivati alla GCS
+55.068953690608  adh[14]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.932 coincidono con quelli arrivati alla GCS
+55.068953690608  adh[14]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.040 coincidono con quelli arrivati alla GCS
+55.068953690608  adh[14]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.068953690608  adh[14]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 43.958 ma questo nodo non l'ha ricevuta
+55.068953690608  adh[14]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.069875617728  adh[12]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 40.365 ma questo nodo non l'ha ricevuta
+55.069875617728  adh[12]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.069875617728  adh[12]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.896 ma questo nodo non l'ha ricevuta
+55.069875617728  adh[12]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.607 coincidono con quelli arrivati alla GCS
+55.069875617728  adh[12]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.492 coincidono con quelli arrivati alla GCS
+55.069875617728  adh[12]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 50.935 ma questo nodo non l'ha ricevuta
+55.069875617728  adh[12]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.069875617728  adh[12]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 43.958 ma questo nodo non l'ha ricevuta
+55.069875617728  adh[12]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.069875806841  adh[9]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 40.365 ma questo nodo non l'ha ricevuta
+55.069875806841  adh[9]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.069875806841  adh[9]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.896 coincidono con quelli arrivati alla GCS
+55.069875806841  adh[9]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.607 coincidono con quelli arrivati alla GCS
+55.069875806841  adh[9]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.492 coincidono con quelli arrivati alla GCS
+55.069875806841  adh[9]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 50.935 coincidono con quelli arrivati alla GCS
+55.069875806841  adh[9]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.562 coincidono con quelli arrivati alla GCS
+55.069875806841  adh[9]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.932 coincidono con quelli arrivati alla GCS
+55.069875806841  adh[9]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.040 coincidono con quelli arrivati alla GCS
+55.069875806841  adh[9]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.069875806841  adh[9]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 43.958 coincidono con quelli arrivati alla GCS
+55.069875806841  adh[9]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.069876154557  adh[8]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 40.365 ma questo nodo non l'ha ricevuta
+55.069876154557  adh[8]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.069876154557  adh[8]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.896 ma questo nodo non l'ha ricevuta
+55.069876154557  adh[8]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.607 coincidono con quelli arrivati alla GCS
+55.069876154557  adh[8]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 49.492 ma questo nodo non l'ha ricevuta
+55.069876154557  adh[8]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 50.935 ma questo nodo non l'ha ricevuta
+55.069876154557  adh[8]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.562 coincidono con quelli arrivati alla GCS
+55.069876154557  adh[8]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.932 coincidono con quelli arrivati alla GCS
+55.069876154557  adh[8]  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.040 coincidono con quelli arrivati alla GCS
+55.069876154557  adh[8]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.069876154557  adh[8]  adh[13]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 43.958 ma questo nodo non l'ha ricevuta
+55.069876154557  adh[8]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.070525894132  adh[6]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 40.365 ma questo nodo non l'ha ricevuta
+55.070525894132  adh[6]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.070525894132  adh[6]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.896 coincidono con quelli arrivati alla GCS
+55.070525894132  adh[6]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.607 ma questo nodo non l'ha ricevuta
+55.070525894132  adh[6]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 49.492 ma questo nodo non l'ha ricevuta
+55.070525894132  adh[6]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 50.935 coincidono con quelli arrivati alla GCS
+55.070525894132  adh[6]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 45.562 ma questo nodo non l'ha ricevuta
+55.070525894132  adh[6]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.932 ma questo nodo non l'ha ricevuta
+55.070525894132  adh[6]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 51.040 ma questo nodo non l'ha ricevuta
+55.070525894132  adh[6]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.070525894132  adh[6]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 43.958 coincidono con quelli arrivati alla GCS
+55.070525894132  adh[6]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.070526041147  adh[7]  adh[10]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 40.365 ma questo nodo non l'ha ricevuta
+55.070526041147  adh[7]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.070526041147  adh[7]  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.896 coincidono con quelli arrivati alla GCS
+55.070526041147  adh[7]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.607 ma questo nodo non l'ha ricevuta
+55.070526041147  adh[7]  adh[11]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 49.492 ma questo nodo non l'ha ricevuta
+55.070526041147  adh[7]  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 50.935 coincidono con quelli arrivati alla GCS
+55.070526041147  adh[7]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 45.562 ma questo nodo non l'ha ricevuta
+55.070526041147  adh[7]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.932 ma questo nodo non l'ha ricevuta
+55.070526041147  adh[7]  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 51.040 ma questo nodo non l'ha ricevuta
+55.070526041147  adh[7]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.070526041147  adh[7]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 43.958 coincidono con quelli arrivati alla GCS
+55.070526041147  adh[7]  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+55.07052616398  gat2  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.365 coincidono con quelli arrivati alla GCS
+55.07052616398  gat2  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 44.719 coincidono con quelli arrivati alla GCS
+55.07052616398  gat2  adh[10]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.896 coincidono con quelli arrivati alla GCS
+55.07052616398  gat2  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 46.607 coincidono con quelli arrivati alla GCS
+55.07052616398  gat2  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 49.492 coincidono con quelli arrivati alla GCS
+55.07052616398  gat2  adh[11]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 50.935 coincidono con quelli arrivati alla GCS
+55.07052616398  gat2  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 45.562 ma questo nodo non l'ha ricevuta
+55.07052616398  gat2  adh[12]  coerenza fra canali  NON_APPLICABILE  la GCS ha pubblicato l'impronta della lettura con timbro 46.932 ma questo nodo non l'ha ricevuta
+55.07052616398  gat2  adh[12]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 51.040 coincidono con quelli arrivati alla GCS
+55.07052616398  gat2  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 40.049 coincidono con quelli arrivati alla GCS
+55.07052616398  gat2  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 43.958 coincidono con quelli arrivati alla GCS
+55.07052616398  gat2  adh[13]  coerenza fra canali  SUPERATO  i valori della lettura con timbro 45.913 coincidono con quelli arrivati alla GCS
+56.200627157382  gat2  adh[7]  coerenza fra messaggi  VIOLATO  due messaggi con lo stesso timbro 53.627 portano valori diversi (impronte ab0439cedad7269e e 379328b6c17f3506): il drone ha dichiarato due cose diverse dalla stessa lettura  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+56.200819497552  adh[6]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+56.200820156205  adh[9]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+64.130630494514  gat2  adh[7]  coerenza fra messaggi  VIOLATO  due messaggi con lo stesso timbro 61.821 portano valori diversi (impronte b608579814ca1de5 e e30889c5c8348768): il drone ha dichiarato due cose diverse dalla stessa lettura  [annullati 2 superati, 0 violati, 0 dubbi delle altre regole]
+64.130835834684  adh[6]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 2 superati, 0 violati, 0 dubbi delle altre regole]
+64.130836493337  adh[9]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 2 superati, 0 violati, 0 dubbi delle altre regole]
+71.34714986591  gat2  adh[7]  coerenza fra messaggi  VIOLATO  due messaggi con lo stesso timbro 70.015 portano valori diversi (impronte 577196d719b0c3ea e 3e5fbe99ad22d69d): il drone ha dichiarato due cose diverse dalla stessa lettura  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.34741720608  adh[6]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.347417864733  adh[9]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.347524209987  adh[12]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+71.347524209987  adh[12]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.347524209987  adh[12]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.347524209987  adh[12]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.347524396201  adh[14]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+71.347524396201  adh[14]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.347524396201  adh[14]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.347524396201  adh[14]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.3475245068  adh[4]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+71.3475245068  adh[4]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.3475245068  adh[4]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.3475245068  adh[4]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.347524734799  adh[5]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+71.347524734799  adh[5]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.347524734799  adh[5]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.347524734799  adh[5]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.348098585444  adh[2]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+71.348098585444  adh[2]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.348098585444  adh[2]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse
+71.348098585444  adh[2]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.348098889332  adh[0]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+71.348098889332  adh[0]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.348098889332  adh[0]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse
+71.348098889332  adh[0]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.348098892804  gat1  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+71.348098892804  gat1  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.348098892804  gat1  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse
+71.348098892804  gat1  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.348099008663  adh[11]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+71.348099008663  adh[11]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.348099008663  adh[11]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse
+71.348099008663  adh[11]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.348241596928  adh[1]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+71.348241596928  adh[1]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.348241596928  adh[1]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse
+71.348241596928  adh[1]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse
+71.348241596928  adh[3]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+71.348241596928  adh[3]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+71.348241596928  adh[3]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse
+71.348241596928  adh[3]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse
+71.348483132211  adh[8]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 42.702): impronta 726b03d193da6df0 da una voce di traccia, impronta 0ab79e6fc55be713 da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+71.348483132211  adh[8]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 53.627): impronta ab0439cedad7269e da un BANT ricevuto dalla GCS, impronta 379328b6c17f3506 da una voce di traccia: il drone ha dichiarato due cose diverse
+71.348483132211  adh[8]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 61.821): impronta b608579814ca1de5 da un BANT ricevuto dalla GCS, impronta e30889c5c8348768 da una voce di traccia: il drone ha dichiarato due cose diverse
+71.348483132211  adh[8]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 70.015): impronta 577196d719b0c3ea da un BANT ricevuto dalla GCS, impronta 3e5fbe99ad22d69d da una voce di traccia: il drone ha dichiarato due cose diverse
+76.799883959292  gat2  adh[7]  coerenza fra messaggi  VIOLATO  due messaggi con lo stesso timbro 75.478 portano valori diversi (impronte a2b8eaed48b10807 e 1c8945e466e3a713): il drone ha dichiarato due cose diverse dalla stessa lettura  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.800177299462  adh[6]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.800177958115  adh[9]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.800637992437  adh[12]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.800638178651  adh[14]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.80063828925  adh[4]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.800638517249  adh[5]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.800788898562  adh[0]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.800788901646  gat1  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.80078895544  adh[2]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.800789106023  adh[11]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.801544454624  adh[1]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.801544741224  adh[3]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+76.801908990599  adh[8]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 75.478): impronta a2b8eaed48b10807 da un BANT ricevuto dalla GCS, impronta 1c8945e466e3a713 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+81.334992479978  gat2  adh[7]  coerenza fra messaggi  VIOLATO  due messaggi con lo stesso timbro 80.941 portano valori diversi (impronte 34d814750dfea80c e 319031ece22dc424): il drone ha dichiarato due cose diverse dalla stessa lettura  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+81.335271820148  adh[6]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+81.335272478801  adh[9]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.898474063164  gat2  adh[7]  coerenza fra messaggi  VIOLATO  due messaggi con lo stesso timbro 86.403 portano valori diversi (impronte 131c76e4d6048349 e 8764afd95591d99b): il drone ha dichiarato due cose diverse dalla stessa lettura  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.898680403334  adh[6]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.898681061987  adh[9]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.898834407241  adh[12]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.898834407241  adh[12]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.898834593455  adh[14]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.898834593455  adh[14]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.898834704054  adh[4]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.898834704054  adh[4]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.898834932053  adh[5]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.898834932053  adh[5]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899410264147  adh[0]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899410264147  adh[0]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899410267285  gat1  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899410267285  gat1  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899410493925  adh[11]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899410493925  adh[11]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899410546334  adh[8]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse
+87.899410546334  adh[8]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse
+87.899410557243  adh[2]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899410557243  adh[2]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899410557243  adh[3]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899410557243  adh[3]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899735041594  adh[1]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 80.941): impronta 34d814750dfea80c da un BANT ricevuto dalla GCS, impronta 319031ece22dc424 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+87.899735041594  adh[1]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 86.403): impronta 131c76e4d6048349 da un BANT ricevuto dalla GCS, impronta 8764afd95591d99b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+95.365403400924  gat2  adh[7]  coerenza fra messaggi  VIOLATO  due messaggi con lo stesso timbro 94.597 portano valori diversi (impronte 666c05d314f959a9 e b588321840906efe): il drone ha dichiarato due cose diverse dalla stessa lettura
+95.365731741094  adh[6]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+95.365732399747  adh[9]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+95.366504897072  adh[12]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+95.366505083286  adh[14]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+95.366505193885  adh[4]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+95.366505421884  adh[5]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+95.366922864857  adh[2]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+95.366923168745  adh[0]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+95.366923172217  gat1  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+95.366923288076  adh[11]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+95.367949520392  adh[1]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse
+102.3366260765  gat2  adh[7]  coerenza fra messaggi  VIOLATO  due messaggi con lo stesso timbro 100.060 portano valori diversi (impronte d546e94e751aa1ed e 1fadb3302921fe23): il drone ha dichiarato due cose diverse dalla stessa lettura  [annullati 1 superati, 0 violati, 1 dubbi delle altre regole]
+102.33685441667  adh[6]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.336855075323  adh[9]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.33737196263  adh[12]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.337372148844  adh[14]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.337372259443  adh[4]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.337372487442  adh[5]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.337723259222  adh[2]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.33772356311  adh[0]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.337723566582  gat1  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.337723682441  adh[11]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.338062803395  adh[1]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.338062803395  adh[3]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse  [annullati 2 superati, 0 violati, 0 dubbi delle altre regole]
+102.338062803395  adh[3]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+102.338211793178  adh[8]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 94.597): impronta 666c05d314f959a9 da una voce di traccia, impronta b588321840906efe da un BANT ricevuto dalla GCS: il drone ha dichiarato due cose diverse  [annullati 2 superati, 0 violati, 0 dubbi delle altre regole]
+102.338211793178  adh[8]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 100.060): impronta d546e94e751aa1ed da un BANT ricevuto dalla GCS, impronta 1fadb3302921fe23 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.46195855193  gat2  adh[7]  coerenza fra messaggi  VIOLATO  due messaggi con lo stesso timbro 105.523 portano valori diversi (impronte 0474c763fa9b1d0f e 606b7655a2389464): il drone ha dichiarato due cose diverse dalla stessa lettura  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.4622228921  adh[6]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.462223550753  adh[9]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.462389896007  adh[12]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.462390082221  adh[14]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.46239019282  adh[4]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.462390420819  adh[5]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.462742257498  adh[0]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.462742260636  gat1  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.462742487276  adh[11]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.462742539685  adh[8]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.462742550594  adh[2]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+107.462742550594  adh[3]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.276926403806  gat2  adh[7]  coerenza fra messaggi  VIOLATO  due messaggi con lo stesso timbro 110.985 portano valori diversi (impronte 697699231b4a12b0 e d3d0e33d4209341b): il drone ha dichiarato due cose diverse dalla stessa lettura  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.277109743976  adh[6]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.277110402629  adh[9]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.277600436951  adh[12]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.277600623165  adh[14]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.277600733764  adh[4]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.277600961763  adh[5]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.277731343076  adh[0]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.27773134616  gat1  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.277731399954  adh[2]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.277731550537  adh[11]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.278019120469  adh[1]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 105.523): impronta 0474c763fa9b1d0f da un BANT ricevuto dalla GCS, impronta 606b7655a2389464 da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.278019120469  adh[1]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]
+113.278019120469  adh[3]  adh[7]  coerenza fra canali  VIOLATO  alla GCS sono arrivate due dichiarazioni diverse della stessa lettura (timbro 110.985): impronta 697699231b4a12b0 da un BANT ricevuto dalla GCS, impronta d3d0e33d4209341b da una voce di traccia: il drone ha dichiarato due cose diverse  [annullati 1 superati, 0 violati, 0 dubbi delle altre regole]

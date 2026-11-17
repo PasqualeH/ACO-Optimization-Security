@@ -1,0 +1,1354 @@
+# Snapshot della rete raccolto dalle GCS con i traceroute (vedi Ant2Trace.cc)
+# Per ogni giro di una GCS:
+#   - riga '===': GCS, numero del giro, istanti di inizio e di chiusura, esito delle tracce
+#   - una riga per ogni nodo bersaglio: esito, numero di hop, tempo di andata e ritorno e
+#     percorso. Per ogni nodo del percorso: (hN, t) = hopdistance con cui ha ricevuto la
+#     traccia e istante di ricezione. Un nodo che inoltra senza incrementare gli hop fa
+#     comparire due valori di h uguali di seguito.
+#   - 'nodi': l'ultimo dato noto di ogni nodo (gli stessi parametri dei BANT).
+# Esiti: completa; rotta mancante / limite hop / ciclo (la traccia si e' interrotta presso
+# un nodo); nessuna risposta (la traccia o la risposta si e' persa); MANOMESSA (una voce non
+# supera la verifica di firma o cifratura). [secondo tentativo] = la traccia e' stata
+# rilanciata perche' il primo tentativo non aveva avuto risposta entro traceRetryDelay.
+#   grep '^===' file      riepilogo di tutti i giri
+#   grep 'adh\[7\]' file   tutto cio' che riguarda adh[7]
+
+=== gat1  giro 1  da 6.000 a 9.080 s | tracce 5: complete 5, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 6.0001)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0023 s | gat1 -> adh[1] (h1, 6.0402)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0006 s | gat1 -> adh[2] (h1, 6.0802)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0032 s | gat1 -> adh[3] (h1, 6.0204)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0020 s | gat1 -> adh[4] (h1, 6.0608)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 29.60% (timbro 5.433)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.041  cluster 1  [visto 6.000, da gat1]
+    adh[1]       energia 39.67% (timbro 4.475)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.033  cluster 1  [visto 6.040, da gat1]
+    adh[2]       energia 49.63% (timbro 5.037)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 6.080, da gat1]
+    adh[3]       energia 49.58% (timbro 5.790)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.033  cluster 1  [visto 6.020, da gat1]
+    adh[4]       energia 59.62% (timbro 5.196)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 6.061, da gat1]
+=== gat2  giro 1  da 6.000 a 9.080 s | tracce 5: complete 5, interrotte 0, senza risposta 0, manomesse 0
+  adh[5]       completa, 1 hop, andata e ritorno 0.0019 s | gat2 -> adh[5] (h1, 6.0412)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0028 s | gat2 -> adh[6] (h1, 6.0021)
+  adh[7]       completa, 1 hop, andata e ritorno 0.0026 s | gat2 -> adh[7] (h1, 6.0823)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0024 s | gat2 -> adh[8] (h1, 6.0222)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0021 s | gat2 -> adh[9] (h1, 6.0603)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[5]       energia 64.68% (timbro 4.237)  pos (700, 400, 50)  disponibile SI  banda 0.40  throughput 0.074  cluster 2  [visto 6.041, da gat2]
+    adh[6]       energia 54.59% (timbro 5.709)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.047  cluster 2  [visto 6.002, da gat2]
+    adh[7]       energia 49.68% (timbro 4.463)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.028  cluster 2  [visto 6.082, da gat2]
+    adh[8]       energia 84.61% (timbro 5.513)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.014  cluster 2  [visto 6.022, da gat2]
+    adh[9]       energia 74.59% (timbro 5.693)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.026  cluster 2  [visto 6.060, da gat2]
+=== gat3  giro 1  da 6.000 a 9.080 s | tracce 5: complete 5, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0026 s | gat3 -> adh[10] (h1, 6.0405)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0031 s | gat3 -> adh[11] (h1, 6.0029)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0091 s | gat3 -> adh[12] (h1, 6.0288)
+  adh[13]      completa, 1 hop, andata e ritorno 0.0017 s | gat3 -> adh[13] (h1, 6.0611)
+  adh[14]      completa, 1 hop, andata e ritorno 0.0011 s | gat3 -> adh[14] (h1, 6.0809)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[10]      energia 54.61% (timbro 5.531)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.003  cluster 3  [visto 6.041, da gat3]
+    adh[11]      energia 89.66% (timbro 4.771)  pos (1800, 500, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 6.003, da gat3]
+    adh[12]      energia 64.58% (timbro 5.847)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.067  cluster 3  [visto 6.029, da gat3]
+    adh[13]      energia 49.65% (timbro 4.864)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.001  cluster 3  [visto 6.061, da gat3]
+    adh[14]      energia 69.58% (timbro 5.851)  pos (2100, 400, 50)  disponibile SI  banda 0.40  throughput 0.043  cluster 3  [visto 6.081, da gat3]
+=== gat3  giro 2  da 10.518 a 13.598 s | tracce 5: complete 5, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 10.5577)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[11] (h1, 10.5177)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 10.5377)
+  adh[13]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[13] (h1, 10.5777)
+  adh[14]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[14] (h1, 10.5977)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[10]      energia 54.30% (timbro 9.885)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.008  cluster 3  [visto 10.558, da gat3]
+    adh[11]      energia 89.35% (timbro 9.098)  pos (1800, 500, 50)  disponibile SI  banda 0.40  throughput 0.012  cluster 3  [visto 10.518, da gat3]
+    adh[12]      energia 64.29% (timbro 9.956)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.013  cluster 3  [visto 10.538, da gat3]
+    adh[13]      energia 49.37% (timbro 8.774)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.033  cluster 3  [visto 10.578, da gat3]
+    adh[14]      energia 69.34% (timbro 9.276)  pos (2100, 400, 50)  disponibile SI  banda 0.40  throughput 0.010  cluster 3  [visto 10.598, da gat3]
+=== gat1  giro 2  da 12.878 a 15.958 s | tracce 5: complete 5, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 12.8781)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[1] (h1, 12.9181)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[2] (h1, 12.9581)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[3] (h1, 12.8981)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[4] (h1, 12.9381)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 29.11% (timbro 11.865)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.332  cluster 1  [visto 12.878, da gat1]
+    adh[1]       energia 39.06% (timbro 12.687)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.148  cluster 1  [visto 12.918, da gat1]
+    adh[2]       energia 49.17% (timbro 11.074)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.110  cluster 1  [visto 12.958, da gat1]
+    adh[3]       energia 49.08% (timbro 12.579)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 12.898, da gat1]
+    adh[4]       energia 59.16% (timbro 11.393)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.106  cluster 1  [visto 12.938, da gat1]
+=== gat2  giro 2  da 13.048 a 16.128 s | tracce 5: complete 5, interrotte 0, senza risposta 0, manomesse 0
+  adh[5]       completa, 1 hop, andata e ritorno 0.0002 s | gat2 -> adh[5] (h1, 13.0877)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0002 s | gat2 -> adh[6] (h1, 13.0477)
+  adh[7]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[7] (h1, 13.1277)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0002 s | gat2 -> adh[8] (h1, 13.0677)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[9] (h1, 13.1077)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 29.11% (timbro 11.865)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.332  cluster 1  [visto 12.878, da gat1]
+    adh[1]       energia 39.06% (timbro 12.687)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.148  cluster 1  [visto 12.918, da gat1]
+    adh[2]       energia 49.17% (timbro 11.074)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.110  cluster 1  [visto 12.958, da gat1]
+    adh[3]       energia 49.08% (timbro 12.579)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 12.898, da gat1]
+    adh[4]       energia 59.16% (timbro 11.393)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.106  cluster 1  [visto 12.938, da gat1]
+    adh[5]       energia 64.08% (timbro 12.092)  pos (700, 400, 50)  disponibile SI  banda 0.40  throughput 0.230  cluster 2  [visto 13.088, da gat2]
+    adh[6]       energia 54.08% (timbro 12.419)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.267  cluster 2  [visto 13.048, da gat2]
+    adh[7]       energia 49.07% (timbro 12.657)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.202  cluster 2  [visto 13.128, da gat2]
+    adh[8]       energia 84.12% (timbro 12.025)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.190  cluster 2  [visto 13.068, da gat2]
+    adh[9]       energia 74.10% (timbro 12.386)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.208  cluster 2  [visto 13.108, da gat2]
+    gat1         energia 99.20% (timbro 15.298)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 15.958, da gat1]
+  snapshot di gat1 (cluster 1): giro 2, chiuso a 15.958 s, ricevuto a 15.962 s, 6 nodi
+=== gat1  giro 3  da 17.280 a 20.360 s | tracce 5: complete 5, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 17.2804)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[1] (h1, 17.3204)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[2] (h1, 17.3604)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[3] (h1, 17.3004)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[4] (h1, 17.3404)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 28.73% (timbro 17.011)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.301  cluster 1  [visto 17.280, da gat1]
+    adh[1]       energia 38.87% (timbro 15.425)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.038  cluster 1  [visto 17.320, da gat1]
+    adh[2]       energia 48.69% (timbro 17.112)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.358  cluster 1  [visto 17.360, da gat1]
+    adh[3]       energia 48.84% (timbro 15.974)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.096  cluster 1  [visto 17.300, da gat1]
+    adh[4]       energia 58.87% (timbro 15.524)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.021  cluster 1  [visto 17.340, da gat1]
+=== gat3  giro 3  da 18.330 a 21.410 s | tracce 5: complete 5, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[10] (h1, 18.3698)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[11] (h1, 18.3298)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[12] (h1, 18.3498)
+  adh[13]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[13] (h1, 18.3898)
+  adh[14]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[14] (h1, 18.4098)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 29.11% (timbro 11.865)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.332  cluster 1  [visto 12.878, da gat1]
+    adh[10]      energia 53.83% (timbro 16.417)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.085  cluster 3  [visto 18.370, da gat3]
+    adh[11]      energia 88.73% (timbro 17.754)  pos (1800, 500, 50)  disponibile SI  banda 0.40  throughput 0.120  cluster 3  [visto 18.330, da gat3]
+    adh[12]      energia 63.70% (timbro 18.173)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.062  cluster 3  [visto 18.350, da gat3]
+    adh[13]      energia 48.82% (timbro 16.592)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.105  cluster 3  [visto 18.390, da gat3]
+    adh[14]      energia 68.73% (timbro 17.840)  pos (2100, 400, 50)  disponibile SI  banda 0.40  throughput 0.099  cluster 3  [visto 18.410, da gat3]
+    adh[1]       energia 39.06% (timbro 12.687)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.148  cluster 1  [visto 12.918, da gat1]
+    adh[2]       energia 49.17% (timbro 11.074)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.110  cluster 1  [visto 12.958, da gat1]
+    adh[3]       energia 49.08% (timbro 12.579)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 12.898, da gat1]
+    adh[4]       energia 59.16% (timbro 11.393)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.106  cluster 1  [visto 12.938, da gat1]
+    gat1         energia 99.20% (timbro 15.298)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 15.958, da gat1]
+  snapshot di gat1 (cluster 1): giro 2, chiuso a 15.958 s, ricevuto a 15.964 s, 6 nodi
+=== gat2  giro 3  da 19.563 a 22.623 s | tracce 4: complete 4, interrotte 0, senza risposta 0, manomesse 0
+  adh[6]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[6] (h1, 19.5630)
+  adh[7]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[7] (h1, 19.6230)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0002 s | gat2 -> adh[8] (h1, 19.5830)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[9] (h1, 19.6030)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 29.11% (timbro 11.865)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.332  cluster 1  [visto 12.878, da gat1]
+    adh[1]       energia 39.06% (timbro 12.687)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.148  cluster 1  [visto 12.918, da gat1]
+    adh[2]       energia 49.17% (timbro 11.074)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.110  cluster 1  [visto 12.958, da gat1]
+    adh[3]       energia 49.08% (timbro 12.579)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 12.898, da gat1]
+    adh[4]       energia 59.16% (timbro 11.393)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.106  cluster 1  [visto 12.938, da gat1]
+    adh[5]       energia 64.08% (timbro 12.092)  pos (700, 400, 50)  disponibile SI  banda 0.40  throughput 0.230  cluster 2  [visto 13.088, da gat2]
+    adh[6]       energia 53.61% (timbro 19.128)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.017  cluster 2  [visto 19.563, da gat2]
+    adh[7]       energia 48.68% (timbro 18.119)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.104  cluster 2  [visto 19.623, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 99.20% (timbro 15.298)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 15.958, da gat1]
+  snapshot di gat1 (cluster 1): giro 2, chiuso a 15.958 s, ricevuto a 15.962 s, 6 nodi
+=== gat1  giro 4  da 21.782 a 24.882 s | tracce 6: complete 5, interrotte 0, senza risposta 1 (adh[5]), manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0076 s | gat1 -> adh[0] (h1, 21.7894)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[1] (h1, 21.8221)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0004 s | gat1 -> adh[2] (h1, 21.8622)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[3] (h1, 21.8021)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[4] (h1, 21.8421)
+  adh[5]       nessuna risposta (neanche al secondo tentativo)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 28.43% (timbro 20.871)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.188  cluster 1  [visto 21.789, da gat1]
+    adh[1]       energia 38.34% (timbro 20.900)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.440  cluster 1  [visto 21.822, da gat1]
+    adh[2]       energia 48.35% (timbro 21.136)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.246  cluster 1  [visto 21.862, da gat1]
+    adh[3]       energia 48.40% (timbro 21.066)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.274  cluster 1  [visto 21.802, da gat1]
+    adh[4]       energia 58.38% (timbro 21.720)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.259  cluster 1  [visto 21.842, da gat1]
+    adh[6]       energia 53.61% (timbro 19.128)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.017  cluster 2  [visto 19.563, da gat2]
+    adh[7]       energia 48.68% (timbro 18.119)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.104  cluster 2  [visto 19.623, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat2         energia 98.90% (timbro 20.625)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 22.623, da gat2]
+  snapshot di gat2 (cluster 2): giro 3, chiuso a 22.623 s, ricevuto a 22.627 s, 5 nodi
+=== gat3  giro 4  da 22.959 a 26.039 s | tracce 5: complete 5, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 22.9989)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[11] (h1, 22.9589)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 22.9789)
+  adh[13]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[13] (h1, 23.0189)
+  adh[14]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[14] (h1, 23.0389)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 29.11% (timbro 11.865)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.332  cluster 1  [visto 12.878, da gat1]
+    adh[10]      energia 53.35% (timbro 22.948)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.160  cluster 3  [visto 22.999, da gat3]
+    adh[11]      energia 88.40% (timbro 22.082)  pos (1800, 500, 50)  disponibile NO  banda 0.40  throughput 0.325  cluster 3  [visto 22.959, da gat3]
+    adh[12]      energia 63.40% (timbro 22.281)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.244  cluster 3  [visto 22.979, da gat3]
+    adh[13]      energia 48.39% (timbro 22.456)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.195  cluster 3  [visto 23.019, da gat3]
+    adh[14]      energia 68.35% (timbro 22.978)  pos (2100, 400, 50)  disponibile SI  banda 0.40  throughput 0.126  cluster 3  [visto 23.039, da gat3]
+    adh[1]       energia 39.06% (timbro 12.687)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.148  cluster 1  [visto 12.918, da gat1]
+    adh[2]       energia 49.17% (timbro 11.074)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.110  cluster 1  [visto 12.958, da gat1]
+    adh[3]       energia 49.08% (timbro 12.579)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 12.898, da gat1]
+    adh[4]       energia 59.16% (timbro 11.393)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.106  cluster 1  [visto 12.938, da gat1]
+    adh[6]       energia 53.61% (timbro 19.128)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.017  cluster 2  [visto 19.563, da gat2]
+    adh[7]       energia 48.68% (timbro 18.119)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.104  cluster 2  [visto 19.623, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 99.20% (timbro 15.298)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 15.958, da gat1]
+    gat2         energia 98.90% (timbro 20.625)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 22.623, da gat2]
+  snapshot di gat1 (cluster 1): giro 2, chiuso a 15.958 s, ricevuto a 15.964 s, 6 nodi
+  snapshot di gat2 (cluster 2): giro 3, chiuso a 22.623 s, ricevuto a 22.630 s, 5 nodi
+=== gat2  giro 4  da 25.714 a 28.754 s | tracce 3: complete 2, interrotte 0, senza risposta 1 (adh[9]), manomesse 0
+  adh[6]       completa, 1 hop, andata e ritorno 0.0002 s | gat2 -> adh[6] (h1, 25.7144)
+  adh[7]       completa, 1 hop, andata e ritorno 0.0002 s | gat2 -> adh[7] (h1, 25.7544)
+  adh[9]       nessuna risposta (neanche al secondo tentativo)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 29.11% (timbro 11.865)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.332  cluster 1  [visto 12.878, da gat1]
+    adh[1]       energia 39.06% (timbro 12.687)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.148  cluster 1  [visto 12.918, da gat1]
+    adh[2]       energia 49.17% (timbro 11.074)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.110  cluster 1  [visto 12.958, da gat1]
+    adh[3]       energia 49.08% (timbro 12.579)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 12.898, da gat1]
+    adh[4]       energia 59.16% (timbro 11.393)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.106  cluster 1  [visto 12.938, da gat1]
+    adh[5]       energia 64.08% (timbro 12.092)  pos (700, 400, 50)  disponibile SI  banda 0.40  throughput 0.230  cluster 2  [visto 13.088, da gat2]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 48.28% (timbro 23.582)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.142  cluster 2  [visto 25.754, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 99.20% (timbro 15.298)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 15.958, da gat1]
+  snapshot di gat1 (cluster 1): giro 2, chiuso a 15.958 s, ricevuto a 15.962 s, 6 nodi
+=== gat1  giro 5  da 26.004 a 29.204 s | tracce 9: complete 6, interrotte 0, senza risposta 3 (adh[11], adh[8], adh[9]), manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0275 s | gat1 -> adh[0] (h1, 26.0308)
+  adh[11]      nessuna risposta (neanche al secondo tentativo)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[1] (h1, 26.0439)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[2] (h1, 26.0839)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0074 s | gat1 -> adh[3] (h1, 26.0309)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[4] (h1, 26.0639)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[5] (h1, 26.1239)
+  adh[8]       nessuna risposta (neanche al secondo tentativo)
+  adh[9]       nessuna risposta (neanche al secondo tentativo)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 27.86% (timbro 26.017)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.437  cluster 1  [visto 26.031, da gat1]
+    adh[1]       energia 37.99% (timbro 23.637)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.571  cluster 1  [visto 26.044, da gat1]
+    adh[2]       energia 47.95% (timbro 25.161)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.352  cluster 1  [visto 26.084, da gat1]
+    adh[3]       energia 48.07% (timbro 24.461)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.190  cluster 1  [visto 26.031, da gat1]
+    adh[4]       energia 58.01% (timbro 25.851)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.245  cluster 1  [visto 26.064, da gat1]
+    adh[5]       energia 63.07% (timbro 25.184)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.112  cluster 1  [visto 26.124, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 48.28% (timbro 23.582)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.142  cluster 2  [visto 25.754, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat2         energia 98.50% (timbro 27.113)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 28.754, da gat2]
+  snapshot di gat2 (cluster 2): giro 4, chiuso a 28.754 s, ricevuto a 28.759 s, 4 nodi
+=== gat3  giro 5  da 27.999 a 31.059 s | tracce 4: complete 4, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 28.0190)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0005 s | gat3 -> adh[12] (h1, 27.9990)
+  adh[13]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[13] (h1, 28.0390)
+  adh[14]      completa, 1 hop, andata e ritorno 0.0006 s | gat3 -> adh[14] (h1, 28.0594)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 27.86% (timbro 26.017)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.437  cluster 1  [visto 26.031, da gat1]
+    adh[10]      energia 53.04% (timbro 27.302)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.132  cluster 3  [visto 28.019, da gat3]
+    adh[11]      energia 88.40% (timbro 22.082)  pos (1800, 500, 50)  disponibile NO  banda 0.40  throughput 0.325  cluster 3  [visto 22.959, da gat3]
+    adh[12]      energia 63.00% (timbro 27.759)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.082  cluster 3  [visto 27.999, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 68.11% (timbro 26.403)  pos (2100, 400, 50)  disponibile SI  banda 0.40  throughput 0.145  cluster 3  [visto 28.059, da gat3]
+    adh[1]       energia 37.99% (timbro 23.637)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.571  cluster 1  [visto 26.044, da gat1]
+    adh[2]       energia 47.95% (timbro 25.161)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.352  cluster 1  [visto 26.084, da gat1]
+    adh[3]       energia 48.07% (timbro 24.461)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.190  cluster 1  [visto 26.031, da gat1]
+    adh[4]       energia 58.01% (timbro 25.851)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.245  cluster 1  [visto 26.064, da gat1]
+    adh[5]       energia 63.07% (timbro 25.184)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.112  cluster 1  [visto 26.124, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 48.28% (timbro 23.582)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.142  cluster 2  [visto 25.754, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 98.24% (timbro 28.633)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 29.204, da gat1]
+    gat2         energia 98.50% (timbro 27.113)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 28.754, da gat2]
+  snapshot di gat1 (cluster 1): giro 5, chiuso a 29.204 s, ricevuto a 29.207 s, 7 nodi
+  snapshot di gat2 (cluster 2): giro 4, chiuso a 28.754 s, ricevuto a 28.761 s, 4 nodi
+=== gat2  giro 5  da 30.648 a 33.668 s | tracce 2: complete 1, interrotte 0, senza risposta 1 (adh[6]), manomesse 0
+  adh[6]       nessuna risposta (neanche al secondo tentativo)
+  adh[7]       completa, 1 hop, andata e ritorno 0.0172 s | gat2 -> adh[7] (h1, 30.6852)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 27.86% (timbro 26.017)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.437  cluster 1  [visto 26.031, da gat1]
+    adh[1]       energia 37.99% (timbro 23.637)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.571  cluster 1  [visto 26.044, da gat1]
+    adh[2]       energia 47.95% (timbro 25.161)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.352  cluster 1  [visto 26.084, da gat1]
+    adh[3]       energia 48.07% (timbro 24.461)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.190  cluster 1  [visto 26.031, da gat1]
+    adh[4]       energia 58.01% (timbro 25.851)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.245  cluster 1  [visto 26.064, da gat1]
+    adh[5]       energia 63.07% (timbro 25.184)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.112  cluster 1  [visto 26.124, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 47.88% (timbro 29.045)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.038  cluster 2  [visto 30.685, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 98.24% (timbro 28.633)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 29.204, da gat1]
+  snapshot di gat1 (cluster 1): giro 5, chiuso a 29.204 s, ricevuto a 29.205 s, 7 nodi
+=== gat1  giro 6  da 34.015 a 37.275 s | tracce 12: complete 10, interrotte 0, senza risposta 2 (adh[14], adh[13]), manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 34.0152)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[11] (h1, 34.1152)
+  adh[13]      nessuna risposta (neanche al secondo tentativo)
+  adh[14]      nessuna risposta (neanche al secondo tentativo)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0073 s | gat1 -> adh[1] (h1, 34.0561)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0005 s | gat1 -> adh[2] (h1, 34.0952)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[3] (h1, 34.0352)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0009 s | gat1 -> adh[4] (h1, 34.0756)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[5] (h1, 34.1352)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0002 s [secondo tentativo] | gat1 -> adh[6] (h1, 35.2552)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[8] (h1, 34.1752)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0004 s | gat1 -> adh[9] (h1, 34.1953)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 26.96% (timbro 33.736)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.494  cluster 1  [visto 34.015, da gat1]
+    adh[11]      energia 87.05% (timbro 33.623)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.440  cluster 1  [visto 34.115, da gat1]
+    adh[1]       energia 36.88% (timbro 31.849)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.925  cluster 1  [visto 34.056, da gat1]
+    adh[2]       energia 47.07% (timbro 33.211)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.404  cluster 1  [visto 34.095, da gat1]
+    adh[3]       energia 47.17% (timbro 32.948)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.377  cluster 1  [visto 34.035, da gat1]
+    adh[4]       energia 57.41% (timbro 32.047)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.438  cluster 1  [visto 34.076, da gat1]
+    adh[5]       energia 62.39% (timbro 33.040)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.226  cluster 1  [visto 34.135, da gat1]
+    adh[6]       energia 52.26% (timbro 35.230)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.102  cluster 1  [visto 35.255, da gat1]
+    adh[7]       energia 47.88% (timbro 29.045)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.038  cluster 2  [visto 30.685, da gat2]
+    adh[8]       energia 82.01% (timbro 33.734)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.496  cluster 1  [visto 34.175, da gat1]
+    adh[9]       energia 72.24% (timbro 32.466)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.405  cluster 1  [visto 34.195, da gat1]
+    gat2         energia 98.17% (timbro 33.601)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 33.668, da gat2]
+  snapshot di gat2 (cluster 2): giro 5, chiuso a 33.668 s, ricevuto a 33.672 s, 3 nodi
+=== gat3  giro 6  da 34.792 a 37.832 s | tracce 3: complete 2, interrotte 0, senza risposta 1 (adh[14]), manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0013 s | gat3 -> adh[10] (h1, 34.8127)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0016 s | gat3 -> adh[12] (h1, 34.7916)
+  adh[14]      nessuna risposta (neanche al secondo tentativo)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 26.96% (timbro 33.736)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.494  cluster 1  [visto 34.015, da gat1]
+    adh[10]      energia 52.57% (timbro 33.833)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.066  cluster 3  [visto 34.813, da gat3]
+    adh[11]      energia 87.05% (timbro 33.623)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.440  cluster 1  [visto 34.115, da gat1]
+    adh[12]      energia 62.51% (timbro 34.606)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.029  cluster 3  [visto 34.792, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 68.11% (timbro 26.403)  pos (2100, 400, 50)  disponibile SI  banda 0.40  throughput 0.145  cluster 3  [visto 28.059, da gat3]
+    adh[1]       energia 36.88% (timbro 31.849)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.925  cluster 1  [visto 34.056, da gat1]
+    adh[2]       energia 47.07% (timbro 33.211)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.404  cluster 1  [visto 34.095, da gat1]
+    adh[3]       energia 47.17% (timbro 32.948)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.377  cluster 1  [visto 34.035, da gat1]
+    adh[4]       energia 57.41% (timbro 32.047)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.438  cluster 1  [visto 34.076, da gat1]
+    adh[5]       energia 62.39% (timbro 33.040)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.226  cluster 1  [visto 34.135, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 47.88% (timbro 29.045)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.038  cluster 2  [visto 30.685, da gat2]
+    adh[8]       energia 82.01% (timbro 33.734)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.496  cluster 1  [visto 34.175, da gat1]
+    gat1         energia 97.56% (timbro 36.042)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 37.275, da gat1]
+    gat2         energia 98.17% (timbro 33.601)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 33.668, da gat2]
+  snapshot di gat1 (cluster 1): giro 6, chiuso a 37.275 s, ricevuto a 37.287 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 5, chiuso a 33.668 s, ricevuto a 33.674 s, 3 nodi
+=== gat2  giro 6  da 36.824 a 39.824 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0002 s | gat2 -> adh[7] (h1, 36.8241)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 26.96% (timbro 33.736)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.494  cluster 1  [visto 34.015, da gat1]
+    adh[11]      energia 87.05% (timbro 33.623)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.440  cluster 1  [visto 34.115, da gat1]
+    adh[1]       energia 36.88% (timbro 31.849)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.925  cluster 1  [visto 34.056, da gat1]
+    adh[2]       energia 47.07% (timbro 33.211)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.404  cluster 1  [visto 34.095, da gat1]
+    adh[3]       energia 47.17% (timbro 32.948)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.377  cluster 1  [visto 34.035, da gat1]
+    adh[4]       energia 57.41% (timbro 32.047)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.438  cluster 1  [visto 34.076, da gat1]
+    adh[5]       energia 62.39% (timbro 33.040)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.226  cluster 1  [visto 34.135, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 47.49% (timbro 34.508)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 2  [visto 36.824, da gat2]
+    adh[8]       energia 82.01% (timbro 33.734)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.496  cluster 1  [visto 34.175, da gat1]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 97.56% (timbro 36.042)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 37.275, da gat1]
+  snapshot di gat1 (cluster 1): giro 6, chiuso a 37.275 s, ricevuto a 37.281 s, 9 nodi
+=== gat3  giro 7  da 39.286 a 42.306 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 39.3061)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 39.2861)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 26.96% (timbro 33.736)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.494  cluster 1  [visto 34.015, da gat1]
+    adh[10]      energia 52.26% (timbro 38.188)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.053  cluster 3  [visto 39.306, da gat3]
+    adh[11]      energia 87.05% (timbro 33.623)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.440  cluster 1  [visto 34.115, da gat1]
+    adh[12]      energia 62.22% (timbro 38.715)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.010  cluster 3  [visto 39.286, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 68.11% (timbro 26.403)  pos (2100, 400, 50)  disponibile SI  banda 0.40  throughput 0.145  cluster 3  [visto 28.059, da gat3]
+    adh[1]       energia 36.88% (timbro 31.849)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.925  cluster 1  [visto 34.056, da gat1]
+    adh[2]       energia 47.07% (timbro 33.211)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.404  cluster 1  [visto 34.095, da gat1]
+    adh[3]       energia 47.17% (timbro 32.948)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.377  cluster 1  [visto 34.035, da gat1]
+    adh[4]       energia 57.41% (timbro 32.047)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.438  cluster 1  [visto 34.076, da gat1]
+    adh[5]       energia 62.39% (timbro 33.040)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.226  cluster 1  [visto 34.135, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 47.88% (timbro 29.045)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.038  cluster 2  [visto 30.685, da gat2]
+    adh[8]       energia 82.01% (timbro 33.734)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.496  cluster 1  [visto 34.175, da gat1]
+    gat1         energia 97.56% (timbro 36.042)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 37.275, da gat1]
+    gat2         energia 98.17% (timbro 33.601)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 33.668, da gat2]
+  snapshot di gat1 (cluster 1): giro 6, chiuso a 37.275 s, ricevuto a 37.287 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 5, chiuso a 33.668 s, ricevuto a 33.674 s, 3 nodi
+=== gat1  giro 7  da 40.837 a 44.077 s | tracce 12: complete 10, interrotte 0, senza risposta 2 (adh[14], adh[13]), manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[0] (h1, 40.8374)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0044 s | gat1 -> adh[11] (h1, 40.9389)
+  adh[13]      nessuna risposta (neanche al secondo tentativo)
+  adh[14]      nessuna risposta (neanche al secondo tentativo)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0009 s | gat1 -> adh[1] (h1, 40.8780)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0023 s | gat1 -> adh[2] (h1, 40.9174)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0006 s | gat1 -> adh[3] (h1, 40.8574)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0005 s | gat1 -> adh[4] (h1, 40.8976)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0007 s | gat1 -> adh[5] (h1, 40.9574)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0006 s | gat1 -> adh[6] (h1, 41.0374)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0004 s | gat1 -> adh[8] (h1, 40.9974)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0005 s | gat1 -> adh[9] (h1, 41.0174)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 26.11% (timbro 40.168)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.345  cluster 1  [visto 40.837, da gat1]
+    adh[10]      energia 52.26% (timbro 38.188)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.053  cluster 3  [visto 39.306, da gat3]
+    adh[11]      energia 86.14% (timbro 40.837)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.389  cluster 1  [visto 40.939, da gat1]
+    adh[12]      energia 62.22% (timbro 38.715)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.010  cluster 3  [visto 39.286, da gat3]
+    adh[1]       energia 35.58% (timbro 40.062)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.691  cluster 1  [visto 40.878, da gat1]
+    adh[2]       energia 46.36% (timbro 39.248)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.145  cluster 1  [visto 40.917, da gat1]
+    adh[3]       energia 46.30% (timbro 39.738)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.234  cluster 1  [visto 40.857, da gat1]
+    adh[4]       energia 56.45% (timbro 40.309)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.134  cluster 1  [visto 40.898, da gat1]
+    adh[5]       energia 61.68% (timbro 40.895)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.055  cluster 1  [visto 40.957, da gat1]
+    adh[6]       energia 51.66% (timbro 40.598)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.180  cluster 1  [visto 41.037, da gat1]
+    adh[7]       energia 47.88% (timbro 29.045)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.038  cluster 2  [visto 30.685, da gat2]
+    adh[8]       energia 81.14% (timbro 40.247)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.394  cluster 1  [visto 40.997, da gat1]
+    adh[9]       energia 71.45% (timbro 39.159)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.250  cluster 1  [visto 41.017, da gat1]
+    gat2         energia 98.17% (timbro 33.601)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 33.668, da gat2]
+    gat3         energia 97.84% (timbro 39.686)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 42.306, da gat3]
+  snapshot di gat2 (cluster 2): giro 5, chiuso a 33.668 s, ricevuto a 33.672 s, 3 nodi
+  snapshot di gat3 (cluster 3): giro 7, chiuso a 42.306 s, ricevuto a 42.311 s, 3 nodi
+=== gat2  giro 7  da 42.419 a 45.419 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0002 s | gat2 -> adh[7] (h1, 42.4194)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 26.11% (timbro 40.168)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.345  cluster 1  [visto 40.837, da gat1]
+    adh[10]      energia 52.26% (timbro 38.188)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.053  cluster 3  [visto 39.306, da gat3]
+    adh[11]      energia 86.14% (timbro 40.837)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.389  cluster 1  [visto 40.939, da gat1]
+    adh[12]      energia 62.22% (timbro 38.715)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.010  cluster 3  [visto 39.286, da gat3]
+    adh[1]       energia 35.58% (timbro 40.062)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.691  cluster 1  [visto 40.878, da gat1]
+    adh[2]       energia 46.36% (timbro 39.248)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.145  cluster 1  [visto 40.917, da gat1]
+    adh[3]       energia 46.30% (timbro 39.738)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.234  cluster 1  [visto 40.857, da gat1]
+    adh[4]       energia 56.45% (timbro 40.309)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.134  cluster 1  [visto 40.898, da gat1]
+    adh[5]       energia 61.68% (timbro 40.895)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.055  cluster 1  [visto 40.957, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 47.11% (timbro 39.970)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.007  cluster 2  [visto 42.419, da gat2]
+    adh[8]       energia 81.14% (timbro 40.247)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.394  cluster 1  [visto 40.997, da gat1]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 96.83% (timbro 43.450)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 44.077, da gat1]
+    gat3         energia 97.84% (timbro 39.686)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 42.306, da gat3]
+  snapshot di gat1 (cluster 1): giro 7, chiuso a 44.077 s, ricevuto a 44.083 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 7, chiuso a 42.306 s, ricevuto a 42.311 s, 3 nodi
+=== gat3  giro 8  da 44.864 a 47.884 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 44.8841)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0008 s | gat3 -> adh[12] (h1, 44.8641)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 26.11% (timbro 40.168)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.345  cluster 1  [visto 40.837, da gat1]
+    adh[10]      energia 51.81% (timbro 44.719)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 44.884, da gat3]
+    adh[11]      energia 86.14% (timbro 40.837)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.389  cluster 1  [visto 40.939, da gat1]
+    adh[12]      energia 61.84% (timbro 44.193)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 44.864, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 68.11% (timbro 26.403)  pos (2100, 400, 50)  disponibile SI  banda 0.40  throughput 0.145  cluster 3  [visto 28.059, da gat3]
+    adh[1]       energia 35.58% (timbro 40.062)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.691  cluster 1  [visto 40.878, da gat1]
+    adh[2]       energia 46.36% (timbro 39.248)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.145  cluster 1  [visto 40.917, da gat1]
+    adh[3]       energia 46.30% (timbro 39.738)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.234  cluster 1  [visto 40.857, da gat1]
+    adh[4]       energia 56.45% (timbro 40.309)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.134  cluster 1  [visto 40.898, da gat1]
+    adh[5]       energia 61.68% (timbro 40.895)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.055  cluster 1  [visto 40.957, da gat1]
+    adh[7]       energia 47.11% (timbro 39.970)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.007  cluster 2  [visto 42.419, da gat2]
+    adh[8]       energia 81.14% (timbro 40.247)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.394  cluster 1  [visto 40.997, da gat1]
+    gat1         energia 96.83% (timbro 43.450)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 44.077, da gat1]
+    gat2         energia 97.65% (timbro 44.413)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 45.419, da gat2]
+  snapshot di gat1 (cluster 1): giro 7, chiuso a 44.077 s, ricevuto a 44.086 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 7, chiuso a 45.419 s, ricevuto a 45.427 s, 2 nodi
+=== gat2  giro 8  da 47.467 a 50.467 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0002 s | gat2 -> adh[7] (h1, 47.4675)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 26.11% (timbro 40.168)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.345  cluster 1  [visto 40.837, da gat1]
+    adh[10]      energia 51.81% (timbro 44.719)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 44.884, da gat3]
+    adh[11]      energia 86.14% (timbro 40.837)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.389  cluster 1  [visto 40.939, da gat1]
+    adh[12]      energia 61.84% (timbro 44.193)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 44.864, da gat3]
+    adh[1]       energia 35.58% (timbro 40.062)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.691  cluster 1  [visto 40.878, da gat1]
+    adh[2]       energia 46.36% (timbro 39.248)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.145  cluster 1  [visto 40.917, da gat1]
+    adh[3]       energia 46.30% (timbro 39.738)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.234  cluster 1  [visto 40.857, da gat1]
+    adh[4]       energia 56.45% (timbro 40.309)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.134  cluster 1  [visto 40.898, da gat1]
+    adh[5]       energia 61.68% (timbro 40.895)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.055  cluster 1  [visto 40.957, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 46.72% (timbro 45.433)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.005  cluster 2  [visto 47.467, da gat2]
+    adh[8]       energia 81.14% (timbro 40.247)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.394  cluster 1  [visto 40.997, da gat1]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 96.83% (timbro 43.450)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 44.077, da gat1]
+    gat3         energia 97.44% (timbro 47.823)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 47.884, da gat3]
+  snapshot di gat1 (cluster 1): giro 7, chiuso a 44.077 s, ricevuto a 44.083 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 8, chiuso a 47.884 s, ricevuto a 47.889 s, 3 nodi
+=== gat1  giro 8  da 48.023 a 51.263 s | tracce 12: complete 10, interrotte 0, senza risposta 2 (adh[14], adh[13]), manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0034 s | gat1 -> adh[0] (h1, 48.0264)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0004 s | gat1 -> adh[11] (h1, 48.1235)
+  adh[13]      nessuna risposta (neanche al secondo tentativo)
+  adh[14]      nessuna risposta (neanche al secondo tentativo)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[1] (h1, 48.0635)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[2] (h1, 48.1035)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[3] (h1, 48.0435)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[4] (h1, 48.0835)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[5] (h1, 48.1435)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[6] (h1, 48.2235)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[8] (h1, 48.1835)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[9] (h1, 48.2035)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 24.98% (timbro 47.887)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.497  cluster 1  [visto 48.026, da gat1]
+    adh[10]      energia 51.81% (timbro 44.719)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 44.884, da gat3]
+    adh[11]      energia 85.03% (timbro 48.050)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.659  cluster 1  [visto 48.123, da gat1]
+    adh[12]      energia 61.84% (timbro 44.193)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 44.864, da gat3]
+    adh[1]       energia 34.70% (timbro 45.537)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.816  cluster 1  [visto 48.063, da gat1]
+    adh[2]       energia 45.38% (timbro 47.298)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.627  cluster 1  [visto 48.103, da gat1]
+    adh[3]       energia 45.24% (timbro 46.528)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.775  cluster 1  [visto 48.043, da gat1]
+    adh[4]       energia 55.66% (timbro 46.505)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.545  cluster 1  [visto 48.083, da gat1]
+    adh[5]       energia 61.19% (timbro 46.132)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.127  cluster 1  [visto 48.143, da gat1]
+    adh[6]       energia 50.81% (timbro 47.307)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.537  cluster 1  [visto 48.223, da gat1]
+    adh[7]       energia 46.72% (timbro 45.433)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.005  cluster 2  [visto 47.467, da gat2]
+    adh[8]       energia 80.12% (timbro 46.760)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.713  cluster 1  [visto 48.183, da gat1]
+    adh[9]       energia 70.37% (timbro 48.083)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.425  cluster 1  [visto 48.203, da gat1]
+    gat2         energia 97.44% (timbro 48.738)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 50.467, da gat2]
+    gat3         energia 97.44% (timbro 47.823)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 47.884, da gat3]
+  snapshot di gat2 (cluster 2): giro 8, chiuso a 50.467 s, ricevuto a 50.474 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 8, chiuso a 47.884 s, ricevuto a 47.889 s, 3 nodi
+=== gat3  giro 9  da 51.499 a 54.519 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0007 s | gat3 -> adh[10] (h1, 51.5194)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0004 s | gat3 -> adh[12] (h1, 51.4994)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 24.98% (timbro 47.887)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.497  cluster 1  [visto 48.026, da gat1]
+    adh[10]      energia 51.35% (timbro 51.250)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.045  cluster 3  [visto 51.519, da gat3]
+    adh[11]      energia 85.03% (timbro 48.050)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.659  cluster 1  [visto 48.123, da gat1]
+    adh[12]      energia 61.36% (timbro 51.040)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.062  cluster 3  [visto 51.499, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 68.11% (timbro 26.403)  pos (2100, 400, 50)  disponibile SI  banda 0.40  throughput 0.145  cluster 3  [visto 28.059, da gat3]
+    adh[1]       energia 34.70% (timbro 45.537)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.816  cluster 1  [visto 48.063, da gat1]
+    adh[2]       energia 45.38% (timbro 47.298)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.627  cluster 1  [visto 48.103, da gat1]
+    adh[3]       energia 45.24% (timbro 46.528)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.775  cluster 1  [visto 48.043, da gat1]
+    adh[4]       energia 55.66% (timbro 46.505)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.545  cluster 1  [visto 48.083, da gat1]
+    adh[5]       energia 61.19% (timbro 46.132)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.127  cluster 1  [visto 48.143, da gat1]
+    adh[7]       energia 46.72% (timbro 45.433)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.005  cluster 2  [visto 47.467, da gat2]
+    adh[8]       energia 80.12% (timbro 46.760)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.713  cluster 1  [visto 48.183, da gat1]
+    gat1         energia 96.06% (timbro 50.859)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 51.263, da gat1]
+    gat2         energia 97.44% (timbro 48.738)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 50.467, da gat2]
+  snapshot di gat1 (cluster 1): giro 8, chiuso a 51.263 s, ricevuto a 51.276 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 8, chiuso a 50.467 s, ricevuto a 50.474 s, 2 nodi
+=== gat2  giro 9  da 52.434 a 55.434 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0002 s | gat2 -> adh[7] (h1, 52.4341)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 24.98% (timbro 47.887)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.497  cluster 1  [visto 48.026, da gat1]
+    adh[10]      energia 51.81% (timbro 44.719)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 44.884, da gat3]
+    adh[11]      energia 85.03% (timbro 48.050)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.659  cluster 1  [visto 48.123, da gat1]
+    adh[12]      energia 61.84% (timbro 44.193)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 44.864, da gat3]
+    adh[1]       energia 34.70% (timbro 45.537)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.816  cluster 1  [visto 48.063, da gat1]
+    adh[2]       energia 45.38% (timbro 47.298)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.627  cluster 1  [visto 48.103, da gat1]
+    adh[3]       energia 45.24% (timbro 46.528)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.775  cluster 1  [visto 48.043, da gat1]
+    adh[4]       energia 55.66% (timbro 46.505)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.545  cluster 1  [visto 48.083, da gat1]
+    adh[5]       energia 61.19% (timbro 46.132)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.127  cluster 1  [visto 48.143, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 46.33% (timbro 50.896)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.014  cluster 2  [visto 52.434, da gat2]
+    adh[8]       energia 80.12% (timbro 46.760)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.713  cluster 1  [visto 48.183, da gat1]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 96.06% (timbro 50.859)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 51.263, da gat1]
+    gat3         energia 97.44% (timbro 47.823)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 47.884, da gat3]
+  snapshot di gat1 (cluster 1): giro 8, chiuso a 51.263 s, ricevuto a 51.267 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 8, chiuso a 47.884 s, ricevuto a 47.889 s, 3 nodi
+=== gat1  giro 9  da 56.157 a 59.377 s | tracce 12: complete 12, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0004 s | gat1 -> adh[0] (h1, 56.1573)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[11] (h1, 56.2572)
+  adh[13]      completa, 2 hop, andata e ritorno 0.0034 s | gat1 -> adh[5] (h1, 56.3772) -> adh[13] (h2, 56.3774)
+  adh[14]      completa, 2 hop, andata e ritorno 0.0041 s | gat1 -> adh[11] (h1, 56.2972) -> adh[14] (h2, 56.2988)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0080 s | gat1 -> adh[1] (h1, 56.1986)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[2] (h1, 56.2372)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0011 s | gat1 -> adh[3] (h1, 56.1772)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[4] (h1, 56.2172)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0012 s | gat1 -> adh[5] (h1, 56.2772)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[6] (h1, 56.3572)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[8] (h1, 56.3172)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[9] (h1, 56.3372)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 23.82% (timbro 55.606)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.610  cluster 1  [visto 56.157, da gat1]
+    adh[10]      energia 51.81% (timbro 44.719)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 44.884, da gat3]
+    adh[11]      energia 83.81% (timbro 55.263)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.537  cluster 1  [visto 56.297, da gat1]
+    adh[12]      energia 61.84% (timbro 44.193)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 44.864, da gat3]
+    adh[13]      energia 45.83% (timbro 55.686)  pos (582, 668, 50)  disponibile NO  banda 0.40  throughput 0.030  cluster 1  [visto 56.377, da gat1]
+    adh[14]      energia 65.88% (timbro 55.519)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.020  cluster 1  [visto 56.299, da gat1]
+    adh[1]       energia 33.31% (timbro 53.749)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.926  cluster 1  [visto 56.199, da gat1]
+    adh[2]       energia 44.19% (timbro 55.347)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.553  cluster 1  [visto 56.237, da gat1]
+    adh[3]       energia 43.83% (timbro 55.015)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.549  cluster 1  [visto 56.177, da gat1]
+    adh[4]       energia 54.44% (timbro 54.767)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.362  cluster 1  [visto 56.217, da gat1]
+    adh[5]       energia 60.43% (timbro 53.987)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.096  cluster 1  [visto 56.377, da gat1]
+    adh[6]       energia 49.60% (timbro 55.359)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.386  cluster 1  [visto 56.357, da gat1]
+    adh[7]       energia 46.33% (timbro 50.896)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.014  cluster 2  [visto 52.434, da gat2]
+    adh[8]       energia 78.78% (timbro 55.443)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.412  cluster 1  [visto 56.317, da gat1]
+    adh[9]       energia 69.51% (timbro 54.777)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.135  cluster 1  [visto 56.337, da gat1]
+    gat2         energia 97.15% (timbro 55.226)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 55.434, da gat2]
+    gat3         energia 97.44% (timbro 47.823)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 47.884, da gat3]
+  snapshot di gat2 (cluster 2): giro 9, chiuso a 55.434 s, ricevuto a 55.439 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 8, chiuso a 47.884 s, ricevuto a 47.889 s, 3 nodi
+=== gat3  giro 10  da 58.817 a 61.837 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 58.8370)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 58.8170)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 23.82% (timbro 55.606)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.610  cluster 1  [visto 56.157, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 83.81% (timbro 55.263)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.537  cluster 1  [visto 56.297, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 65.88% (timbro 55.519)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.020  cluster 1  [visto 56.299, da gat1]
+    adh[1]       energia 33.31% (timbro 53.749)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.926  cluster 1  [visto 56.199, da gat1]
+    adh[2]       energia 44.19% (timbro 55.347)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.553  cluster 1  [visto 56.237, da gat1]
+    adh[3]       energia 43.83% (timbro 55.015)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.549  cluster 1  [visto 56.177, da gat1]
+    adh[4]       energia 54.44% (timbro 54.767)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.362  cluster 1  [visto 56.217, da gat1]
+    adh[5]       energia 60.43% (timbro 53.987)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.096  cluster 1  [visto 56.377, da gat1]
+    adh[7]       energia 46.33% (timbro 50.896)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.014  cluster 2  [visto 52.434, da gat2]
+    gat1         energia 95.18% (timbro 58.267)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 59.377, da gat1]
+    gat2         energia 97.15% (timbro 55.226)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 55.434, da gat2]
+  snapshot di gat1 (cluster 1): giro 9, chiuso a 59.377 s, ricevuto a 59.391 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 9, chiuso a 55.434 s, ricevuto a 55.440 s, 2 nodi
+=== gat2  giro 10  da 59.566 a 62.566 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[7] (h1, 59.5662)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 23.82% (timbro 55.606)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.610  cluster 1  [visto 56.157, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 83.81% (timbro 55.263)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.537  cluster 1  [visto 56.297, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[14]      energia 65.88% (timbro 55.519)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.020  cluster 1  [visto 56.299, da gat1]
+    adh[1]       energia 33.31% (timbro 53.749)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.926  cluster 1  [visto 56.199, da gat1]
+    adh[2]       energia 44.19% (timbro 55.347)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.553  cluster 1  [visto 56.237, da gat1]
+    adh[3]       energia 43.83% (timbro 55.015)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.549  cluster 1  [visto 56.177, da gat1]
+    adh[4]       energia 54.44% (timbro 54.767)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.362  cluster 1  [visto 56.217, da gat1]
+    adh[5]       energia 60.43% (timbro 53.987)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.096  cluster 1  [visto 56.377, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 45.76% (timbro 59.090)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.004  cluster 2  [visto 59.566, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 95.18% (timbro 58.267)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 59.377, da gat1]
+    gat3         energia 96.79% (timbro 61.384)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 61.837, da gat3]
+  snapshot di gat1 (cluster 1): giro 9, chiuso a 59.377 s, ricevuto a 59.384 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 10, chiuso a 61.837 s, ricevuto a 61.840 s, 3 nodi
+=== gat1  giro 10  da 61.903 a 65.123 s | tracce 12: complete 12, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 61.9029)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[11] (h1, 62.0029)
+  adh[13]      completa, 2 hop, andata e ritorno 0.0008 s | gat1 -> adh[11] (h1, 62.1229) -> adh[13] (h2, 62.1231)
+  adh[14]      completa, 2 hop, andata e ritorno 0.0009 s | gat1 -> adh[11] (h1, 62.0431) -> adh[14] (h2, 62.0433)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[1] (h1, 61.9429)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[2] (h1, 61.9829)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[3] (h1, 61.9229)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[4] (h1, 61.9629)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[5] (h1, 62.0229)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[6] (h1, 62.1029)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[8] (h1, 62.0629)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[9] (h1, 62.0829)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 23.00% (timbro 60.752)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.377  cluster 1  [visto 61.903, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 82.86% (timbro 61.033)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.450  cluster 1  [visto 62.123, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[13]      energia 45.36% (timbro 61.551)  pos (582, 668, 50)  disponibile NO  banda 0.40  throughput 0.130  cluster 1  [visto 62.123, da gat1]
+    adh[14]      energia 65.47% (timbro 60.657)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.037  cluster 1  [visto 62.043, da gat1]
+    adh[1]       energia 32.38% (timbro 59.224)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.842  cluster 1  [visto 61.943, da gat1]
+    adh[2]       energia 43.29% (timbro 61.385)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.405  cluster 1  [visto 61.983, da gat1]
+    adh[3]       energia 42.81% (timbro 61.804)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.369  cluster 1  [visto 61.923, da gat1]
+    adh[4]       energia 53.58% (timbro 60.963)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.419  cluster 1  [visto 61.963, da gat1]
+    adh[5]       energia 59.66% (timbro 61.842)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.246  cluster 1  [visto 62.023, da gat1]
+    adh[6]       energia 48.70% (timbro 62.068)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.532  cluster 1  [visto 62.103, da gat1]
+    adh[7]       energia 46.33% (timbro 50.896)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.014  cluster 2  [visto 52.434, da gat2]
+    adh[8]       energia 77.85% (timbro 61.956)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.466  cluster 1  [visto 62.063, da gat1]
+    adh[9]       energia 68.73% (timbro 61.470)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.274  cluster 1  [visto 62.083, da gat1]
+    gat2         energia 97.15% (timbro 55.226)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 55.434, da gat2]
+    gat3         energia 96.79% (timbro 61.384)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 61.837, da gat3]
+  snapshot di gat2 (cluster 2): giro 9, chiuso a 55.434 s, ricevuto a 55.439 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 10, chiuso a 61.837 s, ricevuto a 61.840 s, 3 nodi
+=== gat3  giro 11  da 63.402 a 66.422 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[10] (h1, 63.4224)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 63.4024)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 23.00% (timbro 60.752)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.377  cluster 1  [visto 61.903, da gat1]
+    adh[10]      energia 50.60% (timbro 62.135)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.095  cluster 3  [visto 63.422, da gat3]
+    adh[11]      energia 82.86% (timbro 61.033)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.450  cluster 1  [visto 62.123, da gat1]
+    adh[12]      energia 60.50% (timbro 63.365)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 63.402, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 65.47% (timbro 60.657)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.037  cluster 1  [visto 62.043, da gat1]
+    adh[1]       energia 32.38% (timbro 59.224)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.842  cluster 1  [visto 61.943, da gat1]
+    adh[2]       energia 43.29% (timbro 61.385)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.405  cluster 1  [visto 61.983, da gat1]
+    adh[3]       energia 42.81% (timbro 61.804)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.369  cluster 1  [visto 61.923, da gat1]
+    adh[4]       energia 53.58% (timbro 60.963)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.419  cluster 1  [visto 61.963, da gat1]
+    adh[5]       energia 59.66% (timbro 61.842)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.246  cluster 1  [visto 62.023, da gat1]
+    adh[7]       energia 46.33% (timbro 50.896)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.014  cluster 2  [visto 52.434, da gat2]
+    gat1         energia 94.69% (timbro 64.194)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 65.123, da gat1]
+    gat2         energia 97.15% (timbro 55.226)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 55.434, da gat2]
+  snapshot di gat1 (cluster 1): giro 10, chiuso a 65.123 s, ricevuto a 65.131 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 9, chiuso a 55.434 s, ricevuto a 55.440 s, 2 nodi
+=== gat2  giro 11  da 66.662 a 69.662 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0019 s | gat2 -> adh[7] (h1, 66.6630)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 23.00% (timbro 60.752)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.377  cluster 1  [visto 61.903, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 82.86% (timbro 61.033)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.450  cluster 1  [visto 62.123, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[14]      energia 65.47% (timbro 60.657)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.037  cluster 1  [visto 62.043, da gat1]
+    adh[1]       energia 32.38% (timbro 59.224)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.842  cluster 1  [visto 61.943, da gat1]
+    adh[2]       energia 43.29% (timbro 61.385)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.405  cluster 1  [visto 61.983, da gat1]
+    adh[3]       energia 42.81% (timbro 61.804)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.369  cluster 1  [visto 61.923, da gat1]
+    adh[4]       energia 53.58% (timbro 60.963)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.419  cluster 1  [visto 61.963, da gat1]
+    adh[5]       energia 59.66% (timbro 61.842)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.246  cluster 1  [visto 62.023, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 45.38% (timbro 64.552)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.012  cluster 2  [visto 66.663, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 94.69% (timbro 64.194)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 65.123, da gat1]
+    gat3         energia 96.79% (timbro 61.384)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 61.837, da gat3]
+  snapshot di gat1 (cluster 1): giro 10, chiuso a 65.123 s, ricevuto a 65.127 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 10, chiuso a 61.837 s, ricevuto a 61.840 s, 3 nodi
+=== gat1  giro 11  da 67.451 a 70.671 s | tracce 12: complete 12, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 67.4515)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[11] (h1, 67.5515)
+  adh[13]      completa, 2 hop, andata e ritorno 0.0019 s | gat1 -> adh[5] (h1, 67.6715) -> adh[13] (h2, 67.6717)
+  adh[14]      completa, 2 hop, andata e ritorno 0.0006 s | gat1 -> adh[11] (h1, 67.5915) -> adh[14] (h2, 67.5916)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[1] (h1, 67.4915)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[2] (h1, 67.5315)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[3] (h1, 67.4715)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0015 s | gat1 -> adh[4] (h1, 67.5115)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[5] (h1, 67.5715)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[6] (h1, 67.6515)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[8] (h1, 67.6115)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[9] (h1, 67.6315)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 22.46% (timbro 67.185)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.500  cluster 1  [visto 67.451, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 82.41% (timbro 66.804)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.505  cluster 1  [visto 67.591, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[13]      energia 44.93% (timbro 67.415)  pos (582, 668, 50)  disponibile NO  banda 0.40  throughput 0.157  cluster 1  [visto 67.672, da gat1]
+    adh[14]      energia 64.97% (timbro 67.507)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.127  cluster 1  [visto 67.592, da gat1]
+    adh[1]       energia 31.23% (timbro 67.436)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 1.028  cluster 1  [visto 67.491, da gat1]
+    adh[2]       energia 42.80% (timbro 67.422)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.366  cluster 1  [visto 67.531, da gat1]
+    adh[3]       energia 42.40% (timbro 66.897)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.366  cluster 1  [visto 67.471, da gat1]
+    adh[4]       energia 53.09% (timbro 67.160)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.475  cluster 1  [visto 67.511, da gat1]
+    adh[5]       energia 59.25% (timbro 67.079)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.270  cluster 1  [visto 67.671, da gat1]
+    adh[6]       energia 48.27% (timbro 67.435)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.343  cluster 1  [visto 67.651, da gat1]
+    adh[7]       energia 46.33% (timbro 50.896)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.014  cluster 2  [visto 52.434, da gat2]
+    adh[8]       energia 77.50% (timbro 66.298)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.255  cluster 1  [visto 67.611, da gat1]
+    adh[9]       energia 68.39% (timbro 65.932)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.136  cluster 1  [visto 67.631, da gat1]
+    gat2         energia 97.15% (timbro 55.226)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 55.434, da gat2]
+    gat3         energia 96.79% (timbro 61.384)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 61.837, da gat3]
+  snapshot di gat2 (cluster 2): giro 9, chiuso a 55.434 s, ricevuto a 55.439 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 10, chiuso a 61.837 s, ricevuto a 61.840 s, 3 nodi
+=== gat3  giro 12  da 67.875 a 70.895 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[10] (h1, 67.8952)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[12] (h1, 67.8752)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 23.00% (timbro 60.752)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.377  cluster 1  [visto 61.903, da gat1]
+    adh[10]      energia 50.29% (timbro 66.490)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.064  cluster 3  [visto 67.895, da gat3]
+    adh[11]      energia 82.86% (timbro 61.033)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.450  cluster 1  [visto 62.123, da gat1]
+    adh[12]      energia 60.21% (timbro 67.474)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.085  cluster 3  [visto 67.875, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 65.47% (timbro 60.657)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.037  cluster 1  [visto 62.043, da gat1]
+    adh[1]       energia 32.38% (timbro 59.224)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.842  cluster 1  [visto 61.943, da gat1]
+    adh[2]       energia 43.29% (timbro 61.385)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.405  cluster 1  [visto 61.983, da gat1]
+    adh[3]       energia 42.81% (timbro 61.804)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.369  cluster 1  [visto 61.923, da gat1]
+    adh[4]       energia 53.58% (timbro 60.963)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.419  cluster 1  [visto 61.963, da gat1]
+    adh[5]       energia 59.66% (timbro 61.842)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.246  cluster 1  [visto 62.023, da gat1]
+    adh[7]       energia 46.33% (timbro 50.896)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.014  cluster 2  [visto 52.434, da gat2]
+    gat1         energia 94.69% (timbro 64.194)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 65.123, da gat1]
+    gat2         energia 97.15% (timbro 55.226)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 55.434, da gat2]
+  snapshot di gat1 (cluster 1): giro 10, chiuso a 65.123 s, ricevuto a 65.131 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 9, chiuso a 55.434 s, ricevuto a 55.440 s, 2 nodi
+=== gat3  giro 13  da 71.989 a 75.009 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 72.0088)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 71.9888)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 23.00% (timbro 60.752)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.377  cluster 1  [visto 61.903, da gat1]
+    adh[10]      energia 49.99% (timbro 70.844)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.032  cluster 3  [visto 72.009, da gat3]
+    adh[11]      energia 82.86% (timbro 61.033)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.450  cluster 1  [visto 62.123, da gat1]
+    adh[12]      energia 59.93% (timbro 71.582)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.095  cluster 3  [visto 71.989, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 65.47% (timbro 60.657)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.037  cluster 1  [visto 62.043, da gat1]
+    adh[1]       energia 32.38% (timbro 59.224)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.842  cluster 1  [visto 61.943, da gat1]
+    adh[2]       energia 43.29% (timbro 61.385)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.405  cluster 1  [visto 61.983, da gat1]
+    adh[3]       energia 42.81% (timbro 61.804)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.369  cluster 1  [visto 61.923, da gat1]
+    adh[4]       energia 53.58% (timbro 60.963)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.419  cluster 1  [visto 61.963, da gat1]
+    adh[5]       energia 59.66% (timbro 61.842)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.246  cluster 1  [visto 62.023, da gat1]
+    adh[7]       energia 46.33% (timbro 50.896)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.014  cluster 2  [visto 52.434, da gat2]
+    gat1         energia 94.69% (timbro 64.194)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 65.123, da gat1]
+    gat2         energia 97.15% (timbro 55.226)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 55.434, da gat2]
+  snapshot di gat1 (cluster 1): giro 10, chiuso a 65.123 s, ricevuto a 65.131 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 9, chiuso a 55.434 s, ricevuto a 55.440 s, 2 nodi
+=== gat2  giro 12  da 72.322 a 75.322 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[7] (h1, 72.3216)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 23.00% (timbro 60.752)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.377  cluster 1  [visto 61.903, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 82.86% (timbro 61.033)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.450  cluster 1  [visto 62.123, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[14]      energia 65.47% (timbro 60.657)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.037  cluster 1  [visto 62.043, da gat1]
+    adh[1]       energia 32.38% (timbro 59.224)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.842  cluster 1  [visto 61.943, da gat1]
+    adh[2]       energia 43.29% (timbro 61.385)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.405  cluster 1  [visto 61.983, da gat1]
+    adh[3]       energia 42.81% (timbro 61.804)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.369  cluster 1  [visto 61.923, da gat1]
+    adh[4]       energia 53.58% (timbro 60.963)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.419  cluster 1  [visto 61.963, da gat1]
+    adh[5]       energia 59.66% (timbro 61.842)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.246  cluster 1  [visto 62.023, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 44.99% (timbro 70.015)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.007  cluster 2  [visto 72.322, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 94.69% (timbro 64.194)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 65.123, da gat1]
+    gat3         energia 96.79% (timbro 61.384)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 61.837, da gat3]
+  snapshot di gat1 (cluster 1): giro 10, chiuso a 65.123 s, ricevuto a 65.127 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 10, chiuso a 61.837 s, ricevuto a 61.840 s, 3 nodi
+=== gat1  giro 12  da 74.212 a 77.432 s | tracce 12: complete 12, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 74.2125)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[11] (h1, 74.3125)
+  adh[13]      completa, 2 hop, andata e ritorno 0.0008 s | gat1 -> adh[11] (h1, 74.4325) -> adh[13] (h2, 74.4326)
+  adh[14]      completa, 2 hop, andata e ritorno 0.0009 s | gat1 -> adh[11] (h1, 74.3525) -> adh[14] (h2, 74.3527)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[1] (h1, 74.2525)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[2] (h1, 74.2925)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[3] (h1, 74.2325)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[4] (h1, 74.2725)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[5] (h1, 74.3325)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[6] (h1, 74.4125)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[8] (h1, 74.3725)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[9] (h1, 74.3925)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 21.99% (timbro 73.617)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.005  cluster 1  [visto 74.212, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 81.88% (timbro 74.017)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 74.432, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[13]      energia 44.52% (timbro 73.279)  pos (582, 668, 50)  disponibile NO  banda 0.40  throughput 0.073  cluster 1  [visto 74.433, da gat1]
+    adh[14]      energia 64.60% (timbro 72.645)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.125  cluster 1  [visto 74.353, da gat1]
+    adh[1]       energia 30.76% (timbro 72.911)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.227  cluster 1  [visto 74.252, da gat1]
+    adh[2]       energia 42.36% (timbro 73.459)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.146  cluster 1  [visto 74.292, da gat1]
+    adh[3]       energia 41.90% (timbro 73.686)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.001  cluster 1  [visto 74.232, da gat1]
+    adh[4]       energia 52.64% (timbro 73.356)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.193  cluster 1  [visto 74.272, da gat1]
+    adh[5]       energia 58.87% (timbro 72.316)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.279  cluster 1  [visto 74.332, da gat1]
+    adh[6]       energia 47.79% (timbro 74.145)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 74.412, da gat1]
+    adh[7]       energia 44.99% (timbro 70.015)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.007  cluster 2  [visto 72.322, da gat2]
+    adh[8]       energia 77.01% (timbro 72.810)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.378  cluster 1  [visto 74.372, da gat1]
+    adh[9]       energia 67.89% (timbro 72.625)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.316  cluster 1  [visto 74.392, da gat1]
+    gat2         energia 96.23% (timbro 74.689)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 75.322, da gat2]
+    gat3         energia 96.79% (timbro 61.384)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 61.837, da gat3]
+  snapshot di gat2 (cluster 2): giro 12, chiuso a 75.322 s, ricevuto a 75.326 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 10, chiuso a 61.837 s, ricevuto a 61.840 s, 3 nodi
+=== gat3  giro 14  da 77.064 a 80.084 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 77.0839)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 77.0639)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 21.99% (timbro 73.617)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.005  cluster 1  [visto 74.212, da gat1]
+    adh[10]      energia 49.69% (timbro 75.198)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.013  cluster 3  [visto 77.084, da gat3]
+    adh[11]      energia 81.88% (timbro 74.017)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 74.432, da gat1]
+    adh[12]      energia 59.54% (timbro 77.060)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.122  cluster 3  [visto 77.064, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 64.60% (timbro 72.645)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.125  cluster 1  [visto 74.353, da gat1]
+    adh[1]       energia 30.76% (timbro 72.911)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.227  cluster 1  [visto 74.252, da gat1]
+    adh[2]       energia 42.36% (timbro 73.459)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.146  cluster 1  [visto 74.292, da gat1]
+    adh[3]       energia 41.90% (timbro 73.686)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.001  cluster 1  [visto 74.232, da gat1]
+    adh[4]       energia 52.64% (timbro 73.356)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.193  cluster 1  [visto 74.272, da gat1]
+    adh[5]       energia 58.87% (timbro 72.316)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.279  cluster 1  [visto 74.332, da gat1]
+    adh[7]       energia 44.99% (timbro 70.015)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.007  cluster 2  [visto 72.322, da gat2]
+    gat1         energia 93.98% (timbro 76.047)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 77.432, da gat1]
+    gat2         energia 96.23% (timbro 74.689)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 75.322, da gat2]
+  snapshot di gat1 (cluster 1): giro 12, chiuso a 77.432 s, ricevuto a 77.441 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 12, chiuso a 75.322 s, ricevuto a 75.326 s, 2 nodi
+=== gat1  giro 13  da 78.964 a 82.184 s | tracce 12: complete 12, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 78.9639)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[11] (h1, 79.0639)
+  adh[13]      completa, 2 hop, andata e ritorno 0.0007 s | gat1 -> adh[4] (h1, 79.1839) -> adh[13] (h2, 79.1840)
+  adh[14]      completa, 2 hop, andata e ritorno 0.0007 s | gat1 -> adh[11] (h1, 79.1039) -> adh[14] (h2, 79.1040)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[1] (h1, 79.0039)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[2] (h1, 79.0439)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[3] (h1, 78.9839)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[4] (h1, 79.0239)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[5] (h1, 79.0839)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[6] (h1, 79.1639)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[8] (h1, 79.1239)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[9] (h1, 79.1439)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 21.60% (timbro 78.763)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.072  cluster 1  [visto 78.964, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 81.55% (timbro 78.345)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.122  cluster 1  [visto 79.104, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[13]      energia 44.10% (timbro 79.143)  pos (582, 668, 50)  disponibile NO  banda 0.40  throughput 0.007  cluster 1  [visto 79.184, da gat1]
+    adh[14]      energia 64.23% (timbro 77.784)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.102  cluster 1  [visto 79.104, da gat1]
+    adh[1]       energia 30.36% (timbro 78.386)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.236  cluster 1  [visto 79.004, da gat1]
+    adh[2]       energia 42.05% (timbro 77.484)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.419  cluster 1  [visto 79.044, da gat1]
+    adh[3]       energia 41.52% (timbro 78.779)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.022  cluster 1  [visto 78.984, da gat1]
+    adh[4]       energia 52.32% (timbro 77.487)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.477  cluster 1  [visto 79.184, da gat1]
+    adh[5]       energia 58.49% (timbro 77.553)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.285  cluster 1  [visto 79.084, da gat1]
+    adh[6]       energia 47.48% (timbro 78.170)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.145  cluster 1  [visto 79.164, da gat1]
+    adh[7]       energia 44.99% (timbro 70.015)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.007  cluster 2  [visto 72.322, da gat2]
+    adh[8]       energia 76.69% (timbro 77.152)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.415  cluster 1  [visto 79.124, da gat1]
+    adh[9]       energia 67.56% (timbro 77.087)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.351  cluster 1  [visto 79.144, da gat1]
+    gat2         energia 96.23% (timbro 74.689)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 75.322, da gat2]
+    gat3         energia 96.79% (timbro 61.384)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 61.837, da gat3]
+  snapshot di gat2 (cluster 2): giro 12, chiuso a 75.322 s, ricevuto a 75.326 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 10, chiuso a 61.837 s, ricevuto a 61.840 s, 3 nodi
+=== gat2  giro 13  da 79.677 a 82.677 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[7] (h1, 79.6766)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 21.60% (timbro 78.763)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.072  cluster 1  [visto 78.964, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 81.55% (timbro 78.345)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.122  cluster 1  [visto 79.104, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[14]      energia 64.23% (timbro 77.784)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.102  cluster 1  [visto 79.104, da gat1]
+    adh[1]       energia 30.36% (timbro 78.386)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.236  cluster 1  [visto 79.004, da gat1]
+    adh[2]       energia 42.05% (timbro 77.484)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.419  cluster 1  [visto 79.044, da gat1]
+    adh[3]       energia 41.52% (timbro 78.779)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.022  cluster 1  [visto 78.984, da gat1]
+    adh[4]       energia 52.32% (timbro 77.487)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.477  cluster 1  [visto 79.184, da gat1]
+    adh[5]       energia 58.49% (timbro 77.553)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.285  cluster 1  [visto 79.084, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 44.41% (timbro 78.209)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 79.677, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 93.61% (timbro 81.974)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 82.184, da gat1]
+    gat3         energia 96.79% (timbro 61.384)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 61.837, da gat3]
+  snapshot di gat1 (cluster 1): giro 13, chiuso a 82.184 s, ricevuto a 82.188 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 10, chiuso a 61.837 s, ricevuto a 61.840 s, 3 nodi
+=== gat3  giro 15  da 82.609 a 85.629 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 82.6291)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 82.6091)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 21.60% (timbro 78.763)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.072  cluster 1  [visto 78.964, da gat1]
+    adh[10]      energia 49.23% (timbro 81.729)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.067  cluster 3  [visto 82.629, da gat3]
+    adh[11]      energia 81.55% (timbro 78.345)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.122  cluster 1  [visto 79.104, da gat1]
+    adh[12]      energia 59.16% (timbro 82.538)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.063  cluster 3  [visto 82.609, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 64.23% (timbro 77.784)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.102  cluster 1  [visto 79.104, da gat1]
+    adh[1]       energia 30.36% (timbro 78.386)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.236  cluster 1  [visto 79.004, da gat1]
+    adh[2]       energia 42.05% (timbro 77.484)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.419  cluster 1  [visto 79.044, da gat1]
+    adh[3]       energia 41.52% (timbro 78.779)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.022  cluster 1  [visto 78.984, da gat1]
+    adh[4]       energia 52.32% (timbro 77.487)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.477  cluster 1  [visto 79.184, da gat1]
+    adh[5]       energia 58.49% (timbro 77.553)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.285  cluster 1  [visto 79.084, da gat1]
+    adh[7]       energia 44.41% (timbro 78.209)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 79.677, da gat2]
+    gat1         energia 93.61% (timbro 81.974)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 82.184, da gat1]
+    gat2         energia 95.92% (timbro 81.176)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 82.677, da gat2]
+  snapshot di gat1 (cluster 1): giro 13, chiuso a 82.184 s, ricevuto a 82.191 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 13, chiuso a 82.677 s, ricevuto a 82.679 s, 2 nodi
+=== gat1  giro 14  da 85.360 a 88.580 s | tracce 12: complete 12, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 85.3598)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[11] (h1, 85.4598)
+  adh[13]      completa, 2 hop, andata e ritorno 0.0008 s | gat1 -> adh[4] (h1, 85.5798) -> adh[13] (h2, 85.5800)
+  adh[14]      completa, 2 hop, andata e ritorno 0.0008 s | gat1 -> adh[4] (h1, 85.4998) -> adh[14] (h2, 85.5000)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[1] (h1, 85.3998)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[2] (h1, 85.4398)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0005 s | gat1 -> adh[3] (h1, 85.3800)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[4] (h1, 85.4198)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[5] (h1, 85.4798)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[6] (h1, 85.5598)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[8] (h1, 85.5198)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[9] (h1, 85.5398)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 21.13% (timbro 85.196)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.005  cluster 1  [visto 85.360, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 81.13% (timbro 84.116)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.460, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[13]      energia 43.68% (timbro 85.007)  pos (582, 668, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.580, da gat1]
+    adh[14]      energia 63.75% (timbro 84.634)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.500, da gat1]
+    adh[1]       energia 29.96% (timbro 83.861)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 85.400, da gat1]
+    adh[2]       energia 41.61% (timbro 83.521)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.167  cluster 1  [visto 85.440, da gat1]
+    adh[3]       energia 41.15% (timbro 83.871)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.016  cluster 1  [visto 85.380, da gat1]
+    adh[4]       energia 51.86% (timbro 83.683)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.178  cluster 1  [visto 85.580, da gat1]
+    adh[5]       energia 57.92% (timbro 85.408)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.028  cluster 1  [visto 85.480, da gat1]
+    adh[6]       energia 47.00% (timbro 84.880)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.560, da gat1]
+    adh[7]       energia 44.41% (timbro 78.209)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 79.677, da gat2]
+    adh[8]       energia 76.21% (timbro 83.665)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.160  cluster 1  [visto 85.520, da gat1]
+    adh[9]       energia 67.08% (timbro 83.780)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.145  cluster 1  [visto 85.540, da gat1]
+    gat2         energia 95.92% (timbro 81.176)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 82.677, da gat2]
+    gat3         energia 96.79% (timbro 61.384)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 61.837, da gat3]
+  snapshot di gat2 (cluster 2): giro 13, chiuso a 82.677 s, ricevuto a 82.677 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 10, chiuso a 61.837 s, ricevuto a 61.840 s, 3 nodi
+=== gat2  giro 14  da 85.613 a 88.613 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[7] (h1, 85.6126)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 21.13% (timbro 85.196)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.005  cluster 1  [visto 85.360, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 81.13% (timbro 84.116)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.460, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[14]      energia 63.75% (timbro 84.634)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.500, da gat1]
+    adh[1]       energia 29.96% (timbro 83.861)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 85.400, da gat1]
+    adh[2]       energia 41.61% (timbro 83.521)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.167  cluster 1  [visto 85.440, da gat1]
+    adh[3]       energia 41.15% (timbro 83.871)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.016  cluster 1  [visto 85.380, da gat1]
+    adh[4]       energia 51.86% (timbro 83.683)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.178  cluster 1  [visto 85.580, da gat1]
+    adh[5]       energia 57.92% (timbro 85.408)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.028  cluster 1  [visto 85.480, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 44.03% (timbro 83.672)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.039  cluster 2  [visto 85.613, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 93.28% (timbro 87.900)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 88.580, da gat1]
+    gat3         energia 96.79% (timbro 61.384)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 61.837, da gat3]
+  snapshot di gat1 (cluster 1): giro 14, chiuso a 88.580 s, ricevuto a 88.585 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 10, chiuso a 61.837 s, ricevuto a 61.840 s, 3 nodi
+=== gat3  giro 16  da 89.263 a 92.283 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 89.2829)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 89.2629)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 21.13% (timbro 85.196)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.005  cluster 1  [visto 85.360, da gat1]
+    adh[10]      energia 48.77% (timbro 88.260)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 3  [visto 89.283, da gat3]
+    adh[11]      energia 81.13% (timbro 84.116)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.460, da gat1]
+    adh[12]      energia 58.78% (timbro 88.016)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.026  cluster 3  [visto 89.263, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 63.75% (timbro 84.634)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.500, da gat1]
+    adh[1]       energia 29.96% (timbro 83.861)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 85.400, da gat1]
+    adh[2]       energia 41.61% (timbro 83.521)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.167  cluster 1  [visto 85.440, da gat1]
+    adh[3]       energia 41.15% (timbro 83.871)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.016  cluster 1  [visto 85.380, da gat1]
+    adh[4]       energia 51.86% (timbro 83.683)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.178  cluster 1  [visto 85.580, da gat1]
+    adh[5]       energia 57.92% (timbro 85.408)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.028  cluster 1  [visto 85.480, da gat1]
+    adh[7]       energia 44.03% (timbro 83.672)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.039  cluster 2  [visto 85.613, da gat2]
+    gat1         energia 93.28% (timbro 87.900)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 88.580, da gat1]
+    gat2         energia 95.59% (timbro 87.664)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 88.613, da gat2]
+  snapshot di gat1 (cluster 1): giro 14, chiuso a 88.580 s, ricevuto a 88.587 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 14, chiuso a 88.613 s, ricevuto a 88.615 s, 2 nodi
+=== gat2  giro 15  da 90.296 a 93.296 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[7] (h1, 90.2960)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 21.13% (timbro 85.196)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.005  cluster 1  [visto 85.360, da gat1]
+    adh[10]      energia 50.90% (timbro 57.781)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.031  cluster 3  [visto 58.837, da gat3]
+    adh[11]      energia 81.13% (timbro 84.116)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.460, da gat1]
+    adh[12]      energia 60.88% (timbro 57.888)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 58.817, da gat3]
+    adh[14]      energia 63.75% (timbro 84.634)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.500, da gat1]
+    adh[1]       energia 29.96% (timbro 83.861)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 85.400, da gat1]
+    adh[2]       energia 41.61% (timbro 83.521)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.167  cluster 1  [visto 85.440, da gat1]
+    adh[3]       energia 41.15% (timbro 83.871)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.016  cluster 1  [visto 85.380, da gat1]
+    adh[4]       energia 51.86% (timbro 83.683)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.178  cluster 1  [visto 85.580, da gat1]
+    adh[5]       energia 57.92% (timbro 85.408)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.028  cluster 1  [visto 85.480, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 93.28% (timbro 87.900)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 88.580, da gat1]
+    gat3         energia 96.79% (timbro 61.384)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 61.837, da gat3]
+  snapshot di gat1 (cluster 1): giro 14, chiuso a 88.580 s, ricevuto a 88.585 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 10, chiuso a 61.837 s, ricevuto a 61.840 s, 3 nodi
+=== gat3  giro 17  da 93.582 a 96.602 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[10] (h1, 93.6017)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 93.5817)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 21.13% (timbro 85.196)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.005  cluster 1  [visto 85.360, da gat1]
+    adh[10]      energia 48.47% (timbro 92.615)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.096  cluster 3  [visto 93.602, da gat3]
+    adh[11]      energia 81.13% (timbro 84.116)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.460, da gat1]
+    adh[12]      energia 58.40% (timbro 93.494)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.021  cluster 3  [visto 93.582, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 63.75% (timbro 84.634)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 85.500, da gat1]
+    adh[1]       energia 29.96% (timbro 83.861)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 85.400, da gat1]
+    adh[2]       energia 41.61% (timbro 83.521)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.167  cluster 1  [visto 85.440, da gat1]
+    adh[3]       energia 41.15% (timbro 83.871)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.016  cluster 1  [visto 85.380, da gat1]
+    adh[4]       energia 51.86% (timbro 83.683)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.178  cluster 1  [visto 85.580, da gat1]
+    adh[5]       energia 57.92% (timbro 85.408)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.028  cluster 1  [visto 85.480, da gat1]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    gat1         energia 93.28% (timbro 87.900)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 88.580, da gat1]
+    gat2         energia 95.38% (timbro 91.989)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 93.296, da gat2]
+  snapshot di gat1 (cluster 1): giro 14, chiuso a 88.580 s, ricevuto a 88.587 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 15, chiuso a 93.296 s, ricevuto a 93.301 s, 2 nodi
+=== gat1  giro 15  da 93.489 a 96.709 s | tracce 12: complete 12, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 93.4893)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[11] (h1, 93.5893)
+  adh[13]      completa, 2 hop, andata e ritorno 0.0007 s | gat1 -> adh[4] (h1, 93.7093) -> adh[13] (h2, 93.7096)
+  adh[14]      completa, 2 hop, andata e ritorno 0.0008 s | gat1 -> adh[11] (h1, 93.6293) -> adh[14] (h2, 93.6296)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[1] (h1, 93.5293)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[2] (h1, 93.5693)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[3] (h1, 93.5093)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[4] (h1, 93.5493)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[5] (h1, 93.6093)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[6] (h1, 93.6893)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[8] (h1, 93.6493)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[9] (h1, 93.6693)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 20.54% (timbro 92.915)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.275  cluster 1  [visto 93.489, da gat1]
+    adh[10]      energia 48.47% (timbro 92.615)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.096  cluster 3  [visto 93.602, da gat3]
+    adh[11]      energia 80.47% (timbro 92.771)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.300  cluster 1  [visto 93.629, da gat1]
+    adh[12]      energia 58.40% (timbro 93.494)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.021  cluster 3  [visto 93.582, da gat3]
+    adh[13]      energia 43.10% (timbro 92.826)  pos (582, 668, 50)  disponibile NO  banda 0.40  throughput 0.154  cluster 1  [visto 93.710, da gat1]
+    adh[14]      energia 63.13% (timbro 93.198)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.057  cluster 1  [visto 93.630, da gat1]
+    adh[1]       energia 29.35% (timbro 92.074)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.271  cluster 1  [visto 93.529, da gat1]
+    adh[2]       energia 41.02% (timbro 91.571)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.306  cluster 1  [visto 93.569, da gat1]
+    adh[3]       energia 40.51% (timbro 92.358)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.457  cluster 1  [visto 93.509, da gat1]
+    adh[4]       energia 51.22% (timbro 91.945)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.528  cluster 1  [visto 93.709, da gat1]
+    adh[5]       energia 57.33% (timbro 93.263)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.278  cluster 1  [visto 93.609, da gat1]
+    adh[6]       energia 46.39% (timbro 92.931)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.261  cluster 1  [visto 93.689, da gat1]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    adh[8]       energia 75.56% (timbro 92.348)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.464  cluster 1  [visto 93.649, da gat1]
+    adh[9]       energia 66.41% (timbro 92.705)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.368  cluster 1  [visto 93.669, da gat1]
+    gat2         energia 95.38% (timbro 91.989)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 93.296, da gat2]
+    gat3         energia 95.20% (timbro 93.933)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 96.602, da gat3]
+  snapshot di gat2 (cluster 2): giro 15, chiuso a 93.296 s, ricevuto a 93.300 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 17, chiuso a 96.602 s, ricevuto a 96.605 s, 3 nodi
+=== gat2  giro 16  da 97.014 a 100.014 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[7] (h1, 97.0145)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 20.54% (timbro 92.915)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.275  cluster 1  [visto 93.489, da gat1]
+    adh[10]      energia 48.47% (timbro 92.615)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.096  cluster 3  [visto 93.602, da gat3]
+    adh[11]      energia 80.47% (timbro 92.771)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.300  cluster 1  [visto 93.629, da gat1]
+    adh[12]      energia 58.40% (timbro 93.494)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.021  cluster 3  [visto 93.582, da gat3]
+    adh[14]      energia 63.13% (timbro 93.198)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.057  cluster 1  [visto 93.630, da gat1]
+    adh[1]       energia 29.35% (timbro 92.074)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.271  cluster 1  [visto 93.529, da gat1]
+    adh[2]       energia 41.02% (timbro 91.571)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.306  cluster 1  [visto 93.569, da gat1]
+    adh[3]       energia 40.51% (timbro 92.358)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.457  cluster 1  [visto 93.509, da gat1]
+    adh[4]       energia 51.22% (timbro 91.945)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.528  cluster 1  [visto 93.709, da gat1]
+    adh[5]       energia 57.33% (timbro 93.263)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.278  cluster 1  [visto 93.609, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 43.26% (timbro 94.597)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.011  cluster 2  [visto 97.014, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 92.89% (timbro 95.309)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 96.709, da gat1]
+    gat3         energia 95.20% (timbro 93.933)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 96.602, da gat3]
+  snapshot di gat1 (cluster 1): giro 15, chiuso a 96.709 s, ricevuto a 96.714 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 17, chiuso a 96.602 s, ricevuto a 96.605 s, 3 nodi
+=== gat3  giro 18  da 97.617 a 100.637 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 97.6374)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 97.6174)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 20.54% (timbro 92.915)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.275  cluster 1  [visto 93.489, da gat1]
+    adh[10]      energia 48.16% (timbro 96.969)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.106  cluster 3  [visto 97.637, da gat3]
+    adh[11]      energia 80.47% (timbro 92.771)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.300  cluster 1  [visto 93.629, da gat1]
+    adh[12]      energia 58.11% (timbro 97.602)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.079  cluster 3  [visto 97.617, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 63.13% (timbro 93.198)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.057  cluster 1  [visto 93.630, da gat1]
+    adh[1]       energia 29.35% (timbro 92.074)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.271  cluster 1  [visto 93.529, da gat1]
+    adh[2]       energia 41.02% (timbro 91.571)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.306  cluster 1  [visto 93.569, da gat1]
+    adh[3]       energia 40.51% (timbro 92.358)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.457  cluster 1  [visto 93.509, da gat1]
+    adh[4]       energia 51.22% (timbro 91.945)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.528  cluster 1  [visto 93.709, da gat1]
+    adh[5]       energia 57.33% (timbro 93.263)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.278  cluster 1  [visto 93.609, da gat1]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    gat1         energia 92.89% (timbro 95.309)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 96.709, da gat1]
+    gat2         energia 95.38% (timbro 91.989)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 93.296, da gat2]
+  snapshot di gat1 (cluster 1): giro 15, chiuso a 96.709 s, ricevuto a 96.718 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 15, chiuso a 93.296 s, ricevuto a 93.301 s, 2 nodi
+=== gat1  giro 16  da 98.143 a 101.363 s | tracce 12: complete 12, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[0] (h1, 98.1434)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[11] (h1, 98.2434)
+  adh[13]      completa, 2 hop, andata e ritorno 0.0008 s | gat1 -> adh[5] (h1, 98.3634) -> adh[13] (h2, 98.3637)
+  adh[14]      completa, 2 hop, andata e ritorno 0.0008 s | gat1 -> adh[11] (h1, 98.2834) -> adh[14] (h2, 98.2837)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[1] (h1, 98.1834)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[2] (h1, 98.2234)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[3] (h1, 98.1634)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[4] (h1, 98.2034)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[5] (h1, 98.2634)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[6] (h1, 98.3434)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[8] (h1, 98.3034)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[9] (h1, 98.3234)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 20.15% (timbro 98.061)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.155  cluster 1  [visto 98.143, da gat1]
+    adh[10]      energia 48.47% (timbro 92.615)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.096  cluster 3  [visto 93.602, da gat3]
+    adh[11]      energia 80.14% (timbro 97.099)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.641  cluster 1  [visto 98.283, da gat1]
+    adh[12]      energia 58.40% (timbro 93.494)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.021  cluster 3  [visto 93.582, da gat3]
+    adh[13]      energia 42.82% (timbro 96.735)  pos (582, 668, 50)  disponibile NO  banda 0.40  throughput 0.156  cluster 1  [visto 98.364, da gat1]
+    adh[14]      energia 62.88% (timbro 96.623)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.121  cluster 1  [visto 98.284, da gat1]
+    adh[1]       energia 28.95% (timbro 97.548)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.259  cluster 1  [visto 98.183, da gat1]
+    adh[2]       energia 40.56% (timbro 97.608)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.436  cluster 1  [visto 98.223, da gat1]
+    adh[3]       energia 40.14% (timbro 97.450)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.393  cluster 1  [visto 98.163, da gat1]
+    adh[4]       energia 50.77% (timbro 98.141)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.298  cluster 1  [visto 98.203, da gat1]
+    adh[5]       energia 57.15% (timbro 95.882)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.073  cluster 1  [visto 98.363, da gat1]
+    adh[6]       energia 45.99% (timbro 98.298)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.009  cluster 1  [visto 98.343, da gat1]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    adh[8]       energia 75.25% (timbro 96.690)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.319  cluster 1  [visto 98.303, da gat1]
+    adh[9]       energia 66.08% (timbro 97.167)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.375  cluster 1  [visto 98.323, da gat1]
+    gat2         energia 95.38% (timbro 91.989)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 93.296, da gat2]
+    gat3         energia 95.20% (timbro 93.933)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 96.602, da gat3]
+  snapshot di gat2 (cluster 2): giro 15, chiuso a 93.296 s, ricevuto a 93.300 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 17, chiuso a 96.602 s, ricevuto a 96.605 s, 3 nodi
+=== gat1  giro 17  da 102.965 a 106.185 s | tracce 12: complete 12, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 102.9650)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[11] (h1, 103.0650)
+  adh[13]      completa, 2 hop, andata e ritorno 0.0007 s | gat1 -> adh[4] (h1, 103.1850) -> adh[13] (h2, 103.1851)
+  adh[14]      completa, 2 hop, andata e ritorno 0.0008 s | gat1 -> adh[11] (h1, 103.1050) -> adh[14] (h2, 103.1051)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[1] (h1, 103.0050)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[2] (h1, 103.0450)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[3] (h1, 102.9850)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[4] (h1, 103.0250)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[5] (h1, 103.0850)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[6] (h1, 103.1650)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[8] (h1, 103.1250)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[9] (h1, 103.1450)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 19.86% (timbro 101.921)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.749  cluster 1  [visto 102.965, da gat1]
+    adh[10]      energia 48.47% (timbro 92.615)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.096  cluster 3  [visto 93.602, da gat3]
+    adh[11]      energia 79.71% (timbro 102.870)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.330  cluster 1  [visto 103.105, da gat1]
+    adh[12]      energia 58.40% (timbro 93.494)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.021  cluster 3  [visto 93.582, da gat3]
+    adh[13]      energia 42.39% (timbro 102.599)  pos (582, 668, 50)  disponibile NO  banda 0.40  throughput 0.207  cluster 1  [visto 103.185, da gat1]
+    adh[14]      energia 62.51% (timbro 101.761)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.183  cluster 1  [visto 103.105, da gat1]
+    adh[1]       energia 28.77% (timbro 100.286)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.001  cluster 1  [visto 103.005, da gat1]
+    adh[2]       energia 40.27% (timbro 101.633)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.303  cluster 1  [visto 103.045, da gat1]
+    adh[3]       energia 39.77% (timbro 102.542)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.403  cluster 1  [visto 102.985, da gat1]
+    adh[4]       energia 50.45% (timbro 102.272)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.542  cluster 1  [visto 103.185, da gat1]
+    adh[5]       energia 56.76% (timbro 101.119)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.130  cluster 1  [visto 103.085, da gat1]
+    adh[6]       energia 45.69% (timbro 102.324)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.485  cluster 1  [visto 103.165, da gat1]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    adh[8]       energia 74.93% (timbro 101.032)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.183  cluster 1  [visto 103.125, da gat1]
+    adh[9]       energia 65.76% (timbro 101.629)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.249  cluster 1  [visto 103.145, da gat1]
+    gat2         energia 95.38% (timbro 91.989)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 93.296, da gat2]
+    gat3         energia 95.20% (timbro 93.933)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 96.602, da gat3]
+  snapshot di gat2 (cluster 2): giro 15, chiuso a 93.296 s, ricevuto a 93.300 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 17, chiuso a 96.602 s, ricevuto a 96.605 s, 3 nodi
+=== gat3  giro 19  da 103.548 a 106.568 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 103.5680)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0002 s | gat3 -> adh[12] (h1, 103.5480)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 19.86% (timbro 101.921)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.749  cluster 1  [visto 102.965, da gat1]
+    adh[10]      energia 47.71% (timbro 103.500)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.034  cluster 3  [visto 103.568, da gat3]
+    adh[11]      energia 79.71% (timbro 102.870)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.330  cluster 1  [visto 103.105, da gat1]
+    adh[12]      energia 57.72% (timbro 103.080)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.023  cluster 3  [visto 103.548, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 62.51% (timbro 101.761)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.183  cluster 1  [visto 103.105, da gat1]
+    adh[1]       energia 28.77% (timbro 100.286)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.001  cluster 1  [visto 103.005, da gat1]
+    adh[2]       energia 40.27% (timbro 101.633)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.303  cluster 1  [visto 103.045, da gat1]
+    adh[3]       energia 39.77% (timbro 102.542)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.403  cluster 1  [visto 102.985, da gat1]
+    adh[4]       energia 50.45% (timbro 102.272)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.542  cluster 1  [visto 103.185, da gat1]
+    adh[5]       energia 56.76% (timbro 101.119)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.130  cluster 1  [visto 103.085, da gat1]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    gat1         energia 92.30% (timbro 105.680)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 106.185, da gat1]
+    gat2         energia 95.38% (timbro 91.989)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 93.296, da gat2]
+  snapshot di gat1 (cluster 1): giro 17, chiuso a 106.185 s, ricevuto a 106.203 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 15, chiuso a 93.296 s, ricevuto a 93.301 s, 2 nodi
+=== gat2  giro 17  da 103.588 a 106.588 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[7] (h1, 103.5879)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 19.86% (timbro 101.921)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.749  cluster 1  [visto 102.965, da gat1]
+    adh[10]      energia 48.47% (timbro 92.615)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.096  cluster 3  [visto 93.602, da gat3]
+    adh[11]      energia 79.71% (timbro 102.870)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.330  cluster 1  [visto 103.105, da gat1]
+    adh[12]      energia 58.40% (timbro 93.494)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.021  cluster 3  [visto 93.582, da gat3]
+    adh[14]      energia 62.51% (timbro 101.761)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.183  cluster 1  [visto 103.105, da gat1]
+    adh[1]       energia 28.77% (timbro 100.286)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.001  cluster 1  [visto 103.005, da gat1]
+    adh[2]       energia 40.27% (timbro 101.633)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.303  cluster 1  [visto 103.045, da gat1]
+    adh[3]       energia 39.77% (timbro 102.542)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.403  cluster 1  [visto 102.985, da gat1]
+    adh[4]       energia 50.45% (timbro 102.272)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.542  cluster 1  [visto 103.185, da gat1]
+    adh[5]       energia 56.76% (timbro 101.119)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.130  cluster 1  [visto 103.085, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 42.68% (timbro 102.791)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.037  cluster 2  [visto 103.588, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 92.30% (timbro 105.680)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 106.185, da gat1]
+    gat3         energia 95.20% (timbro 93.933)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 96.602, da gat3]
+  snapshot di gat1 (cluster 1): giro 17, chiuso a 106.185 s, ricevuto a 106.193 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 17, chiuso a 96.602 s, ricevuto a 96.605 s, 3 nodi
+=== gat2  giro 18  da 109.566 a 112.566 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0002 s | gat2 -> adh[7] (h1, 109.5665)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 19.86% (timbro 101.921)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.749  cluster 1  [visto 102.965, da gat1]
+    adh[10]      energia 48.47% (timbro 92.615)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.096  cluster 3  [visto 93.602, da gat3]
+    adh[11]      energia 79.71% (timbro 102.870)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.330  cluster 1  [visto 103.105, da gat1]
+    adh[12]      energia 58.40% (timbro 93.494)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.021  cluster 3  [visto 93.582, da gat3]
+    adh[14]      energia 62.51% (timbro 101.761)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.183  cluster 1  [visto 103.105, da gat1]
+    adh[1]       energia 28.77% (timbro 100.286)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.001  cluster 1  [visto 103.005, da gat1]
+    adh[2]       energia 40.27% (timbro 101.633)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.303  cluster 1  [visto 103.045, da gat1]
+    adh[3]       energia 39.77% (timbro 102.542)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.403  cluster 1  [visto 102.985, da gat1]
+    adh[4]       energia 50.45% (timbro 102.272)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.542  cluster 1  [visto 103.185, da gat1]
+    adh[5]       energia 56.76% (timbro 101.119)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.130  cluster 1  [visto 103.085, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 42.29% (timbro 108.254)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.039  cluster 2  [visto 109.566, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 92.30% (timbro 105.680)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 106.185, da gat1]
+    gat3         energia 95.20% (timbro 93.933)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 96.602, da gat3]
+  snapshot di gat1 (cluster 1): giro 17, chiuso a 106.185 s, ricevuto a 106.193 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 17, chiuso a 96.602 s, ricevuto a 96.605 s, 3 nodi
+=== gat3  giro 20  da 109.974 a 112.994 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 109.9939)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 109.9739)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 19.86% (timbro 101.921)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.749  cluster 1  [visto 102.965, da gat1]
+    adh[10]      energia 47.40% (timbro 107.854)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.101  cluster 3  [visto 109.994, da gat3]
+    adh[11]      energia 79.71% (timbro 102.870)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.330  cluster 1  [visto 103.105, da gat1]
+    adh[12]      energia 57.25% (timbro 109.928)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 109.974, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 62.51% (timbro 101.761)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.183  cluster 1  [visto 103.105, da gat1]
+    adh[1]       energia 28.77% (timbro 100.286)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.001  cluster 1  [visto 103.005, da gat1]
+    adh[2]       energia 40.27% (timbro 101.633)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.303  cluster 1  [visto 103.045, da gat1]
+    adh[3]       energia 39.77% (timbro 102.542)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.403  cluster 1  [visto 102.985, da gat1]
+    adh[4]       energia 50.45% (timbro 102.272)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.542  cluster 1  [visto 103.185, da gat1]
+    adh[5]       energia 56.76% (timbro 101.119)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.130  cluster 1  [visto 103.085, da gat1]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    gat1         energia 92.30% (timbro 105.680)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 106.185, da gat1]
+    gat2         energia 95.38% (timbro 91.989)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 93.296, da gat2]
+  snapshot di gat1 (cluster 1): giro 17, chiuso a 106.185 s, ricevuto a 106.203 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 15, chiuso a 93.296 s, ricevuto a 93.301 s, 2 nodi
+=== gat1  giro 18  da 110.410 a 113.630 s | tracce 12: complete 12, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[0] (h1, 110.4100)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[11] (h1, 110.5100)
+  adh[13]      completa, 2 hop, andata e ritorno 0.0008 s | gat1 -> adh[4] (h1, 110.6300) -> adh[13] (h2, 110.6302)
+  adh[14]      completa, 2 hop, andata e ritorno 0.0007 s | gat1 -> adh[4] (h1, 110.5500) -> adh[14] (h2, 110.5502)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[1] (h1, 110.4500)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[2] (h1, 110.4900)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[3] (h1, 110.4300)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[4] (h1, 110.4700)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[5] (h1, 110.5300)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[6] (h1, 110.6100)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[8] (h1, 110.5700)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[9] (h1, 110.5900)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 19.30% (timbro 109.640)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.008  cluster 1  [visto 110.410, da gat1]
+    adh[10]      energia 47.40% (timbro 107.854)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.101  cluster 3  [visto 109.994, da gat3]
+    adh[11]      energia 79.19% (timbro 110.083)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 110.510, da gat1]
+    adh[12]      energia 57.25% (timbro 109.928)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 109.974, da gat3]
+    adh[13]      energia 41.84% (timbro 110.418)  pos (582, 668, 50)  disponibile NO  banda 0.40  throughput 0.015  cluster 1  [visto 110.630, da gat1]
+    adh[14]      energia 61.90% (timbro 110.325)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 110.550, da gat1]
+    adh[1]       energia 28.15% (timbro 108.498)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.237  cluster 1  [visto 110.450, da gat1]
+    adh[2]       energia 39.68% (timbro 109.682)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.002  cluster 1  [visto 110.490, da gat1]
+    adh[3]       energia 39.28% (timbro 109.332)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.001  cluster 1  [visto 110.430, da gat1]
+    adh[4]       energia 49.84% (timbro 110.534)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.039  cluster 1  [visto 110.630, da gat1]
+    adh[5]       energia 56.18% (timbro 108.974)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.134  cluster 1  [visto 110.530, da gat1]
+    adh[6]       energia 45.11% (timbro 110.375)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.049  cluster 1  [visto 110.610, da gat1]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    adh[8]       energia 74.29% (timbro 109.715)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 110.570, da gat1]
+    adh[9]       energia 65.11% (timbro 110.553)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.028  cluster 1  [visto 110.590, da gat1]
+    gat2         energia 95.38% (timbro 91.989)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 93.296, da gat2]
+    gat3         energia 94.25% (timbro 112.920)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 112.994, da gat3]
+  snapshot di gat2 (cluster 2): giro 15, chiuso a 93.296 s, ricevuto a 93.300 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 20, chiuso a 112.994 s, ricevuto a 112.999 s, 3 nodi
+=== gat3  giro 21  da 114.228 a 117.248 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 114.2480)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 114.2280)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 19.30% (timbro 109.640)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.008  cluster 1  [visto 110.410, da gat1]
+    adh[10]      energia 47.09% (timbro 112.208)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.082  cluster 3  [visto 114.248, da gat3]
+    adh[11]      energia 79.19% (timbro 110.083)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 110.510, da gat1]
+    adh[12]      energia 56.96% (timbro 114.036)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.020  cluster 3  [visto 114.228, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 61.90% (timbro 110.325)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.000  cluster 1  [visto 110.550, da gat1]
+    adh[1]       energia 28.15% (timbro 108.498)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.237  cluster 1  [visto 110.450, da gat1]
+    adh[2]       energia 39.68% (timbro 109.682)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.002  cluster 1  [visto 110.490, da gat1]
+    adh[3]       energia 39.28% (timbro 109.332)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.001  cluster 1  [visto 110.430, da gat1]
+    adh[4]       energia 49.84% (timbro 110.534)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.039  cluster 1  [visto 110.630, da gat1]
+    adh[5]       energia 56.18% (timbro 108.974)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.134  cluster 1  [visto 110.530, da gat1]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    gat1         energia 91.83% (timbro 113.089)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 113.630, da gat1]
+    gat2         energia 95.38% (timbro 91.989)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 93.296, da gat2]
+  snapshot di gat1 (cluster 1): giro 18, chiuso a 113.630 s, ricevuto a 113.637 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 15, chiuso a 93.296 s, ricevuto a 93.301 s, 2 nodi
+=== gat1  giro 19  da 116.471 a 119.691 s | tracce 12: complete 12, interrotte 0, senza risposta 0, manomesse 0
+  adh[0]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[0] (h1, 116.4709)
+  adh[11]      completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[11] (h1, 116.5709)
+  adh[13]      completa, 2 hop, andata e ritorno 0.0013 s | gat1 -> adh[4] (h1, 116.6909) -> adh[13] (h2, 116.6912)
+  adh[14]      completa, 2 hop, andata e ritorno 0.0009 s | gat1 -> adh[4] (h1, 116.6109) -> adh[14] (h2, 116.6112)
+  adh[1]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[1] (h1, 116.5109)
+  adh[2]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[2] (h1, 116.5509)
+  adh[3]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[3] (h1, 116.4909)
+  adh[4]       completa, 1 hop, andata e ritorno 0.0002 s | gat1 -> adh[4] (h1, 116.5309)
+  adh[5]       completa, 1 hop, andata e ritorno 0.0003 s | gat1 -> adh[5] (h1, 116.5909)
+  adh[6]       completa, 1 hop, andata e ritorno 0.0012 s | gat1 -> adh[6] (h1, 116.6709)
+  adh[8]       completa, 1 hop, andata e ritorno 0.0010 s | gat1 -> adh[8] (h1, 116.6311)
+  adh[9]       completa, 1 hop, andata e ritorno 0.0008 s | gat1 -> adh[9] (h1, 116.6510)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 18.80% (timbro 116.072)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.417  cluster 1  [visto 116.471, da gat1]
+    adh[10]      energia 47.40% (timbro 107.854)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.101  cluster 3  [visto 109.994, da gat3]
+    adh[11]      energia 78.74% (timbro 115.854)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.180  cluster 1  [visto 116.571, da gat1]
+    adh[12]      energia 57.25% (timbro 109.928)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 109.974, da gat3]
+    adh[13]      energia 41.40% (timbro 116.282)  pos (582, 668, 50)  disponibile NO  banda 0.40  throughput 0.142  cluster 1  [visto 116.691, da gat1]
+    adh[14]      energia 61.53% (timbro 115.463)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.020  cluster 1  [visto 116.611, da gat1]
+    adh[1]       energia 27.75% (timbro 113.973)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.137  cluster 1  [visto 116.511, da gat1]
+    adh[2]       energia 39.24% (timbro 115.719)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.108  cluster 1  [visto 116.551, da gat1]
+    adh[3]       energia 38.77% (timbro 116.122)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.214  cluster 1  [visto 116.491, da gat1]
+    adh[4]       energia 49.53% (timbro 114.665)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.016  cluster 1  [visto 116.691, da gat1]
+    adh[5]       energia 55.79% (timbro 114.211)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.132  cluster 1  [visto 116.591, da gat1]
+    adh[6]       energia 44.71% (timbro 115.743)  pos (262, 584, 50)  disponibile NO  banda 0.40  throughput 0.171  cluster 1  [visto 116.671, da gat1]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    adh[8]       energia 73.80% (timbro 116.228)  pos (244, 452, 50)  disponibile NO  banda 0.40  throughput 0.270  cluster 1  [visto 116.631, da gat1]
+    adh[9]       energia 64.78% (timbro 115.015)  pos (266, 729, 50)  disponibile NO  banda 0.40  throughput 0.018  cluster 1  [visto 116.651, da gat1]
+    gat2         energia 95.38% (timbro 91.989)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 93.296, da gat2]
+    gat3         energia 94.25% (timbro 112.920)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 112.994, da gat3]
+  snapshot di gat2 (cluster 2): giro 15, chiuso a 93.296 s, ricevuto a 93.300 s, 2 nodi
+  snapshot di gat3 (cluster 3): giro 20, chiuso a 112.994 s, ricevuto a 112.999 s, 3 nodi
+### gat1 fine simulazione: giri 19, tracce inviate 209, complete 188, rotta mancante 0, senza risposta 10, manomesse 0, risposte in ritardo 0 | secondi tentativi 11, riusciti 1 | snapshot inviati 19, ricevuti dalle altre GCS 15, rifiutati 0
+=== gat2  giro 19  da 117.557 a 120.000 s | tracce 1: complete 1, interrotte 0, senza risposta 0, manomesse 0
+  adh[7]       completa, 1 hop, andata e ritorno 0.0003 s | gat2 -> adh[7] (h1, 117.5571)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 18.80% (timbro 116.072)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.417  cluster 1  [visto 116.471, da gat1]
+    adh[10]      energia 47.40% (timbro 107.854)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.101  cluster 3  [visto 109.994, da gat3]
+    adh[11]      energia 78.74% (timbro 115.854)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.180  cluster 1  [visto 116.571, da gat1]
+    adh[12]      energia 57.25% (timbro 109.928)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 109.974, da gat3]
+    adh[14]      energia 61.53% (timbro 115.463)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.020  cluster 1  [visto 116.611, da gat1]
+    adh[1]       energia 27.75% (timbro 113.973)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.137  cluster 1  [visto 116.511, da gat1]
+    adh[2]       energia 39.24% (timbro 115.719)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.108  cluster 1  [visto 116.551, da gat1]
+    adh[3]       energia 38.77% (timbro 116.122)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.214  cluster 1  [visto 116.491, da gat1]
+    adh[4]       energia 49.53% (timbro 114.665)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.016  cluster 1  [visto 116.691, da gat1]
+    adh[5]       energia 55.79% (timbro 114.211)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.132  cluster 1  [visto 116.591, da gat1]
+    adh[6]       energia 53.19% (timbro 24.496)  pos (800, 500, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 25.714, da gat2]
+    adh[7]       energia 41.71% (timbro 116.448)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.018  cluster 2  [visto 117.557, da gat2]
+    adh[8]       energia 83.66% (timbro 18.538)  pos (1000, 300, 50)  disponibile SI  banda 0.40  throughput 0.048  cluster 2  [visto 19.583, da gat2]
+    adh[9]       energia 73.63% (timbro 19.080)  pos (1100, 500, 50)  disponibile SI  banda 0.40  throughput 0.025  cluster 2  [visto 19.603, da gat2]
+    gat1         energia 91.51% (timbro 119.015)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 119.691, da gat1]
+    gat3         energia 94.25% (timbro 112.920)  pos (1900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 3  [visto 112.994, da gat3]
+  snapshot di gat1 (cluster 1): giro 19, chiuso a 119.691 s, ricevuto a 119.696 s, 9 nodi
+  snapshot di gat3 (cluster 3): giro 20, chiuso a 112.994 s, ricevuto a 112.999 s, 3 nodi
+### gat2 fine simulazione: giri 19, tracce inviate 35, complete 31, rotta mancante 0, senza risposta 2, manomesse 0, risposte in ritardo 0 | secondi tentativi 2, riusciti 0 | snapshot inviati 18, ricevuti dalle altre GCS 20, rifiutati 0
+=== gat3  giro 22  da 119.629 a 120.000 s | tracce 2: complete 2, interrotte 0, senza risposta 0, manomesse 0
+  adh[10]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[10] (h1, 119.6495)
+  adh[12]      completa, 1 hop, andata e ritorno 0.0003 s | gat3 -> adh[12] (h1, 119.6295)
+  nodi (ultimo dato noto; 'visto' = istante in cui il nodo ha scritto la voce; 'da' = GCS che lo ha tracciato):
+    adh[0]       energia 18.80% (timbro 116.072)  pos (300, 500, 50)  disponibile NO  banda 0.40  throughput 0.417  cluster 1  [visto 116.471, da gat1]
+    adh[10]      energia 46.64% (timbro 118.740)  pos (1700, 400, 50)  disponibile SI  banda 0.40  throughput 0.047  cluster 3  [visto 119.650, da gat3]
+    adh[11]      energia 78.74% (timbro 115.854)  pos (489, 583, 50)  disponibile NO  banda 0.40  throughput 0.180  cluster 1  [visto 116.571, da gat1]
+    adh[12]      energia 56.58% (timbro 119.514)  pos (1900, 300, 50)  disponibile SI  banda 0.40  throughput 0.000  cluster 3  [visto 119.630, da gat3]
+    adh[13]      energia 48.10% (timbro 26.366)  pos (2000, 600, 50)  disponibile SI  banda 0.40  throughput 0.117  cluster 3  [visto 28.039, da gat3]
+    adh[14]      energia 61.53% (timbro 115.463)  pos (570, 843, 50)  disponibile NO  banda 0.40  throughput 0.020  cluster 1  [visto 116.611, da gat1]
+    adh[1]       energia 27.75% (timbro 113.973)  pos (150, 350, 50)  disponibile NO  banda 0.40  throughput 0.137  cluster 1  [visto 116.511, da gat1]
+    adh[2]       energia 39.24% (timbro 115.719)  pos (450, 350, 50)  disponibile NO  banda 0.40  throughput 0.108  cluster 1  [visto 116.551, da gat1]
+    adh[3]       energia 38.77% (timbro 116.122)  pos (150, 650, 50)  disponibile NO  banda 0.40  throughput 0.214  cluster 1  [visto 116.491, da gat1]
+    adh[4]       energia 49.53% (timbro 114.665)  pos (450, 650, 50)  disponibile NO  banda 0.40  throughput 0.016  cluster 1  [visto 116.691, da gat1]
+    adh[5]       energia 55.79% (timbro 114.211)  pos (572, 432, 50)  disponibile NO  banda 0.40  throughput 0.132  cluster 1  [visto 116.591, da gat1]
+    adh[7]       energia 43.65% (timbro 89.135)  pos (900, 600, 50)  disponibile SI  banda 0.40  throughput 0.027  cluster 2  [visto 90.296, da gat2]
+    gat1         energia 91.51% (timbro 119.015)  pos (300, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 1  [visto 119.691, da gat1]
+    gat2         energia 95.38% (timbro 91.989)  pos (900, 500, 70)  disponibile NO  banda 0.00  throughput 0.000  cluster 2  [visto 93.296, da gat2]
+  snapshot di gat1 (cluster 1): giro 19, chiuso a 119.691 s, ricevuto a 119.698 s, 9 nodi
+  snapshot di gat2 (cluster 2): giro 15, chiuso a 93.296 s, ricevuto a 93.301 s, 2 nodi
+### gat3 fine simulazione: giri 22, tracce inviate 60, complete 58, rotta mancante 0, senza risposta 1, manomesse 0, risposte in ritardo 0 | secondi tentativi 1, riusciti 0 | snapshot inviati 21, ricevuti dalle altre GCS 25, rifiutati 0

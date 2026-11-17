@@ -1,0 +1,19 @@
+# Regola 2 della metrica di trust: controllo sulla posizione dichiarata nei BANT
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# esiti: SUPERATO        spostamento giustificato da un evento e coerente con esso
+#        VIOLATO         c'e' l'evento ma la destinazione non corrisponde (certo)
+#        DUBBIO          nessun evento compatibile: puo' essere un attacco, ma anche
+#                        un REQ che chi controlla non ha ricevuto
+#        NON_APPLICABILE misura ripetuta o in disordine, oppure partenza non nota
+# Un drone fermo non produce nessun esito: contarlo riempirebbe i contatori.
+# Le violazioni e i dubbi sono sempre registrati; i superati e i non applicabili
+# solo con positionCheckLogAll = true.
+# Esempi:  grep VIOLATO ant2_posizione*.log      grep DUBBIO ant2_posizione*.log
+#
+24.779490274534  adh[12]  adh[9]  posizione  DUBBIO  da (1100.0, 500.0, 50.0) (19.080 s) a (201.5, 514.6, 50.0) (23.542 s), spostamento 898.6 m: nessun evento osservato che giustifichi lo spostamento
+24.894432391235  adh[12]  adh[11]  posizione  DUBBIO  da (1800.0, 500.0, 50.0) (20.640 s) a (572.0, 759.2, 50.0) (23.525 s), spostamento 1255.1 m: nessun evento osservato che giustifichi lo spostamento
+25.701011837824  adh[10]  adh[11]  posizione  DUBBIO  da (1800.0, 500.0, 50.0) (20.640 s) a (572.0, 759.2, 50.0) (24.967 s), spostamento 1255.1 m: nessun evento osservato che giustifichi lo spostamento
+25.701011837824  adh[14]  adh[11]  posizione  DUBBIO  da (1800.0, 500.0, 50.0) (20.640 s) a (572.0, 759.2, 50.0) (24.967 s), spostamento 1255.1 m: nessun evento osservato che giustifichi lo spostamento
+25.95685920009  adh[13]  adh[9]  posizione  DUBBIO  da (1100.0, 500.0, 50.0) (19.080 s) a (201.5, 514.6, 50.0) (25.773 s), spostamento 898.6 m: nessun evento osservato che giustifichi lo spostamento
+25.956859472515  adh[10]  adh[9]  posizione  DUBBIO  da (1100.0, 500.0, 50.0) (19.080 s) a (201.5, 514.6, 50.0) (25.773 s), spostamento 898.6 m: nessun evento osservato che giustifichi lo spostamento
+25.956859472515  adh[14]  adh[9]  posizione  DUBBIO  da (1100.0, 500.0, 50.0) (19.080 s) a (201.5, 514.6, 50.0) (25.773 s), spostamento 898.6 m: nessun evento osservato che giustifichi lo spostamento

@@ -1,0 +1,47 @@
+# Regola 4 della metrica di trust: controllo sul falso aiuto
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# Verifica un comportamento, non un valore: il drone che ha vinto il reclutamento e'
+# andato davvero a prestare aiuto? Si appoggia al registro dei REQ della regola 2 e
+# alla conferma dello spostamento della regola 2 stessa, senza aggiungere dati alla rete.
+# L'istante limite e' t_R + D + ritardo dello spostamento: prima di quello un BANT non
+# dice niente, perche' il drone potrebbe non avere ancora ricevuto il REQ.
+# esiti: SUPERATO        spostamento verso chi ha chiesto aiuto confermato
+#        VIOLATO         si dichiara non disponibile ma non si e' spostato (certo)
+#        DUBBIO          non si e' spostato e si dichiara ancora disponibile: puo' avere
+#                        ignorato la richiesta, oppure non averla mai ricevuta
+#        NON_APPLICABILE non poteva accettare, e' in ricarica, e' impegnato altrove,
+#                        oppure il suo spostamento e' gia' segnalato dalla regola 2
+# Esempi:  grep VIOLATO ant2_falso_aiuto*.log      grep DUBBIO ant2_falso_aiuto*.log
+#
+33.882244003714  gat2  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.428 s, verificato al timbro 31.776 s (limite 30.428 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.891094707715  satellite[0]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.428 s, verificato al timbro 31.776 s (limite 30.428 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.891096005099  gat1  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.421 s, verificato al timbro 31.776 s (limite 30.421 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.894566873745  adh[0]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.421 s, verificato al timbro 31.776 s (limite 30.421 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.894567145755  adh[9]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.421 s, verificato al timbro 31.776 s (limite 30.421 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.894567278441  adh[8]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.421 s, verificato al timbro 31.776 s (limite 30.421 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.894567517766  adh[1]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.423 s, verificato al timbro 31.776 s (limite 30.423 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.894567517766  adh[2]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.425 s, verificato al timbro 31.776 s (limite 30.425 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.894567517766  adh[3]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.421 s, verificato al timbro 31.776 s (limite 30.421 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.894567517766  adh[4]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.421 s, verificato al timbro 31.776 s (limite 30.421 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.894567599165  adh[6]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.423 s, verificato al timbro 31.776 s (limite 30.423 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.894567733572  adh[12]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.421 s, verificato al timbro 31.776 s (limite 30.421 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+33.894567744511  adh[5]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.426 s, verificato al timbro 31.776 s (limite 30.426 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+45.680857556727  gat3  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.433 s, verificato al timbro 45.433 s (limite 30.433 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+45.682820033152  adh[13]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.439 s, verificato al timbro 45.433 s (limite 30.439 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+45.682820305577  adh[10]  adh[7]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 26.439 s, verificato al timbro 45.433 s (limite 30.439 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+46.913959770645  adh[14]  adh[7]  falso aiuto  VIOLATO  reclutato dal REQ ricevuto a 26.439 s, verificato al timbro 45.433 s (limite 30.439 s): si dichiara non disponibile, quindi ha accettato, ma non si e' spostato verso chi ha chiesto aiuto, che resta senza aiuto
+46.913959858075  adh[11]  adh[7]  falso aiuto  VIOLATO  reclutato dal REQ ricevuto a 26.421 s, verificato al timbro 45.433 s (limite 30.421 s): si dichiara non disponibile, quindi ha accettato, ma non si e' spostato verso chi ha chiesto aiuto, che resta senza aiuto
+56.888679768937  gat1  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.750 s, verificato al timbro 55.604 s (limite 52.750 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+56.89594183565  adh[0]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.750 s, verificato al timbro 55.604 s (limite 52.750 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+56.89594210766  adh[9]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.753 s, verificato al timbro 55.604 s (limite 52.753 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+56.895942240346  adh[8]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.750 s, verificato al timbro 55.604 s (limite 52.750 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+56.895942243973  adh[7]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.750 s, verificato al timbro 55.604 s (limite 52.750 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+56.895942479671  adh[1]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.755 s, verificato al timbro 55.604 s (limite 52.755 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+56.895942479671  adh[2]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.750 s, verificato al timbro 55.604 s (limite 52.750 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+56.895942479671  adh[3]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.753 s, verificato al timbro 55.604 s (limite 52.753 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+56.895942479671  adh[4]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.750 s, verificato al timbro 55.604 s (limite 52.750 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+56.89594256107  adh[6]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.753 s, verificato al timbro 55.604 s (limite 52.753 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+56.895942695477  adh[12]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.750 s, verificato al timbro 55.604 s (limite 52.750 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+56.895942706416  adh[5]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.753 s, verificato al timbro 55.604 s (limite 52.753 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+60.723193099171  adh[14]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.750 s, verificato al timbro 59.958 s (limite 52.750 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta
+60.723193213979  adh[11]  adh[10]  falso aiuto  DUBBIO  reclutato dal REQ ricevuto a 48.753 s, verificato al timbro 59.958 s (limite 52.753 s): non si e' spostato e si dichiara ancora disponibile: puo' avere ignorato la richiesta, oppure non averla mai ricevuta

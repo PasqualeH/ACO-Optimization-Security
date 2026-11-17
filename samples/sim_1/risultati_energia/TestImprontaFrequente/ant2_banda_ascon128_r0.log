@@ -1,0 +1,9 @@
+# Regola 5 della metrica di trust: controllo sulla banda massima dichiarata nei BANT
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# La banda massima dichiarata non deve mai cambiare, perche' nel codice viene letta
+# all'avvio e non cambia piu'. Si conta solo la prima dichiarazione, che diventa il
+# riferimento, e ogni cambiamento successivo, che e' una violazione certa.
+# Il controllo non coglie chi dichiara un valore falso sempre uguale dal primo BANT:
+# vedi la documentazione per il controllo sulla richiesta d'aiuto, provato e scartato.
+# Esempi:  grep VIOLATO ant2_banda*.log
+#

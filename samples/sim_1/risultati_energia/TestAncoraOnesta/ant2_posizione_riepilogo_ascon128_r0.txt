@@ -1,0 +1,17 @@
+# Regola 2 (controllo sulla posizione): totali di rete per drone osservato
+# drone  superati  violati  (di cui dalla GCS)  dubbi  non_applicabili  nodi_che_lo_hanno_controllato
+adh[0]  828  0  (0)  0  5105  18
+adh[10]  550  0  (0)  0  1962  18
+adh[11]  756  0  (0)  0  4814  18
+adh[12]  645  0  (0)  18  3223  18
+adh[13]  623  0  (0)  6  3531  18
+adh[14]  655  0  (0)  0  3993  18
+adh[1]  504  0  (0)  0  3853  18
+adh[2]  625  0  (0)  0  4076  18
+adh[3]  690  0  (0)  0  4136  18
+adh[4]  658  0  (0)  0  5131  18
+adh[5]  550  0  (0)  3  3944  18
+adh[6]  668  0  (0)  0  2385  18
+adh[7]  450  0  (0)  0  2004  18
+adh[8]  565  0  (0)  0  2373  18
+adh[9]  567  0  (0)  0  2224  18

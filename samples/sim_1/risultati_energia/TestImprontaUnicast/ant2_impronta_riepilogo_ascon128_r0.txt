@@ -1,0 +1,24 @@
+# Regola 0 (coerenza fra canali): totali di rete per drone osservato
+# superati = letture confermate dalla GCS; violati = equivocazioni certe
+# (di cui locali) = colte da due messaggi arrivati allo stesso osservatore, senza la GCS
+# non_verificate = letture per cui non e' mai arrivata un'impronta: misura la copertura
+# drone  superati  violati  (di cui dalla GCS)  (di cui locali)  non_applicabili  non_verificate  nodi
+adh[0]  210  0  (0)  (0)  46  76  15
+adh[10]  192  0  (0)  (0)  44  96  15
+adh[11]  206  0  (0)  (0)  21  100  15
+adh[12]  189  0  (0)  (0)  41  78  16
+adh[13]  174  0  (0)  (0)  44  81  16
+adh[14]  189  0  (0)  (0)  29  57  16
+adh[1]  200  0  (0)  (0)  36  84  15
+adh[2]  222  0  (0)  (0)  31  82  15
+adh[3]  208  0  (0)  (0)  41  85  15
+adh[4]  206  0  (0)  (0)  36  85  15
+adh[5]  211  0  (0)  (0)  38  89  15
+adh[6]  199  0  (0)  (0)  45  111  15
+adh[7]  216  0  (0)  (0)  15  88  15
+adh[8]  214  0  (0)  (0)  16  103  15
+adh[9]  202  0  (0)  (0)  31  89  15
+gat1  102  0  (0)  (0)  28  106  15
+gat2  121  0  (0)  (0)  23  109  15
+gat3  139  0  (0)  (0)  42  74  14
+satellite[0]  200  0  (0)  (0)  40  79  17

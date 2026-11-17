@@ -1,0 +1,17 @@
+# Regola 5 (controllo sulla banda massima): totali di rete per drone osservato
+# drone  superati  violati  (di cui dalla GCS)  non_applicabili  nodi_che_lo_hanno_controllato
+adh[0]  18  0  (0)  0  18
+adh[10]  18  0  (0)  0  18
+adh[11]  18  0  (0)  0  18
+adh[12]  18  0  (0)  0  18
+adh[13]  18  0  (0)  0  18
+adh[14]  18  0  (0)  0  18
+adh[1]  18  0  (0)  0  18
+adh[2]  18  0  (0)  0  18
+adh[3]  18  0  (0)  0  18
+adh[4]  18  0  (0)  0  18
+adh[5]  18  0  (0)  0  18
+adh[6]  18  0  (0)  0  18
+adh[7]  18  0  (0)  0  18
+adh[8]  18  0  (0)  0  18
+adh[9]  18  0  (0)  0  18

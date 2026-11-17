@@ -1,0 +1,32 @@
+# ================================================================
+# Riepilogo livello di sicurezza Ant2
+# Configurazione: Ascon-AEAD128 (confidenzialita' + integrita') + Ed25519 (autenticazione)
+# config: aead=ascon128 firma=ed25519 securityEnabled=true
+# ================================================================
+# Una riga per nodo. Per ogni tipo di messaggio del protocollo:
+#   FANT = scoperta di rotta       (solo firmato)
+#   BANT = risposta con stato nodo (firmato + cifrato)
+#   REQ  = richiesta di recruiting (firmato + cifrato)
+#
+#   ok        = firma verificata e payload decifrato correttamente
+#   scartati  = pacchetto rifiutato PRIMA di aggiornare qualsiasi tabella
+# ================================================================
+sim1.adh[0].routing  [traffico controllo: 1679 msg, 212971 byte]  FANT: ok=4491 scartati=0 | BANT: ok=7512 scartati=0 | REQ: ok=59 scartati=0
+sim1.adh[1].routing  [traffico controllo: 1413 msg, 170307 byte]  FANT: ok=2821 scartati=0 | BANT: ok=5045 scartati=0 | REQ: ok=43 scartati=0
+sim1.adh[2].routing  [traffico controllo: 1618 msg, 202421 byte]  FANT: ok=3624 scartati=0 | BANT: ok=6538 scartati=0 | REQ: ok=48 scartati=0
+sim1.adh[3].routing  [traffico controllo: 1427 msg, 172642 byte]  FANT: ok=3181 scartati=0 | BANT: ok=5611 scartati=0 | REQ: ok=42 scartati=0
+sim1.adh[4].routing  [traffico controllo: 1848 msg, 240180 byte]  FANT: ok=4407 scartati=0 | BANT: ok=6969 scartati=0 | REQ: ok=55 scartati=0
+sim1.adh[5].routing  [traffico controllo: 1713 msg, 219534 byte]  FANT: ok=2781 scartati=0 | BANT: ok=5551 scartati=0 | REQ: ok=41 scartati=0
+sim1.adh[6].routing  [traffico controllo: 1525 msg, 189590 byte]  FANT: ok=3865 scartati=0 | BANT: ok=6475 scartati=0 | REQ: ok=39 scartati=0
+sim1.adh[7].routing  [traffico controllo: 783 msg, 93096 byte]  FANT: ok=611 scartati=0 | BANT: ok=1176 scartati=0 | REQ: ok=16 scartati=0
+sim1.adh[8].routing  [traffico controllo: 1415 msg, 171637 byte]  FANT: ok=3866 scartati=0 | BANT: ok=6543 scartati=0 | REQ: ok=52 scartati=0
+sim1.adh[9].routing  [traffico controllo: 1379 msg, 165355 byte]  FANT: ok=3189 scartati=0 | BANT: ok=5879 scartati=0 | REQ: ok=36 scartati=0
+sim1.adh[10].routing  [traffico controllo: 867 msg, 103011 byte]  FANT: ok=830 scartati=0 | BANT: ok=1661 scartati=0 | REQ: ok=14 scartati=0
+sim1.adh[11].routing  [traffico controllo: 1710 msg, 219456 byte]  FANT: ok=4025 scartati=0 | BANT: ok=6655 scartati=0 | REQ: ok=45 scartati=0
+sim1.adh[12].routing  [traffico controllo: 905 msg, 108238 byte]  FANT: ok=916 scartati=0 | BANT: ok=1741 scartati=0 | REQ: ok=22 scartati=0
+sim1.adh[13].routing  [traffico controllo: 1318 msg, 160313 byte]  FANT: ok=1591 scartati=0 | BANT: ok=2653 scartati=0 | REQ: ok=19 scartati=0
+sim1.adh[14].routing  [traffico controllo: 1244 msg, 149407 byte]  FANT: ok=1352 scartati=0 | BANT: ok=2305 scartati=0 | REQ: ok=15 scartati=0
+sim1.gat1.routing  [traffico controllo: 7428 msg, 1081374 byte]  FANT: ok=5626 scartati=0 | BANT: ok=8368 scartati=0 | REQ: ok=76 scartati=0
+sim1.gat2.routing  [traffico controllo: 4030 msg, 540776 byte]  FANT: ok=1825 scartati=0 | BANT: ok=4986 scartati=0 | REQ: ok=31 scartati=0
+sim1.gat3.routing  [traffico controllo: 5222 msg, 727504 byte]  FANT: ok=1592 scartati=0 | BANT: ok=2787 scartati=0 | REQ: ok=31 scartati=0
+sim1.satellite[0].routing  [traffico controllo: 2533 msg, 354029 byte]  FANT: ok=1538 scartati=0 | BANT: ok=4564 scartati=0 | REQ: ok=25 scartati=0

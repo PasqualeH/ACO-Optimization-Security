@@ -1,0 +1,17 @@
+# Regola 1 (controllo sull'energia): totali di rete per drone osservato
+# drone  superati  violati  (di cui dalla GCS)  non_applicabili  nodi_che_lo_hanno_controllato
+adh[0]  871  0  (0)  5779  18
+adh[10]  657  0  (0)  5552  18
+adh[11]  724  0  (0)  4698  18
+adh[12]  762  0  (0)  3956  18
+adh[13]  687  0  (0)  3852  18
+adh[14]  690  0  (0)  2687  18
+adh[1]  585  0  (0)  4553  18
+adh[2]  706  0  (0)  4556  18
+adh[3]  759  0  (0)  4488  18
+adh[4]  684  0  (0)  5797  18
+adh[5]  660  0  (0)  5308  18
+adh[6]  786  0  (0)  3959  18
+adh[7]  568  0  (0)  3263  18
+adh[8]  647  0  (0)  4518  18
+adh[9]  627  0  (0)  4671  18

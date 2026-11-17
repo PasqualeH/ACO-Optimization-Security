@@ -1,0 +1,75 @@
+# Regola 2 della metrica di trust: controllo sulla posizione dichiarata nei BANT
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# esiti: SUPERATO        spostamento giustificato da un evento e coerente con esso
+#        VIOLATO         c'e' l'evento ma la destinazione non corrisponde (certo)
+#        DUBBIO          nessun evento compatibile: puo' essere un attacco, ma anche
+#                        un REQ che chi controlla non ha ricevuto
+#        NON_APPLICABILE misura ripetuta o in disordine, oppure partenza non nota
+# Un drone fermo non produce nessun esito: contarlo riempirebbe i contatori.
+# Le violazioni e i dubbi sono sempre registrati; i superati e i non applicabili
+# solo con positionCheckLogAll = true.
+# Esempi:  grep VIOLATO ant2_posizione*.log      grep DUBBIO ant2_posizione*.log
+#
+25.780739073879  adh[6]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (19.947 s) a (483.4, 444.7, 50.0) (25.184 s), spostamento 221.1 m: nessun evento osservato che giustifichi lo spostamento
+25.780739073879  adh[7]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (19.947 s) a (483.4, 444.7, 50.0) (25.184 s), spostamento 221.1 m: nessun evento osservato che giustifichi lo spostamento
+25.780739404165  adh[9]  adh[5]  posizione  DUBBIO  da (700.0, 400.0, 50.0) (19.947 s) a (483.4, 444.7, 50.0) (25.184 s), spostamento 221.1 m: nessun evento osservato che giustifichi lo spostamento
+30.491991795766  adh[6]  adh[12]  posizione  DUBBIO  da (1900.0, 300.0, 50.0) (26.390 s) a (565.8, 721.0, 50.0) (29.128 s), spostamento 1399.1 m: nessun evento osservato che giustifichi lo spostamento
+30.491991795766  adh[7]  adh[12]  posizione  DUBBIO  da (1900.0, 300.0, 50.0) (26.390 s) a (565.8, 721.0, 50.0) (29.128 s), spostamento 1399.1 m: nessun evento osservato che giustifichi lo spostamento
+30.491992126052  adh[9]  adh[12]  posizione  DUBBIO  da (1900.0, 300.0, 50.0) (26.390 s) a (565.8, 721.0, 50.0) (29.128 s), spostamento 1399.1 m: nessun evento osservato che giustifichi lo spostamento
+40.364218989338  gat2  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.364219120899  adh[6]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.364219525158  adh[9]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.791641919341  satellite[0]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.791643224722  gat1  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.963951816536  adh[0]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.963951989879  adh[11]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.963952392323  adh[5]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.963952460557  adh[1]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.963952460557  adh[2]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.963952460557  adh[3]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.963952460557  adh[4]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+40.963952472818  adh[14]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+41.639767941884  gat3  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+41.8641901133  adh[12]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (39.970 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+44.467395865066  gat2  adh[7]  posizione  DUBBIO  da (1200.0, 600.0, 50.0) (39.970 s) a (900.0, 600.0, 50.0) (42.702 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+45.367298825915  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 42.702 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+45.668707872456  gat2  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (42.702 s) a (1200.0, 600.0, 50.0) (45.433 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+45.807833350045  adh[8]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (45.433 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+50.059627156148  gat2  adh[7]  posizione  DUBBIO  da (1200.0, 600.0, 50.0) (45.433 s) a (900.0, 600.0, 50.0) (48.164 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+50.945097479752  gat2  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (48.164 s) a (1200.0, 600.0, 50.0) (50.896 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+56.200627157382  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 53.627 s dichiarato (1200.0, 600.0, 50.0) in BANT e (900.0, 600.0, 50.0) in una voce di traccia, distanti 300.0 m
+64.130630494514  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 61.821 s dichiarato (1200.0, 600.0, 50.0) in BANT e (900.0, 600.0, 50.0) in una voce di traccia, distanti 300.0 m
+66.644375947019  adh[13]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (64.552 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+66.644376219444  adh[10]  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (34.508 s) a (1200.0, 600.0, 50.0) (64.552 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+71.34714986591  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 70.015 s dichiarato (1200.0, 600.0, 50.0) in BANT e (900.0, 600.0, 50.0) in una voce di traccia, distanti 300.0 m
+76.799883959292  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 75.478 s dichiarato (1200.0, 600.0, 50.0) in BANT e (900.0, 600.0, 50.0) in una voce di traccia, distanti 300.0 m
+81.334992479978  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 80.941 s dichiarato (1200.0, 600.0, 50.0) in BANT e (900.0, 600.0, 50.0) in una voce di traccia, distanti 300.0 m
+87.898474063164  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 86.403 s dichiarato (1200.0, 600.0, 50.0) in BANT e (900.0, 600.0, 50.0) in una voce di traccia, distanti 300.0 m
+94.958684633071  gat2  adh[7]  posizione  DUBBIO  da (1200.0, 600.0, 50.0) (91.866 s) a (900.0, 600.0, 50.0) (94.597 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+95.365403400924  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+95.796819801869  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.008218466742  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.014482001385  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.168441972558  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.180445975328  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.19258103268  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.196144567323  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.445573335363  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.450077688999  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.450458371807  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.45382190645  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.466192204127  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.614518834058  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.633365728701  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.672503539211  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.685799038693  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.687462573336  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.862811562946  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.864075097589  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.920349492243  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.922091763408  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+96.939988492659  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 94.597 s dichiarato (900.0, 600.0, 50.0) in una voce di traccia e (1200.0, 600.0, 50.0) in BANT, distanti 300.0 m
+100.360198825915  gat2  adh[7]  posizione  DUBBIO  da (900.0, 600.0, 50.0) (94.597 s) a (1200.0, 600.0, 50.0) (100.060 s), spostamento 300.0 m: nessun evento osservato che giustifichi lo spostamento
+102.3366260765  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 100.060 s dichiarato (1200.0, 600.0, 50.0) in BANT e (900.0, 600.0, 50.0) in una voce di traccia, distanti 300.0 m
+107.46195855193  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 105.523 s dichiarato (1200.0, 600.0, 50.0) in BANT e (900.0, 600.0, 50.0) in una voce di traccia, distanti 300.0 m
+113.276926403806  gat2  adh[7]  coerenza della posizione  VIOLATO  timbro 110.985 s dichiarato (1200.0, 600.0, 50.0) in BANT e (900.0, 600.0, 50.0) in una voce di traccia, distanti 300.0 m

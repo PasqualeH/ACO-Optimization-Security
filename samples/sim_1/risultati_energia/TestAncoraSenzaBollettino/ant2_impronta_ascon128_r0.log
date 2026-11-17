@@ -1,0 +1,13 @@
+# Regola 0 della metrica di trust: coerenza fra canali (equivocazione)
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# controlli: 'coerenza fra canali'   impronta del nodo contro quella pubblicata dalla GCS
+#            'coerenza fra messaggi' due messaggi arrivati a questo stesso nodo, stesso
+#                                    timbro e valori diversi (non serve la GCS)
+# esiti: SUPERATO        le due impronte della stessa lettura coincidono
+#        VIOLATO         non coincidono: il drone ha dichiarato due cose diverse (certo)
+#        NON_APPLICABILE la GCS ha pubblicato una lettura che questo nodo non ha
+# Quando una lettura risulta falsificata, gli esiti che le regole 1-5 ne avevano tratto
+# vengono annullati e la riga lo riporta: giudicare il contenuto di una dichiarazione
+# che sappiamo falsa non ha senso, e al loro posto resta questa violazione certa.
+# Esempi:  grep VIOLATO ant2_impronta*.log
+#

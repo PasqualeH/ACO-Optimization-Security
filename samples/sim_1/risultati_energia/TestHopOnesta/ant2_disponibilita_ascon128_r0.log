@@ -1,0 +1,14 @@
+# Regola 3 della metrica di trust: controllo sulla disponibilita' dichiarata nei BANT
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# Lo stato atteso (disponibile, impegnato, in ricarica) non viene stabilito
+# dall'arrivo del REQ, che puo' non essere giunto al drone, ma dallo spostamento
+# confermato dalla regola 2 sulla posizione: e' quello a provare che il drone ha
+# ricevuto la richiesta e l'ha accettata.
+# esiti: SUPERATO        la disponibilita' dichiarata coincide con quella attesa
+#        VIOLATO         si dichiara disponibile quando non puo' esserlo (certo)
+#        NON_APPLICABILE si dichiara non disponibile mentre chi controlla lo crede
+#                        disponibile: puo' essere un REQ non osservato
+# Si contano solo il primo esito dopo ogni cambiamento di stato e quelli in cui il
+# valore dichiarato cambia: altrimenti i contatori si gonfierebbero di esiti positivi.
+# Esempi:  grep VIOLATO ant2_disponibilita*.log
+#

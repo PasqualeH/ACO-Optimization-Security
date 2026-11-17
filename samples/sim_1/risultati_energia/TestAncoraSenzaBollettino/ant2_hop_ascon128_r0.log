@@ -1,0 +1,15 @@
+# Regola 6 della metrica di trust: il numero di hop dichiarato
+# formato: <tempo> <nodo che controlla> <nodo osservato> <controllo> <ESITO> <dettaglio>
+# controlli:
+#   'hop dichiarati'    controllo locale, certo: chi trasmette un messaggio creato da un
+#                       altro deve dichiarare almeno 2 hop; chi trasmette un messaggio
+#                       suo deve dichiararne 1. La colpa e' di chi trasmette.
+#   'hop nelle tracce'  catena delle voci di traccia: la voce in posizione i deve
+#                       riportare i+1. La rottura e' certa, la colpa no: la coppia e'
+#                       sospetta e il colpevole si isola accumulando su piu' giri.
+# Perche' conta: gli hop dichiarati entrano nel punteggio di reclutamento come 1/H, ma
+# soprattutto nel feromone dell'instradamento come 100/hop. Dichiararne meno del vero
+# significa diventare il prossimo salto preferito per il traffico altrui, cioe'
+# costruire un sinkhole.
+# Esempi:  grep VIOLATO ant2_hop*.log
+#

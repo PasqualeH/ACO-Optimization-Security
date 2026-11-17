@@ -60,7 +60,8 @@ class Ant2Crypto {
     // Identificano il tipo di messaggio nella derivazione del nonce,
     // cosi' un FANT e un BANT dello stesso nodo con lo stesso sequencenumber
     // non riusano mai lo stesso nonce (fondamentale per la sicurezza di un AEAD).
-    enum MsgType : uint8_t { MSG_FANT = 1, MSG_BANT = 2, MSG_REQ = 3 };
+    enum MsgType : uint8_t { MSG_FANT = 1, MSG_BANT = 2, MSG_REQ = 3, MSG_TRACE = 4, MSG_SNAP = 5,
+                             MSG_DIGEST = 6 };
 
     // --- Scelta dell'algoritmo AEAD ---
     // DA CHIAMARE PRIMA di qualunque caricamento di chiavi: determina quanti
@@ -127,11 +128,17 @@ class Ant2Crypto {
 
     // --- Operazioni usate ad ogni invio/ricezione ---
 
-    // Deriva un nonce, unico per (nodo mittente, sequencenumber, tipo messaggio).
+    // Deriva un nonce, unico per (nodo mittente, altro nodo coinvolto,
+    // sequencenumber di quell'altro nodo, tipo messaggio). 'peerAddress' e' il
+    // nodo che aveva creato il FANT nel caso del BANT (campo dstAddress) e il
+    // destinatario nel caso del REQ: serve perche' il numero di sequenza non e'
+    // del mittente del BANT, e nodi diversi usano gli stessi numeri, quindi da
+    // solo non garantisce l'unicita' del nonce (vedi Ant2Crypto.cc).
     // Il buffer e' sempre di 16 byte; all'AEAD ne arrivano nonceLen() (16 o 12).
-    // Non viene mai trasmesso: chi riceve lo ricalcola da campi gia' presenti nel pacchetto.
-    void deriveNonce(uint32_t srcAddress, uint32_t sequencenumber, MsgType type,
-                      uint8_t out[NONCE_LEN]) const;
+    // Non viene mai trasmesso: chi riceve lo ricalcola da campi gia' presenti
+    // nel pacchetto e gia' autenticati, quindi la correzione non aggiunge byte.
+    void deriveNonce(uint32_t srcAddress, uint32_t peerAddress, uint32_t sequencenumber,
+                      MsgType type, uint8_t out[NONCE_LEN]) const;
 
     // Cifra 'plaintext' (i campi sensibili: coordinate, energia, throughput, ...).
     // 'aad' sono i campi che restano in chiaro ma vanno comunque autenticati

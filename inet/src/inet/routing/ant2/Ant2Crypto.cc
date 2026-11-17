@@ -6,6 +6,9 @@
 #include "inet/routing/ant2/Ant2Aead.h"
 #include "inet/routing/ant2/Ant2Sign.h"
 #include "crypto/ed25519/ed25519.h"
+extern "C" {
+#include "crypto/ed25519/sha512.h"
+}
 #include "inet/routing/ant2/Ant2KeyAuthority.h"
 
 namespace inet {
@@ -92,32 +95,51 @@ void Ant2Crypto::useCentralAuthority(ant2::Ant2KeyAuthority* authority, uint32_t
     memcpy(ownPrivateKey, priv.data(), priv.size());
 }
 
-void Ant2Crypto::deriveNonce(uint32_t srcAddress, uint32_t sequencenumber, MsgType type,
-                              uint8_t out[NONCE_LEN]) const {
-    // Il buffer e' sempre di 16 byte, ma solo i primi nonceLen() vengono
-    // effettivamente passati all'AEAD; il resto resta a zero.
+void Ant2Crypto::deriveNonce(uint32_t srcAddress, uint32_t peerAddress, uint32_t sequencenumber,
+                              MsgType type, uint8_t out[NONCE_LEN]) const {
+    // La regola da rispettare e' che lo stesso nonce non venga MAI usato due
+    // volte con la stessa chiave: se succede, chi intercetta puo' sovrapporre i
+    // due testi cifrati e ricavare la differenza dei due testi in chiaro, che
+    // nel nostro caso (posizione, energia, banda dello stesso drone a pochi
+    // istanti di distanza) rivela quasi tutto. L'autenticita' non si perde,
+    // perche' ogni messaggio e' anche firmato, ma la riservatezza si'.
     //
-    // Ascon, Xoodyak (16 B):                src(4) || seq(4) || "ANT2"(4) || tipo(1) || zeri(3)
-    // GCM, ChaCha20, TinyJAMBU-128 (12 B):  src(4) || seq(4) || tipo(1) || zeri(3)
+    // CORREZIONE: il nonce del BANT era derivato da (chi invia il BANT, numero
+    // di sequenza del FANT a cui risponde, tipo). Quel numero di sequenza non
+    // e' del mittente del BANT ma del nodo che aveva creato il FANT, e nodi
+    // diversi usano gli stessi numeri di sequenza, perche' ogni nodo ha il
+    // proprio contatore che parte da zero e cresce di uno ogni helloInterval.
+    // Un drone che rispondeva al FANT numero 7 di A e al FANT numero 7 di B
+    // usava quindi due volte lo stesso nonce, e succedeva una quindicina di
+    // volte per ogni giro di FANT.
     //
-    // La scelta del formato dipende SOLO da nonceLen(), non dal nome
-    // dell'algoritmo: Xoodyak riceve quindi esattamente lo stesso nonce di
-    // Ascon e TinyJAMBU-128 lo stesso di AES-GCM, a parita' di messaggio.
+    // Si aggiunge quindi 'peerAddress', cioe' l'indirizzo dell'altro nodo
+    // coinvolto: per il BANT il nodo che aveva creato il FANT (campo
+    // dstAddress), per il REQ il destinatario. Quell'indirizzo e' GIA' presente
+    // in chiaro nel messaggio ed e' GIA' fra i campi autenticati, quindi la
+    // correzione non aggiunge nemmeno un byte e chi riceve puo' ricalcolare il
+    // nonce come prima. La quaterna (mittente, altro nodo, numero di sequenza
+    // di quell'altro nodo, tipo) e' unica, perche' per un nodo fissato i suoi
+    // numeri di sequenza non si ripetono.
     //
-    // La costante di dominio "ANT2" serve solo alla separazione di dominio e
-    // viene omessa nella variante a 12 byte: l'UNICITA' del nonce, che e' la
-    // proprieta' critica, e' garantita in entrambi i casi dalla terna
-    // (indirizzo mittente, numero di sequenza, tipo di messaggio).
+    // I quattro valori non vengono accostati uno dopo l'altro perche' non
+    // starebbero nei 12 byte di nonce di AES-GCM, ChaCha20 e TinyJAMBU-128
+    // (4+4+4+1 = 13): si usano invece i primi nonceLen() byte dell'impronta
+    // SHA-512 dei quattro valori, con una costante di separazione di dominio.
+    // SHA-512 e' quella gia' compilata nel progetto per la firma Ed25519,
+    // quindi non si aggiunge nessuna libreria.
+    uint8_t buf[4 + 4 + 4 + 4 + 1];
+    memcpy(buf, "ANT2", 4);
+    memcpy(buf + 4, &srcAddress, 4);
+    memcpy(buf + 8, &peerAddress, 4);
+    memcpy(buf + 12, &sequencenumber, 4);
+    buf[16] = static_cast<uint8_t>(type);
+
+    uint8_t digest[64];
+    sha512(buf, sizeof(buf), digest);
+
     memset(out, 0, NONCE_LEN);
-    memcpy(out, &srcAddress, 4);
-    memcpy(out + 4, &sequencenumber, 4);
-    if (nonceLen() == 16) {
-        out[8] = 'A'; out[9] = 'N'; out[10] = 'T'; out[11] = '2';
-        out[12] = static_cast<uint8_t>(type);
-    }
-    else {
-        out[8] = static_cast<uint8_t>(type);
-    }
+    memcpy(out, digest, nonceLen());
 }
 
 bool Ant2Crypto::encrypt(const std::vector<uint8_t>& plaintext,

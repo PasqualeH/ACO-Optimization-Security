@@ -1,0 +1,472 @@
+# Regola 3 della metrica di trust: controllo sulla disponibilita' dichiarata nei BANT
+# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>
+# Lo stato atteso (disponibile, impegnato, in ricarica) non viene stabilito
+# dall'arrivo del REQ, che puo' non essere giunto al drone, ma dallo spostamento
+# confermato dalla regola 2 sulla posizione: e' quello a provare che il drone ha
+# ricevuto la richiesta e l'ha accettata.
+# esiti: SUPERATO        la disponibilita' dichiarata coincide con quella attesa
+#        VIOLATO         si dichiara disponibile quando non puo' esserlo (certo)
+#        NON_APPLICABILE si dichiara non disponibile mentre chi controlla lo crede
+#                        disponibile: puo' essere un REQ non osservato
+# Si contano solo il primo esito dopo ogni cambiamento di stato e quelli in cui il
+# valore dichiarato cambia: altrimenti i contatori si gonfierebbero di esiti positivi.
+# Esempi:  grep VIOLATO ant2_disponibilita*.log
+#
+0.366637677655  gat1  adh[0]  disponibilita'  SUPERATO  timbro 0.287 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.372703102531  satellite[0]  adh[0]  disponibilita'  SUPERATO  timbro 0.287 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.378900751362  adh[1]  adh[0]  disponibilita'  SUPERATO  timbro 0.287 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.378900751362  adh[2]  adh[0]  disponibilita'  SUPERATO  timbro 0.287 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.378900751362  adh[3]  adh[0]  disponibilita'  SUPERATO  timbro 0.287 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.378900751362  adh[4]  adh[0]  disponibilita'  SUPERATO  timbro 0.287 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.381672535054  adh[5]  adh[0]  disponibilita'  SUPERATO  timbro 0.287 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.658839379649  gat3  adh[12]  disponibilita'  SUPERATO  timbro 0.369 s, dichiarata disponibile, attesa disponibile
+0.658839455065  adh[10]  adh[12]  disponibilita'  SUPERATO  timbro 0.369 s, dichiarata disponibile, attesa disponibile
+0.658839455065  adh[11]  adh[12]  disponibilita'  SUPERATO  timbro 0.369 s, dichiarata disponibile, attesa disponibile
+0.658839455065  adh[14]  adh[12]  disponibilita'  SUPERATO  timbro 0.369 s, dichiarata disponibile, attesa disponibile
+0.658947795235  gat3  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+0.658947926796  adh[10]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+0.658948200937  adh[12]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+0.658948200937  adh[13]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+0.664212161561  satellite[0]  adh[12]  disponibilita'  SUPERATO  timbro 0.369 s, dichiarata disponibile, attesa disponibile
+0.668501856074  adh[13]  adh[12]  disponibilita'  SUPERATO  timbro 0.369 s, dichiarata disponibile, attesa disponibile
+0.680264868156  gat2  adh[0]  disponibilita'  SUPERATO  timbro 0.287 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.681534518839  gat2  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.6815346504  adh[5]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.6815346504  adh[7]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.681535122131  adh[8]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.681535179361  adh[9]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.693905470366  satellite[0]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.693906723786  gat1  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.700058241722  gat3  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.816068041974  adh[13]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+0.816068236005  adh[12]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+0.821411108105  gat3  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+0.897785748268  satellite[0]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+0.901997941425  satellite[0]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+0.903745758421  gat2  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+0.903747650522  gat1  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+0.905270757037  gat2  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+0.905272649138  gat1  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+0.908615601172  adh[14]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+0.937681166513  adh[0]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.947528534636  gat2  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.947530426737  gat1  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.951218992337  gat3  adh[0]  disponibilita'  SUPERATO  timbro 0.287 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.956772296186  satellite[0]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.962011865117  adh[11]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.962012001372  adh[13]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.962012195403  adh[12]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.962012273797  adh[10]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.962012273797  adh[14]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+0.988833187615  adh[1]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+0.988833187615  adh[4]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.01674496985  adh[11]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+1.01674537853  adh[10]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+1.02134935472  gat3  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.024498078298  satellite[0]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.024499332294  gat1  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.03047255149  adh[6]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.030472828609  gat2  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.030473023221  adh[7]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.032799671079  adh[6]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+1.032799671079  adh[7]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+1.032800001365  adh[9]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+1.032800079759  adh[5]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+1.032800079759  adh[8]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+1.16382480578  adh[11]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.16382480578  adh[14]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.185379587212  adh[0]  adh[2]  disponibilita'  SUPERATO  timbro 1.012 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.18537959035  gat1  adh[2]  disponibilita'  SUPERATO  timbro 1.012 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.185379730041  adh[5]  adh[2]  disponibilita'  SUPERATO  timbro 1.012 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.185379880308  adh[1]  adh[2]  disponibilita'  SUPERATO  timbro 1.012 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.185379880308  adh[4]  adh[2]  disponibilita'  SUPERATO  timbro 1.012 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.206107783348  gat2  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.206108421475  satellite[0]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.20908411728  adh[2]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.209394838256  adh[2]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+1.433317227755  adh[0]  adh[4]  disponibilita'  SUPERATO  timbro 1.065 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.433317230893  gat1  adh[4]  disponibilita'  SUPERATO  timbro 1.065 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.433317520851  adh[2]  adh[4]  disponibilita'  SUPERATO  timbro 1.065 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.433317520851  adh[3]  adh[4]  disponibilita'  SUPERATO  timbro 1.065 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.448212450599  adh[0]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+1.448212743695  adh[1]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+1.448212743695  adh[4]  adh[6]  disponibilita'  SUPERATO  timbro 0.342 s, dichiarata disponibile, attesa disponibile
+1.449100379048  adh[7]  adh[9]  disponibilita'  SUPERATO  timbro 1.231 s, dichiarata disponibile, attesa disponibile
+1.449100787728  adh[8]  adh[9]  disponibilita'  SUPERATO  timbro 1.231 s, dichiarata disponibile, attesa disponibile
+1.451374412173  adh[6]  adh[9]  disponibilita'  SUPERATO  timbro 1.231 s, dichiarata disponibile, attesa disponibile
+1.451374689292  gat2  adh[9]  disponibilita'  SUPERATO  timbro 1.231 s, dichiarata disponibile, attesa disponibile
+1.458337501601  gat1  adh[9]  disponibilita'  SUPERATO  timbro 1.231 s, dichiarata disponibile, attesa disponibile
+1.458337641292  adh[5]  adh[9]  disponibilita'  SUPERATO  timbro 1.231 s, dichiarata disponibile, attesa disponibile
+1.615582356735  adh[10]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.615582630876  adh[12]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.621998904294  adh[2]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.626389100597  gat3  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.629414102963  adh[1]  adh[4]  disponibilita'  SUPERATO  timbro 1.065 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.629968112472  adh[11]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.629968248727  adh[13]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.629968442758  adh[12]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.629968521152  adh[10]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.629968521152  adh[14]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.636141583674  adh[9]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.636141781264  adh[6]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.638022738418  adh[6]  adh[5]  disponibilita'  SUPERATO  timbro 1.618 s, dichiarata disponibile, attesa disponibile
+1.638023015537  gat2  adh[5]  disponibilita'  SUPERATO  timbro 1.618 s, dichiarata disponibile, attesa disponibile
+1.638023117112  adh[2]  adh[5]  disponibilita'  SUPERATO  timbro 1.618 s, dichiarata disponibile, attesa disponibile
+1.638023210149  adh[7]  adh[5]  disponibilita'  SUPERATO  timbro 1.618 s, dichiarata disponibile, attesa disponibile
+1.638933217221  gat2  adh[2]  disponibilita'  SUPERATO  timbro 1.012 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.639672176757  adh[0]  adh[5]  disponibilita'  SUPERATO  timbro 1.618 s, dichiarata disponibile, attesa disponibile
+1.644198113856  adh[11]  adh[0]  disponibilita'  SUPERATO  timbro 1.573 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.644198250111  adh[13]  adh[0]  disponibilita'  SUPERATO  timbro 1.573 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.644198444142  adh[12]  adh[0]  disponibilita'  SUPERATO  timbro 1.573 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.644198522536  adh[10]  adh[0]  disponibilita'  SUPERATO  timbro 1.573 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.644198522536  adh[14]  adh[0]  disponibilita'  SUPERATO  timbro 1.573 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.648088012631  satellite[0]  adh[2]  disponibilita'  SUPERATO  timbro 1.012 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.649840038553  adh[6]  adh[0]  disponibilita'  SUPERATO  timbro 1.573 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.649840038553  adh[7]  adh[0]  disponibilita'  SUPERATO  timbro 1.573 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.649840368839  adh[9]  adh[0]  disponibilita'  SUPERATO  timbro 1.573 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.649840447233  adh[8]  adh[0]  disponibilita'  SUPERATO  timbro 1.573 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.665812970166  gat1  adh[5]  disponibilita'  SUPERATO  timbro 1.618 s, dichiarata disponibile, attesa disponibile
+1.665813260124  adh[1]  adh[5]  disponibilita'  SUPERATO  timbro 1.618 s, dichiarata disponibile, attesa disponibile
+1.665813260124  adh[4]  adh[5]  disponibilita'  SUPERATO  timbro 1.618 s, dichiarata disponibile, attesa disponibile
+1.668438527745  adh[3]  adh[2]  disponibilita'  SUPERATO  timbro 1.012 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.672030760115  adh[5]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.672030760115  adh[7]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.68109361054  adh[2]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.682446354893  adh[0]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.682446998914  adh[1]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.682446998914  adh[3]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.682446998914  adh[4]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.682577510855  adh[11]  adh[10]  disponibilita'  SUPERATO  timbro 1.177 s, dichiarata disponibile, attesa disponibile
+1.682577784996  adh[12]  adh[10]  disponibilita'  SUPERATO  timbro 1.177 s, dichiarata disponibile, attesa disponibile
+1.682577787974  gat3  adh[10]  disponibilita'  SUPERATO  timbro 1.177 s, dichiarata disponibile, attesa disponibile
+1.688156318136  adh[0]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.688156321274  gat1  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.688156611232  adh[1]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.688156611232  adh[4]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.688775064649  satellite[0]  adh[5]  disponibilita'  SUPERATO  timbro 1.618 s, dichiarata disponibile, attesa disponibile
+1.689257305493  adh[0]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+1.692661013089  adh[3]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.693382373591  gat2  adh[12]  disponibilita'  SUPERATO  timbro 0.369 s, dichiarata disponibile, attesa disponibile
+1.697339030242  adh[3]  adh[5]  disponibilita'  SUPERATO  timbro 1.618 s, dichiarata disponibile, attesa disponibile
+1.708133125107  adh[2]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+1.715096125799  adh[1]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+1.715096125799  adh[4]  adh[11]  disponibilita'  SUPERATO  timbro 0.443 s, dichiarata disponibile, attesa disponibile
+1.715362058901  adh[0]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+1.71536220173  adh[5]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+1.715362351997  adh[1]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+1.715362351997  adh[4]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+1.72156220173  adh[5]  adh[13]  disponibilita'  SUPERATO  timbro 0.955 s, dichiarata disponibile, attesa disponibile
+1.724124673461  adh[6]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+1.724125052155  adh[2]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+1.724125145192  adh[7]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+1.741462174652  adh[13]  adh[10]  disponibilita'  SUPERATO  timbro 1.177 s, dichiarata disponibile, attesa disponibile
+1.865890770483  adh[0]  adh[1]  disponibilita'  SUPERATO  timbro 1.737 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.865890773621  gat1  adh[1]  disponibilita'  SUPERATO  timbro 1.737 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.865891063579  adh[2]  adh[1]  disponibilita'  SUPERATO  timbro 1.737 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.865891063579  adh[3]  adh[1]  disponibilita'  SUPERATO  timbro 1.737 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.87891333478  adh[5]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.895655727358  adh[9]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+1.895655805752  adh[8]  adh[14]  disponibilita'  SUPERATO  timbro 0.713 s, dichiarata disponibile, attesa disponibile
+1.926238057512  gat2  adh[4]  disponibilita'  SUPERATO  timbro 1.065 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.926238695355  satellite[0]  adh[4]  disponibilita'  SUPERATO  timbro 1.065 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.935545733261  gat2  adh[7]  disponibilita'  SUPERATO  timbro 1.731 s, dichiarata disponibile, attesa disponibile
+1.935545864822  adh[6]  adh[7]  disponibilita'  SUPERATO  timbro 1.731 s, dichiarata disponibile, attesa disponibile
+1.935546138963  adh[9]  adh[7]  disponibilita'  SUPERATO  timbro 1.731 s, dichiarata disponibile, attesa disponibile
+1.935546336553  adh[5]  adh[7]  disponibilita'  SUPERATO  timbro 1.731 s, dichiarata disponibile, attesa disponibile
+1.937202202773  gat3  adh[5]  disponibilita'  SUPERATO  timbro 1.618 s, dichiarata disponibile, attesa disponibile
+1.937917378571  satellite[0]  adh[9]  disponibilita'  SUPERATO  timbro 1.231 s, dichiarata disponibile, attesa disponibile
+1.942742797556  adh[5]  adh[1]  disponibilita'  SUPERATO  timbro 1.737 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.942742947823  adh[4]  adh[1]  disponibilita'  SUPERATO  timbro 1.737 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.947662216397  gat3  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.955724556567  adh[11]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.955724692822  adh[13]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.955724886853  adh[12]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.955724965247  adh[10]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.955724965247  adh[14]  adh[8]  disponibilita'  SUPERATO  timbro 1.171 s, dichiarata disponibile, attesa disponibile
+1.96475463914  adh[6]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+1.964755110871  adh[7]  adh[3]  disponibilita'  SUPERATO  timbro 0.697 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.376979861678  adh[5]  adh[4]  disponibilita'  SUPERATO  timbro 5.196 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.381765734001  gat2  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.38176637048  satellite[0]  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.390922293027  adh[9]  adh[3]  disponibilita'  SUPERATO  timbro 4.092 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.390922371421  adh[8]  adh[3]  disponibilita'  SUPERATO  timbro 4.092 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.662899897964  adh[9]  adh[5]  disponibilita'  SUPERATO  timbro 4.237 s, dichiarata disponibile, attesa disponibile
+5.662899976358  adh[8]  adh[5]  disponibilita'  SUPERATO  timbro 4.237 s, dichiarata disponibile, attesa disponibile
+5.680686064737  gat1  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+5.682224177717  gat3  adh[2]  disponibilita'  SUPERATO  timbro 5.037 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.684190979007  adh[11]  adh[5]  disponibilita'  SUPERATO  timbro 4.237 s, dichiarata disponibile, attesa disponibile
+5.684191115262  adh[13]  adh[5]  disponibilita'  SUPERATO  timbro 4.237 s, dichiarata disponibile, attesa disponibile
+5.684191309293  adh[12]  adh[5]  disponibilita'  SUPERATO  timbro 4.237 s, dichiarata disponibile, attesa disponibile
+5.684191387687  adh[10]  adh[5]  disponibilita'  SUPERATO  timbro 4.237 s, dichiarata disponibile, attesa disponibile
+5.684191387687  adh[14]  adh[5]  disponibilita'  SUPERATO  timbro 4.237 s, dichiarata disponibile, attesa disponibile
+5.688115979007  adh[11]  adh[2]  disponibilita'  SUPERATO  timbro 5.037 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.688116115262  adh[13]  adh[2]  disponibilita'  SUPERATO  timbro 5.037 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.688116309293  adh[12]  adh[2]  disponibilita'  SUPERATO  timbro 5.037 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.688116387687  adh[10]  adh[2]  disponibilita'  SUPERATO  timbro 5.037 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.688116387687  adh[14]  adh[2]  disponibilita'  SUPERATO  timbro 5.037 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.688818408277  satellite[0]  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+5.693659470771  adh[6]  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.693659942502  adh[7]  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.700822418346  adh[9]  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.70082249674  adh[8]  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.704813258127  gat3  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.710675598297  adh[11]  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.710675734552  adh[13]  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.710675928583  adh[12]  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.710676006977  adh[10]  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.710676006977  adh[14]  adh[1]  disponibilita'  SUPERATO  timbro 4.475 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.822056029832  adh[14]  adh[10]  disponibilita'  SUPERATO  timbro 5.531 s, dichiarata disponibile, attesa disponibile
+5.832808601549  adh[9]  adh[13]  disponibilita'  SUPERATO  timbro 4.864 s, dichiarata disponibile, attesa disponibile
+5.832808679943  adh[8]  adh[13]  disponibilita'  SUPERATO  timbro 4.864 s, dichiarata disponibile, attesa disponibile
+5.83508829995  gat1  adh[12]  disponibilita'  SUPERATO  timbro 4.478 s, dichiarata disponibile, attesa disponibile
+5.845711623418  adh[6]  adh[12]  disponibilita'  SUPERATO  timbro 4.478 s, dichiarata disponibile, attesa disponibile
+5.845712095149  adh[7]  adh[12]  disponibilita'  SUPERATO  timbro 4.478 s, dichiarata disponibile, attesa disponibile
+5.849074709708  adh[0]  adh[12]  disponibilita'  SUPERATO  timbro 4.478 s, dichiarata disponibile, attesa disponibile
+5.849074852537  adh[5]  adh[12]  disponibilita'  SUPERATO  timbro 4.478 s, dichiarata disponibile, attesa disponibile
+5.903298380607  adh[6]  adh[4]  disponibilita'  SUPERATO  timbro 5.196 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.903298380607  adh[7]  adh[4]  disponibilita'  SUPERATO  timbro 5.196 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.903298710893  adh[9]  adh[4]  disponibilita'  SUPERATO  timbro 5.196 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+5.903298789287  adh[8]  adh[4]  disponibilita'  SUPERATO  timbro 5.196 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+6.007198982345  satellite[0]  adh[10]  disponibilita'  SUPERATO  timbro 5.531 s, dichiarata disponibile, attesa disponibile
+6.020122393748  adh[6]  adh[10]  disponibilita'  SUPERATO  timbro 5.531 s, dichiarata disponibile, attesa disponibile
+6.020122670867  gat2  adh[10]  disponibilita'  SUPERATO  timbro 5.531 s, dichiarata disponibile, attesa disponibile
+6.020122865479  adh[7]  adh[10]  disponibilita'  SUPERATO  timbro 5.531 s, dichiarata disponibile, attesa disponibile
+6.020725838451  gat1  adh[10]  disponibilita'  SUPERATO  timbro 5.531 s, dichiarata disponibile, attesa disponibile
+6.026186611592  adh[9]  adh[10]  disponibilita'  SUPERATO  timbro 5.531 s, dichiarata disponibile, attesa disponibile
+6.026186689986  adh[5]  adh[10]  disponibilita'  SUPERATO  timbro 5.531 s, dichiarata disponibile, attesa disponibile
+6.026186689986  adh[8]  adh[10]  disponibilita'  SUPERATO  timbro 5.531 s, dichiarata disponibile, attesa disponibile
+6.026330611592  adh[9]  adh[12]  disponibilita'  SUPERATO  timbro 5.847 s, dichiarata disponibile, attesa disponibile
+6.026330689986  adh[8]  adh[12]  disponibilita'  SUPERATO  timbro 5.847 s, dichiarata disponibile, attesa disponibile
+6.033649540411  adh[2]  adh[10]  disponibilita'  SUPERATO  timbro 5.531 s, dichiarata disponibile, attesa disponibile
+6.035893540411  adh[2]  adh[12]  disponibilita'  SUPERATO  timbro 5.847 s, dichiarata disponibile, attesa disponibile
+6.164426872753  adh[2]  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+6.233831478469  adh[1]  adh[12]  disponibilita'  SUPERATO  timbro 5.847 s, dichiarata disponibile, attesa disponibile
+6.233831478469  adh[4]  adh[12]  disponibilita'  SUPERATO  timbro 5.847 s, dichiarata disponibile, attesa disponibile
+6.446424187532  adh[0]  adh[9]  disponibilita'  SUPERATO  timbro 5.693 s, dichiarata disponibile, attesa disponibile
+6.446424831553  adh[1]  adh[9]  disponibilita'  SUPERATO  timbro 5.693 s, dichiarata disponibile, attesa disponibile
+6.446424831553  adh[2]  adh[9]  disponibilita'  SUPERATO  timbro 5.693 s, dichiarata disponibile, attesa disponibile
+6.446424831553  adh[4]  adh[9]  disponibilita'  SUPERATO  timbro 5.693 s, dichiarata disponibile, attesa disponibile
+6.468269373612  adh[0]  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+6.468269666708  adh[1]  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+6.468269666708  adh[4]  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+6.653684121129  adh[3]  adh[9]  disponibilita'  SUPERATO  timbro 5.693 s, dichiarata disponibile, attesa disponibile
+6.663504041172  gat3  adh[9]  disponibilita'  SUPERATO  timbro 5.693 s, dichiarata disponibile, attesa disponibile
+6.892741918059  adh[3]  adh[11]  disponibilita'  SUPERATO  timbro 6.213 s, dichiarata disponibile, attesa disponibile
+6.89485026829  adh[0]  adh[10]  disponibilita'  SUPERATO  timbro 5.531 s, dichiarata disponibile, attesa disponibile
+6.935694570562  adh[8]  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+6.943110874826  gat3  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+6.944642191826  adh[11]  adh[9]  disponibilita'  SUPERATO  timbro 5.693 s, dichiarata disponibile, attesa disponibile
+6.944642328081  adh[13]  adh[9]  disponibilita'  SUPERATO  timbro 5.693 s, dichiarata disponibile, attesa disponibile
+6.953220123808  adh[11]  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+6.953220260063  adh[13]  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+6.953220454094  adh[12]  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+6.953220532488  adh[10]  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+6.953220532488  adh[14]  adh[7]  disponibilita'  SUPERATO  timbro 4.463 s, dichiarata disponibile, attesa disponibile
+10.354933230429  adh[6]  adh[2]  disponibilita'  SUPERATO  timbro 9.062 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+10.35493370216  adh[7]  adh[2]  disponibilita'  SUPERATO  timbro 9.062 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+10.706239911988  gat3  adh[4]  disponibilita'  SUPERATO  timbro 9.327 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+10.712102252158  adh[11]  adh[4]  disponibilita'  SUPERATO  timbro 9.327 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+10.712102388413  adh[13]  adh[4]  disponibilita'  SUPERATO  timbro 9.327 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+10.904707767212  adh[9]  adh[2]  disponibilita'  SUPERATO  timbro 9.062 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+10.904707845606  adh[8]  adh[2]  disponibilita'  SUPERATO  timbro 9.062 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+11.187973806958  adh[3]  adh[6]  disponibilita'  SUPERATO  timbro 11.077 s, dichiarata disponibile, attesa disponibile
+11.209901034082  adh[1]  adh[10]  disponibilita'  SUPERATO  timbro 9.885 s, dichiarata disponibile, attesa disponibile
+11.209901034082  adh[4]  adh[10]  disponibilita'  SUPERATO  timbro 9.885 s, dichiarata disponibile, attesa disponibile
+11.288653673156  adh[3]  adh[12]  disponibilita'  SUPERATO  timbro 9.956 s, dichiarata disponibile, attesa disponibile
+11.475070594898  adh[3]  adh[7]  disponibilita'  SUPERATO  timbro 9.925 s, dichiarata disponibile, attesa disponibile
+11.643071833569  adh[12]  adh[4]  disponibilita'  SUPERATO  timbro 11.393 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+11.643071911963  adh[10]  adh[4]  disponibilita'  SUPERATO  timbro 11.393 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+11.643071911963  adh[14]  adh[4]  disponibilita'  SUPERATO  timbro 11.393 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+16.018607421468  adh[3]  adh[14]  disponibilita'  SUPERATO  timbro 14.414 s, dichiarata disponibile, attesa disponibile
+16.26999043071  adh[3]  adh[10]  disponibilita'  SUPERATO  timbro 14.240 s, dichiarata disponibile, attesa disponibile
+16.938468682581  adh[12]  adh[9]  disponibilita'  SUPERATO  timbro 16.849 s, dichiarata disponibile, attesa disponibile
+16.938468760975  adh[10]  adh[9]  disponibilita'  SUPERATO  timbro 16.849 s, dichiarata disponibile, attesa disponibile
+16.938468760975  adh[14]  adh[9]  disponibilita'  SUPERATO  timbro 16.849 s, dichiarata disponibile, attesa disponibile
+19.119995182895  adh[2]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 17.329 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+19.119995649349  adh[6]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 17.329 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+19.119995651962  adh[4]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 17.329 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+19.119995680712  adh[0]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 17.329 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+19.119995683176  gat1  adh[5]  disponibilita'  NON_APPLICABILE  timbro 17.329 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+19.130601716863  adh[1]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 17.329 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+19.130601716863  adh[3]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 17.329 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.171690668143  adh[2]  adh[5]  disponibilita'  SUPERATO  timbro 19.947 s, dichiarata non disponibile, attesa impegnato
+20.17169113721  adh[4]  adh[5]  disponibilita'  SUPERATO  timbro 19.947 s, dichiarata non disponibile, attesa impegnato
+20.17169116596  adh[0]  adh[5]  disponibilita'  SUPERATO  timbro 19.947 s, dichiarata non disponibile, attesa impegnato
+20.171691168424  gat1  adh[5]  disponibilita'  SUPERATO  timbro 19.947 s, dichiarata non disponibile, attesa impegnato
+20.171691211059  adh[9]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 19.947 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.3145352492  adh[0]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.314535258126  gat1  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.314535494986  adh[1]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.314535658292  adh[2]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.314535837229  adh[3]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.314535942754  adh[4]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.314535951143  adh[5]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.35115623668  adh[6]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.352646581203  gat2  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.352646712764  adh[7]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.352647184495  adh[8]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.360797302065  satellite[0]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.379762133587  gat2  adh[5]  disponibilita'  NON_APPLICABILE  timbro 19.947 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.379762764408  satellite[0]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 19.947 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.42027092898  adh[1]  adh[5]  disponibilita'  SUPERATO  timbro 19.947 s, dichiarata non disponibile, attesa impegnato
+20.42027092898  adh[3]  adh[5]  disponibilita'  SUPERATO  timbro 19.947 s, dichiarata non disponibile, attesa impegnato
+20.721308817185  gat3  adh[5]  disponibilita'  NON_APPLICABILE  timbro 19.947 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.723071157355  adh[11]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 19.947 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.72307129361  adh[13]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 19.947 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.723071487641  adh[12]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 19.947 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.723071566035  adh[10]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 19.947 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+20.723071566035  adh[14]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 19.947 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+21.325055009283  gat3  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+21.326417349453  adh[11]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+21.326417485708  adh[13]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+21.326417679739  adh[12]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+21.326417758133  adh[10]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+21.326417758133  adh[14]  adh[9]  disponibilita'  NON_APPLICABILE  timbro 19.080 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+21.635723586305  adh[7]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 19.947 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+21.635724058036  adh[8]  adh[5]  disponibilita'  NON_APPLICABILE  timbro 19.947 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+23.16774020932  adh[0]  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+23.167740218246  gat1  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+23.167740455106  adh[1]  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+23.167740618412  adh[2]  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+23.167740797349  adh[3]  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+23.167740902874  adh[4]  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+23.167740911263  adh[5]  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+23.889383781574  adh[6]  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+23.893346121744  gat2  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+23.893346253305  adh[7]  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+23.951127078958  adh[8]  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+23.95587890697  satellite[0]  adh[9]  disponibilita'  SUPERATO  timbro 21.311 s, dichiarata non disponibile, attesa impegnato
+25.458136129036  adh[3]  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.458136279558  adh[4]  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.458136452566  adh[0]  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.458136455122  gat1  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.484458080009  adh[9]  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.484458247842  adh[1]  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.494321248534  adh[2]  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.591375456507  gat2  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.591376085507  satellite[0]  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.599965614872  adh[5]  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.662001581181  adh[6]  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.662001581181  adh[7]  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+25.669438681354  gat3  adh[8]  disponibilita'  NON_APPLICABILE  timbro 22.880 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+26.037261129036  adh[3]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.037261279558  adh[4]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.037261452566  adh[0]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.037261455122  gat1  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.044313456507  gat2  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.044314085336  satellite[0]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.060782559801  adh[6]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.060782559801  adh[7]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.07851922914  gat3  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.09370089347  adh[9]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.093701350448  adh[1]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.093701350448  adh[2]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.093701543852  adh[5]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.5109309506  adh[11]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.923910579043  adh[13]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.923910773074  adh[12]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.923910851468  adh[10]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+26.923910851468  adh[14]  adh[8]  disponibilita'  SUPERATO  timbro 25.051 s, dichiarata non disponibile, attesa impegnato
+29.938039742954  adh[4]  adh[11]  disponibilita'  SUPERATO  timbro 29.295 s, dichiarata non disponibile, attesa impegnato
+29.945302439584  adh[8]  adh[11]  disponibilita'  SUPERATO  timbro 29.295 s, dichiarata non disponibile, attesa impegnato
+29.94530245055  adh[0]  adh[11]  disponibilita'  SUPERATO  timbro 29.295 s, dichiarata non disponibile, attesa impegnato
+29.945302453688  gat1  adh[11]  disponibilita'  SUPERATO  timbro 29.295 s, dichiarata non disponibile, attesa impegnato
+29.945302615878  adh[5]  adh[11]  disponibilita'  SUPERATO  timbro 29.295 s, dichiarata non disponibile, attesa impegnato
+29.945302681338  adh[9]  adh[11]  disponibilita'  SUPERATO  timbro 29.295 s, dichiarata non disponibile, attesa impegnato
+29.945302743646  adh[2]  adh[11]  disponibilita'  SUPERATO  timbro 29.295 s, dichiarata non disponibile, attesa impegnato
+29.945302743646  adh[3]  adh[11]  disponibilita'  SUPERATO  timbro 29.295 s, dichiarata non disponibile, attesa impegnato
+29.946865158146  adh[1]  adh[11]  disponibilita'  SUPERATO  timbro 29.295 s, dichiarata non disponibile, attesa impegnato
+30.436937197162  gat2  adh[11]  disponibilita'  SUPERATO  timbro 29.295 s, dichiarata non disponibile, attesa impegnato
+30.436937824517  satellite[0]  adh[11]  disponibilita'  SUPERATO  timbro 29.295 s, dichiarata non disponibile, attesa impegnato
+30.723957105263  gat3  adh[9]  disponibilita'  SUPERATO  timbro 30.235 s, dichiarata non disponibile, attesa impegnato
+30.73083757657  adh[13]  adh[9]  disponibilita'  SUPERATO  timbro 30.235 s, dichiarata non disponibile, attesa impegnato
+30.730837770601  adh[12]  adh[9]  disponibilita'  SUPERATO  timbro 30.235 s, dichiarata non disponibile, attesa impegnato
+30.730837848995  adh[10]  adh[9]  disponibilita'  SUPERATO  timbro 30.235 s, dichiarata non disponibile, attesa impegnato
+30.730837848995  adh[14]  adh[9]  disponibilita'  SUPERATO  timbro 30.235 s, dichiarata non disponibile, attesa impegnato
+31.120152456023  adh[11]  adh[9]  disponibilita'  SUPERATO  timbro 30.235 s, dichiarata non disponibile, attesa impegnato
+45.989648091075  gat3  adh[11]  disponibilita'  SUPERATO  timbro 45.164 s, dichiarata non disponibile, attesa impegnato
+46.014039604117  adh[13]  adh[11]  disponibilita'  SUPERATO  timbro 45.164 s, dichiarata non disponibile, attesa impegnato
+46.014039798148  adh[12]  adh[11]  disponibilita'  SUPERATO  timbro 45.164 s, dichiarata non disponibile, attesa impegnato
+46.014039876542  adh[10]  adh[11]  disponibilita'  SUPERATO  timbro 45.164 s, dichiarata non disponibile, attesa impegnato
+46.014039876542  adh[14]  adh[11]  disponibilita'  SUPERATO  timbro 45.164 s, dichiarata non disponibile, attesa impegnato
+46.70904922468  adh[6]  adh[11]  disponibilita'  SUPERATO  timbro 46.607 s, dichiarata non disponibile, attesa impegnato
+46.70904922468  adh[7]  adh[11]  disponibilita'  SUPERATO  timbro 46.607 s, dichiarata non disponibile, attesa impegnato
+74.328444084511  adh[5]  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+74.328444481885  adh[2]  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+74.328444507949  adh[4]  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+74.328444538526  adh[11]  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+74.328444557345  gat2  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+74.328444624221  adh[7]  adh[6]  disponibilita'  NON_APPLICABILE  timbro 74.145 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+74.360930240795  adh[8]  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+74.360930251761  adh[0]  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+74.360930254899  gat1  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+74.360930482549  adh[9]  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+74.360930544857  adh[3]  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+74.369782872152  satellite[0]  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+74.444051791839  adh[1]  adh[6]  disponibilita'  SUPERATO  timbro 74.145 s, dichiarata non disponibile, attesa impegnato
+75.700865433688  gat3  adh[6]  disponibilita'  SUPERATO  timbro 75.487 s, dichiarata non disponibile, attesa impegnato
+75.777051410757  adh[13]  adh[6]  disponibilita'  NON_APPLICABILE  timbro 75.487 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+75.777051604788  adh[12]  adh[6]  disponibilita'  NON_APPLICABILE  timbro 75.487 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+75.777051683182  adh[10]  adh[6]  disponibilita'  NON_APPLICABILE  timbro 75.487 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+75.777051683182  adh[14]  adh[6]  disponibilita'  NON_APPLICABILE  timbro 75.487 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+76.860841738652  gat2  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+76.860842335434  adh[6]  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+76.862797077878  adh[5]  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+76.862797475252  adh[2]  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+76.862797501316  adh[4]  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+76.862797531893  adh[11]  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+76.862797550712  gat2  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+76.873803315735  gat2  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+76.873803912517  adh[6]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+76.883166309759  adh[5]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+76.883166707133  adh[2]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+76.883166733197  adh[4]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+76.883166763774  adh[11]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+76.883166782593  gat2  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+76.996115288737  gat2  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+76.996115885519  adh[6]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.003687969077  gat2  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.003688565859  adh[6]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.005376212886  satellite[0]  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+77.00537755206  gat1  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+77.006429553445  gat2  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.006430168811  satellite[0]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.013438631288  satellite[0]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.013439970462  gat1  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.015891971847  gat2  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.015892587213  satellite[0]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.018160841923  adh[6]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.032571081349  adh[0]  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+77.032571268392  adh[9]  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+77.03257172537  adh[1]  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+77.03257172537  adh[2]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.03257172537  adh[3]  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+77.03257172537  adh[4]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.03257188683  adh[8]  adh[7]  disponibilita'  NON_APPLICABILE  timbro 75.478 s, dichiarata non disponibile, attesa disponibile: possibile reclutamento non osservato da chi controlla
+77.032571918774  adh[5]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.052431825737  adh[0]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.05243201278  adh[9]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.052432469758  adh[1]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.052432469758  adh[2]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.052432469758  adh[3]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.052432469758  adh[4]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.052432631218  adh[8]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+77.052432663162  adh[5]  adh[7]  disponibilita'  SUPERATO  timbro 75.478 s, dichiarata non disponibile, attesa non disponibile (motivo non osservato)
+78.869669521867  adh[6]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.869669629405  adh[11]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.869669782278  gat2  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.869669831701  adh[4]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.869669902815  adh[5]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.878132306672  adh[2]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.878132804489  adh[0]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.878132806953  gat1  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.878132849588  adh[9]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.883585423384  satellite[0]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.941716144986  adh[1]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.941716144986  adh[3]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+78.941716306446  adh[8]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+80.683852726255  gat3  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+80.737643353831  adh[13]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+80.737643547862  adh[12]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+80.737643626256  adh[10]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato
+80.737643626256  adh[14]  adh[7]  disponibilita'  SUPERATO  timbro 78.209 s, dichiarata non disponibile, attesa impegnato

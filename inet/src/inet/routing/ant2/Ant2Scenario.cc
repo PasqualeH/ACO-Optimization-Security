@@ -81,20 +81,22 @@ std::ofstream& Ant2::scenarioLogFile()
             << "#                i BANT (stati degli altri droni) ricevuti dal FANT precedente\n"
             << "#   AIUTO        il drone chiede aiuto (banda >= 85% o energia < 15%): candidati,\n"
             << "#                punteggi e drone scelto\n"
-            << "#   SOS          richiesta d'aiuto broadcast per energia bassa\n"
+            << "#   SOS          avviso di batteria scarica (broadcast); con le correzioni il drone parte per la stazione dopo chargeDepartureDelay\n"
             << "#   SOS-RICEVUTO un drone riceve l'SOS di un altro\n"
             << "#   RECLUTATO    il drone accetta una richiesta d'aiuto rivolta a lui\n"
             << "#   RIFIUTA      richiesta rivolta a lui, ma non e' disponibile\n"
             << "#   SPOSTAMENTO  il drone reclutato viene spostato verso chi ha chiesto aiuto\n"
             << "#   ENERGIA      il drone supera una soglia di energia (15%, 10%)\n"
-            << "#   RICARICA     viene chiamata moveUav_charge()\n"
+            << "#   RICARICA     il drone va alla stazione di ricarica (legacy: moveUav_charge())\n"
+            << "#   RICARICA-FINE ricarica completata, il drone torna alla posizione di prima\n"
             << "#   SPENTO / RIACCESO  il gestore dell'energia spegne/riaccende il nodo\n"
             << "#   FINE         riepilogo del drone a fine simulazione\n"
             << "#\n"
             << "# NOTE PER LA LETTURA\n"
-            << "#   - energia in %: e' la percentuale CALCOLATA DAL PROTOCOLLO, cioe'\n"
-            << "#     energia residua / nominalCapacity del modulo Ant2 (puo' superare 100%\n"
-            << "#     se nominalCapacity e' minore della capacita' reale della batteria).\n"
+            << "#   - energia in %: e' la percentuale CALCOLATA DAL PROTOCOLLO. Con\n"
+            << "#     legacyEnergy = true e' energia residua / nominalCapacity del modulo Ant2\n"
+            << "#     troncata all'intero (puo' superare 100%); con legacyEnergy = false e'\n"
+            << "#     energia residua / capacita' reale della batteria, con i decimali.\n"
             << "#   - posizione: e' l'ultima posizione registrata dal protocollo, aggiornata\n"
             << "#     ogni update_throughput_Interval (puo' essere vecchia di al massimo 1 s).\n"
             << "#   - 'disponibile' = allowed_accept_request (puo' essere reclutato);\n"
@@ -222,9 +224,13 @@ void Ant2::scenAvvio()
                           ? storage->par("initialCapacity").doubleValueInUnit("J") : nomJ;
             if (std::isnan(iniJ))
                 iniJ = nomJ;
+            double capProt = legacyEnergy ? nominalCapacity : batteryCapacityJ;
             batt << std::setprecision(3) << "batteria " << nomJ << " J, carica iniziale " << iniJ
-                 << " J; il protocollo usa nominalCapacity = " << nominalCapacity << " J, quindi parte da "
-                 << std::fixed << std::setprecision(0) << (100.0 * iniJ / nominalCapacity) << "%";
+                 << " J; il protocollo usa " << (legacyEnergy ? "nominalCapacity" : "la capacita' della batteria")
+                 << " = " << capProt << " J, quindi parte da "
+                 << std::fixed << std::setprecision(legacyEnergy ? 0 : 2) << (100.0 * iniJ / capProt) << "%"
+                 << (legacyEnergy ? " [legacyEnergy]" : "")
+                 << (!legacyEnergy && chargingGenerator ? " | ricarica: SI" : (!legacyEnergy ? " | ricarica: NO (nessun generatore)" : ""));
         }
         else
             batt << "nessun modulo energyStorage";
@@ -277,7 +283,7 @@ void Ant2::scenFant(double chargeStatus, double residualJ)
             disp++;
 
     std::ostringstream t;
-    t << "n." << scen_fant_round << " inviato | energia " << std::fixed << std::setprecision(0)
+    t << "n." << scen_fant_round << " inviato | energia " << std::fixed << std::setprecision(legacyEnergy ? 0 : 2)
       << chargeStatus << "% (" << std::setprecision(3) << residualJ << " J)"
       << " | pos " << fmtPosProtocollo(node_position)
       << " | BANT ricevuti dal FANT precedente: " << totBant;
@@ -312,7 +318,7 @@ void Ant2::scenAiuto(const std::vector<std::pair<std::string, double>>& candidat
         motivo << "banda " << node_throughput << "/" << max_band << " Mbps (>= 85%)";
     if (node_energy < 15) {
         if (motivo.tellp() > 0) motivo << " e ";
-        motivo << "energia " << std::setprecision(0) << node_energy << "% (< 15%)";
+        motivo << "energia " << std::setprecision(legacyEnergy ? 0 : 2) << node_energy << "% (< 15%)";
     }
     if (motivo.tellp() == 0)
         motivo << "nessuna soglia superata (chiamata di test)";
@@ -361,8 +367,12 @@ void Ant2::scenSos(double chargeStatus)
         return;
     scen_sos++;
     std::ostringstream t;
-    t << "energia " << std::fixed << std::setprecision(0) << chargeStatus
-      << "%: inviata richiesta broadcast con destinatario se stesso; da ora disponibile NO, puo chiedere NO";
+    t << "energia " << std::fixed << std::setprecision(legacyEnergy ? 0 : 2) << chargeStatus
+      << "%: inviata richiesta broadcast con destinatario se stesso dalla posizione "
+      << fmtPos(mobility ? mobility->getCurrentPosition() : node_position)
+      << "; da ora disponibile NO, puo chiedere NO";
+    if (!legacyEnergy && chargingGenerator != nullptr)
+        t << "; partenza per la stazione tra " << std::setprecision(3) << chargeDepartureDelay << " s";
     scen("SOS", t.str());
 }
 
@@ -421,13 +431,17 @@ void Ant2::scenEnergia(double chargeStatus)
         scen_sotto15 = true;
         scen_t15 = simTime();
         std::ostringstream t;
-        t << "energia " << std::fixed << std::setprecision(0) << chargeStatus
-          << "% (<= 15%): da ora handleMessageWhenUp() termina prima di elaborare i messaggi ricevuti "
-             "e il timer dei FANT non viene piu' riprogrammato; restano attivi solo i timer di "
-             "feromone e throughput";
+        if (legacyEnergy)
+            t << "energia " << std::fixed << std::setprecision(0) << chargeStatus
+              << "% (<= 15%): da ora handleMessageWhenUp() termina prima di elaborare i messaggi ricevuti "
+                 "e il timer dei FANT non viene piu' riprogrammato; restano attivi solo i timer di "
+                 "feromone e throughput";
+        else
+            t << "energia " << std::fixed << std::setprecision(2) << chargeStatus
+              << "% (<= 15%): il drone continua a funzionare; alla prossima misura avvisa e va a ricaricarsi";
         scen("ENERGIA", t.str());
     }
-    if (!scen_sotto10 && chargeStatus <= 10.0) {
+    if (legacyEnergy && !scen_sotto10 && chargeStatus <= 10.0) {
         scen_sotto10 = true;
         std::ostringstream t;
         t << "energia " << std::fixed << std::setprecision(0) << chargeStatus
@@ -437,7 +451,7 @@ void Ant2::scenEnergia(double chargeStatus)
     if (scen_sotto15 && !scen_risalita && chargeStatus > 15.0) {
         scen_risalita = true;
         std::ostringstream t;
-        t << "energia risalita a " << std::fixed << std::setprecision(0) << chargeStatus
+        t << "energia risalita a " << std::fixed << std::setprecision(legacyEnergy ? 0 : 2) << chargeStatus
           << "% (> 15%): il drone ha recuperato carica";
         scen("ENERGIA", t.str());
     }
@@ -450,10 +464,33 @@ void Ant2::scenRicarica()
     scen_ricariche++;
     if (scen_ricariche == 1) {
         scen_t_ricarica = simTime();
-        scen("RICARICA", "moveUav_charge(): spostato alla stazione (1000, 1000, 50), disponibile NO. "
-                         "La funzione NON ricarica la batteria e non riporta il drone in servizio "
-                         "(le chiamate successive sono solo contate, vedi FINE)");
+        if (legacyEnergy)
+            scen("RICARICA", "moveUav_charge(): spostato alla stazione (1000, 1000, 50), disponibile NO. "
+                             "La funzione NON ricarica la batteria e non riporta il drone in servizio "
+                             "(le chiamate successive sono solo contate, vedi FINE)");
     }
+    if (!legacyEnergy) {
+        // Con le correzioni sull'energia ogni ricarica e' un evento a se'.
+        std::ostringstream t;
+        t << "energia " << std::fixed << std::setprecision(2) << node_energy
+          << "%: avviso inviato " << std::setprecision(3) << chargeDepartureDelay << " s prima; "
+          << std::setprecision(2) << "spostato da " << fmtPos(mobility ? mobility->getCurrentPosition() : node_position)
+          << " alla stazione " << fmtPos(chargingStation) << ", caricatore acceso ("
+          << (chargingGenerator ? chargingGenerator->getChargingPower().get() * 1000 : 0) << " mW), disponibile NO";
+        scen("RICARICA", t.str());
+    }
+}
+
+void Ant2::scenFineRicarica()
+{
+    if (!scenarioLogEnabled)
+        return;
+    std::ostringstream t;
+    t << "energia " << std::fixed << std::setprecision(2) << node_energy
+      << "%: ricarica completata, caricatore spento, ritorno in " << fmtPos(preChargePosition)
+      << " | disponibile " << siNo(allowed_accept_request)
+      << " | puo chiedere " << siNo(allowed_send_request);
+    scen("RICARICA-FINE", t.str());
 }
 
 void Ant2::scenStop()
@@ -469,7 +506,7 @@ void Ant2::scenStop()
     scen_spegnimenti++;
     std::ostringstream t;
     t << "il nodo viene spento (ultima energia letta dal protocollo: " << std::fixed
-      << std::setprecision(0) << scen_last_charge << "%)";
+      << std::setprecision(legacyEnergy ? 0 : 2) << scen_last_charge << "%)";
     scen("SPENTO", t.str());
 }
 
@@ -479,7 +516,7 @@ void Ant2::scenFine()
         return;
     scen_finito = true;
     std::ostringstream t;
-    t << "energia ultima " << std::fixed << std::setprecision(0) << scen_last_charge << "%";
+    t << "energia ultima " << std::fixed << std::setprecision(legacyEnergy ? 0 : 2) << scen_last_charge << "%";
     if (scen_min_charge < 1e8)
         t << " (min " << scen_min_charge << "%, max " << scen_max_charge << "%)";
     t << " | FANT inviati " << scen_fant_round << " (primo " << fmtT(scen_first_fant)
@@ -487,7 +524,8 @@ void Ant2::scenFine()
       << " | BANT ricevuti " << scen_bant_tot
       << " | reclutato " << scen_reclutato << " volte, rifiutate " << scen_rifiuti
       << " | richieste d'aiuto " << scen_richieste << ", SOS " << scen_sos
-      << " | moveUav_charge chiamata " << scen_ricariche << " volte"
+      << (legacyEnergy ? " | moveUav_charge chiamata " : " | ricariche avviate ") << scen_ricariche << " volte"
+      << (legacyEnergy ? std::string() : ", completate " + std::to_string(ricaricheCompletate))
       << (scen_ricariche ? " (prima " + fmtT(scen_t_ricarica) + ")" : std::string())
       << " | spento " << scen_spegnimenti << " volte"
       << " | a fine run: disponibile " << siNo(allowed_accept_request)
@@ -503,8 +541,10 @@ void Ant2::scenFine()
         note.push_back("dopo il reclutamento non e' MAI tornato disponibile");
     if (scen_sotto15 && !scen_risalita)
         note.push_back("sceso sotto il 15% a " + fmtT(scen_t15) + " e mai risalito (nessuna ricarica)");
-    if (scen_ricariche > 0)
+    if (legacyEnergy && scen_ricariche > 0)
         note.push_back("mandato alla stazione di ricarica, ma non e' rientrato in servizio");
+    if (!legacyEnergy && ricaricheIniziate > ricaricheCompletate)
+        note.push_back("a fine run e' ancora in ricarica alla stazione");
     if (!note.empty()) {
         t << " | NOTE:";
         for (size_t i = 0; i < note.size(); i++)

@@ -1,0 +1,853 @@
+# Topologia della rete ricostruita da ogni GCS alla chiusura di ogni suo giro, unendo il
+# proprio snapshot (cluster della GCS) con gli ultimi snapshot ricevuti dalle altre GCS.
+#   collegamenti: coppie di nodi consecutive nei percorsi tracciati (provate dalle firme)
+#     e coppie di nodi che si dichiarano vicini a vicenda nelle voci;
+#   hop minimi: numero minimo di passaggi tra due droni su quei collegamenti
+#     ('-' = nessun percorso noto). Un BANT non puo' arrivare con meno hop di cosi'.
+
+=== gat1  giro 1  t=9.080 s | droni 5, collegamenti 15 | snapshot usati: gat1 (questo giro)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-gat1 adh[2]-adh[4] adh[2]-gat1 adh[3]-adh[4] adh[3]-gat1 adh[4]-gat1 gat1-gat2 gat1-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]
+  adh[0]             0       1       1       1       1
+  adh[1]             1       0       1       1       2
+  adh[2]             1       1       0       2       1
+  adh[3]             1       1       2       0       1
+  adh[4]             1       2       1       1       0
+=== gat2  giro 1  t=9.080 s | droni 5, collegamenti 14 | snapshot usati: gat2 (questo giro)
+  collegamenti: adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat2 adh[6]-adh[7] adh[6]-adh[8] adh[6]-adh[9] adh[6]-gat2 adh[7]-adh[9] adh[7]-gat2 adh[8]-adh[9] adh[8]-gat2 adh[9]-gat2 gat1-gat2 gat2-satellite[0]
+  hop minimi      adh[5]  adh[6]  adh[7]  adh[8]  adh[9]
+  adh[5]             0       1       1       2       2
+  adh[6]             1       0       1       1       1
+  adh[7]             1       1       0       2       1
+  adh[8]             2       1       2       0       1
+  adh[9]             2       1       1       1       0
+=== gat3  giro 1  t=9.080 s | droni 5, collegamenti 12 | snapshot usati: gat3 (questo giro)
+  collegamenti: adh[10]-adh[11] adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[12] adh[11]-adh[13] adh[11]-gat3 adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-gat3 gat3-satellite[0]
+  hop minimi     adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[10]            0       1       1       2       2
+  adh[11]            1       0       1       1       2
+  adh[12]            1       1       0       2       1
+  adh[13]            2       1       2       0       1
+  adh[14]            2       2       1       1       0
+=== gat3  giro 2  t=13.598 s | droni 5, collegamenti 12 | snapshot usati: gat3 (questo giro)
+  collegamenti: adh[10]-adh[11] adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[12] adh[11]-adh[13] adh[11]-gat3 adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-gat3 gat3-satellite[0]
+  hop minimi     adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[10]            0       1       1       2       2
+  adh[11]            1       0       1       1       2
+  adh[12]            1       1       0       2       1
+  adh[13]            2       1       2       0       1
+  adh[14]            2       2       1       1       0
+=== gat1  giro 2  t=15.958 s | droni 5, collegamenti 15 | snapshot usati: gat1 (questo giro)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-gat1 adh[2]-adh[4] adh[2]-gat1 adh[3]-adh[4] adh[3]-gat1 adh[4]-gat1 gat1-gat2 gat1-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]
+  adh[0]             0       1       1       1       1
+  adh[1]             1       0       1       1       2
+  adh[2]             1       1       0       2       1
+  adh[3]             1       1       2       0       1
+  adh[4]             1       2       1       1       0
+=== gat2  giro 2  t=16.128 s | droni 10, collegamenti 29 | snapshot usati: gat2 (questo giro), gat1 (giro 2, 0.2 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-gat1 adh[3]-adh[4] adh[3]-gat1 adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat2 adh[6]-adh[7] adh[6]-adh[8] adh[6]-adh[9] adh[6]-gat2 adh[7]-adh[9] adh[7]-gat2 adh[8]-adh[9] adh[8]-gat2 adh[9]-gat2 gat1-gat2 gat1-satellite[0] gat2-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9]
+  adh[0]             0       1       1       1       1       2       3       3       3       3
+  adh[1]             1       0       1       1       2       2       3       3       3       3
+  adh[2]             1       1       0       2       1       1       2       2       3       3
+  adh[3]             1       1       2       0       1       3       3       3       3       3
+  adh[4]             1       2       1       1       0       2       3       3       3       3
+  adh[5]             2       2       1       3       2       0       1       1       2       2
+  adh[6]             3       3       2       3       3       1       0       1       1       1
+  adh[7]             3       3       2       3       3       1       1       0       2       1
+  adh[8]             3       3       3       3       3       2       1       2       0       1
+  adh[9]             3       3       3       3       3       2       1       1       1       0
+=== gat2  giro 3  t=20.718 s | droni 10, collegamenti 29 | snapshot usati: gat2 (questo giro), gat1 (giro 2, 4.8 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-gat1 adh[3]-adh[4] adh[3]-gat1 adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat2 adh[6]-adh[7] adh[6]-adh[8] adh[6]-adh[9] adh[6]-gat2 adh[7]-adh[9] adh[7]-gat2 adh[8]-adh[9] adh[8]-gat2 adh[9]-gat2 gat1-gat2 gat1-satellite[0] gat2-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9]
+  adh[0]             0       1       1       1       1       2       3       3       3       3
+  adh[1]             1       0       1       1       2       2       3       3       3       3
+  adh[2]             1       1       0       2       1       1       2       2       3       3
+  adh[3]             1       1       2       0       1       3       3       3       3       3
+  adh[4]             1       2       1       1       0       2       3       3       3       3
+  adh[5]             2       2       1       3       2       0       1       1       2       2
+  adh[6]             3       3       2       3       3       1       0       1       1       1
+  adh[7]             3       3       2       3       3       1       1       0       2       1
+  adh[8]             3       3       3       3       3       2       1       2       0       1
+  adh[9]             3       3       3       3       3       2       1       1       1       0
+=== gat1  giro 3  t=21.464 s | droni 5, collegamenti 16 | snapshot usati: gat1 (questo giro)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-gat1 adh[2]-adh[4] adh[2]-gat1 adh[3]-adh[4] adh[3]-gat1 adh[4]-gat1 adh[7]-gat1 gat1-gat2 gat1-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]
+  adh[0]             0       1       1       1       1
+  adh[1]             1       0       1       1       2
+  adh[2]             1       1       0       2       1
+  adh[3]             1       1       2       0       1
+  adh[4]             1       2       1       1       0
+=== gat3  giro 3  t=21.639 s | droni 10, collegamenti 27 | snapshot usati: gat3 (questo giro), gat1 (giro 2, 5.7 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-gat1 adh[10]-adh[11] adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[12] adh[11]-adh[13] adh[11]-gat3 adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-gat3 adh[1]-adh[2] adh[1]-adh[3] adh[1]-gat1 adh[2]-adh[4] adh[2]-gat1 adh[3]-adh[4] adh[3]-gat1 adh[4]-gat1 gat1-gat2 gat1-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       4       4       4       4       4
+  adh[1]             1       0       1       1       2       4       4       4       4       4
+  adh[2]             1       1       0       2       1       4       4       4       4       4
+  adh[3]             1       1       2       0       1       4       4       4       4       4
+  adh[4]             1       2       1       1       0       4       4       4       4       4
+  adh[10]            4       4       4       4       4       0       1       1       2       2
+  adh[11]            4       4       4       4       4       1       0       1       1       2
+  adh[12]            4       4       4       4       4       1       1       0       2       1
+  adh[13]            4       4       4       4       4       2       1       2       0       1
+  adh[14]            4       4       4       4       4       2       2       1       1       0
+=== gat2  giro 4  t=26.124 s | droni 10, collegamenti 29 | snapshot usati: gat2 (questo giro), gat1 (giro 2, 10.2 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-gat1 adh[3]-adh[4] adh[3]-gat1 adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat2 adh[6]-adh[7] adh[6]-adh[8] adh[6]-adh[9] adh[6]-gat2 adh[7]-adh[9] adh[7]-gat2 adh[8]-adh[9] adh[8]-gat2 adh[9]-gat2 gat1-gat2 gat1-satellite[0] gat2-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9]
+  adh[0]             0       1       1       1       1       2       3       3       3       3
+  adh[1]             1       0       1       1       2       2       3       3       3       3
+  adh[2]             1       1       0       2       1       1       2       2       3       3
+  adh[3]             1       1       2       0       1       3       3       3       3       3
+  adh[4]             1       2       1       1       0       2       3       3       3       3
+  adh[5]             2       2       1       3       2       0       1       1       2       2
+  adh[6]             3       3       2       3       3       1       0       1       1       1
+  adh[7]             3       3       2       3       3       1       1       0       2       1
+  adh[8]             3       3       3       3       3       2       1       2       0       1
+  adh[9]             3       3       3       3       3       2       1       1       1       0
+=== gat3  giro 4  t=27.716 s | droni 10, collegamenti 27 | snapshot usati: gat3 (questo giro), gat1 (giro 2, 11.8 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-gat1 adh[10]-adh[11] adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[12] adh[11]-adh[13] adh[11]-gat3 adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-gat3 adh[1]-adh[2] adh[1]-adh[3] adh[1]-gat1 adh[2]-adh[4] adh[2]-gat1 adh[3]-adh[4] adh[3]-gat1 adh[4]-gat1 gat1-gat2 gat1-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       4       4       4       4       4
+  adh[1]             1       0       1       1       2       4       4       4       4       4
+  adh[2]             1       1       0       2       1       4       4       4       4       4
+  adh[3]             1       1       2       0       1       4       4       4       4       4
+  adh[4]             1       2       1       1       0       4       4       4       4       4
+  adh[10]            4       4       4       4       4       0       1       1       2       2
+  adh[11]            4       4       4       4       4       1       0       1       1       2
+  adh[12]            4       4       4       4       4       1       1       0       2       1
+  adh[13]            4       4       4       4       4       2       1       2       0       1
+  adh[14]            4       4       4       4       4       2       2       1       1       0
+=== gat1  giro 4  t=28.889 s | droni 6, collegamenti 22 | snapshot usati: gat1 (questo giro)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[7] adh[0]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[7] adh[4]-gat1 adh[7]-gat1 adh[8]-gat1 gat1-gat2 gat1-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[7]
+  adh[0]             0       1       1       1       1       1
+  adh[1]             1       0       1       1       2       1
+  adh[2]             1       1       0       2       1       1
+  adh[3]             1       1       2       0       1       1
+  adh[4]             1       2       1       1       0       1
+  adh[7]             1       1       1       1       1       0
+=== gat2  giro 5  t=30.898 s | droni 10, collegamenti 32 | snapshot usati: gat2 (questo giro), gat1 (giro 4, 2.0 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[7] adh[0]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-gat2 adh[6]-adh[8] adh[6]-adh[9] adh[6]-gat2 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[8]-gat2 adh[9]-gat2 gat1-gat2 gat1-satellite[0] gat2-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9]
+  adh[0]             0       1       1       1       1       2       3       1       2       3
+  adh[1]             1       0       1       1       2       2       3       1       2       3
+  adh[2]             1       1       0       2       1       1       2       1       2       3
+  adh[3]             1       1       2       0       1       3       3       1       2       3
+  adh[4]             1       2       1       1       0       2       3       1       2       3
+  adh[5]             2       2       1       3       2       0       1       2       2       2
+  adh[6]             3       3       2       3       3       1       0       3       1       1
+  adh[7]             1       1       1       1       1       2       3       0       2       3
+  adh[8]             2       2       2       2       2       2       1       2       0       1
+  adh[9]             3       3       3       3       3       2       1       3       1       0
+=== gat1  giro 5  t=34.371 s | droni 8, collegamenti 34 | snapshot usati: gat1 (questo giro)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-gat1 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-adh[8] adh[4]-gat1 adh[5]-adh[7] adh[5]-adh[8] adh[5]-gat1 adh[7]-adh[8] adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7]  adh[8]
+  adh[0]             0       1       1       1       1       1       1       1
+  adh[1]             1       0       1       1       2       2       1       2
+  adh[2]             1       1       0       2       1       1       1       2
+  adh[3]             1       1       2       0       1       2       1       1
+  adh[4]             1       2       1       1       0       1       1       1
+  adh[5]             1       2       1       2       1       0       1       1
+  adh[7]             1       1       1       1       1       1       0       1
+  adh[8]             1       2       2       1       1       1       1       0
+=== gat3  giro 5  t=35.042 s | droni 11, collegamenti 34 | snapshot usati: gat3 (questo giro), gat1 (giro 4, 6.2 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[11] adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[12] adh[11]-adh[13] adh[11]-gat3 adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-gat3 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[7] adh[4]-gat1 adh[7]-gat1 adh[8]-gat1 gat1-gat2 gat1-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       4       4       4       4       4
+  adh[1]             1       0       1       1       2       1       4       4       4       4       4
+  adh[2]             1       1       0       2       1       1       4       4       4       4       4
+  adh[3]             1       1       2       0       1       1       4       4       4       4       4
+  adh[4]             1       2       1       1       0       1       4       4       4       4       4
+  adh[7]             1       1       1       1       1       0       4       4       4       4       4
+  adh[10]            4       4       4       4       4       4       0       1       1       2       2
+  adh[11]            4       4       4       4       4       4       1       0       1       1       2
+  adh[12]            4       4       4       4       4       4       1       1       0       2       1
+  adh[13]            4       4       4       4       4       4       2       1       2       0       1
+  adh[14]            4       4       4       4       4       4       2       2       1       1       0
+=== gat2  giro 6  t=37.672 s | droni 10, collegamenti 30 | snapshot usati: gat2 (questo giro), gat1 (giro 4, 8.8 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[7] adh[0]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-gat2 adh[6]-adh[9] adh[6]-gat2 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat2 gat1-gat2 gat1-satellite[0] gat2-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9]
+  adh[0]             0       1       1       1       1       2       3       1       2       3
+  adh[1]             1       0       1       1       2       2       3       1       2       3
+  adh[2]             1       1       0       2       1       1       2       1       2       3
+  adh[3]             1       1       2       0       1       3       3       1       2       3
+  adh[4]             1       2       1       1       0       2       3       1       2       3
+  adh[5]             2       2       1       3       2       0       1       2       3       2
+  adh[6]             3       3       2       3       3       1       0       3       2       1
+  adh[7]             1       1       1       1       1       2       3       0       2       3
+  adh[8]             2       2       2       2       2       3       2       2       0       1
+  adh[9]             3       3       3       3       3       2       1       3       1       0
+=== gat3  giro 6  t=40.582 s | droni 11, collegamenti 30 | snapshot usati: gat3 (questo giro), gat1 (giro 4, 11.7 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-gat3 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[7] adh[4]-gat1 adh[7]-gat1 adh[8]-gat1 gat1-gat2 gat1-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       4       -       4       4       4
+  adh[1]             1       0       1       1       2       1       4       -       4       4       4
+  adh[2]             1       1       0       2       1       1       4       -       4       4       4
+  adh[3]             1       1       2       0       1       1       4       -       4       4       4
+  adh[4]             1       2       1       1       0       1       4       -       4       4       4
+  adh[7]             1       1       1       1       1       0       4       -       4       4       4
+  adh[10]            4       4       4       4       4       4       0       -       1       2       2
+  adh[11]            -       -       -       -       -       -       -       0       -       -       -
+  adh[12]            4       4       4       4       4       4       1       -       0       2       1
+  adh[13]            4       4       4       4       4       4       2       -       2       0       1
+  adh[14]            4       4       4       4       4       4       2       -       1       1       0
+=== gat1  giro 6  t=42.074 s | droni 13, collegamenti 46 | snapshot usati: gat1 (questo giro), gat3 (giro 6, 1.5 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-gat1 adh[14]-gat3 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7]  adh[8]  adh[9] adh[10] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       1       1       4       3       3       2
+  adh[1]             1       0       1       1       2       2       1       2       2       4       3       3       2
+  adh[2]             1       1       0       2       1       1       1       2       2       4       3       3       2
+  adh[3]             1       1       2       0       1       2       1       1       2       4       3       3       2
+  adh[4]             1       2       1       1       0       1       1       1       1       4       3       3       2
+  adh[5]             1       2       1       2       1       0       1       1       1       4       3       3       2
+  adh[7]             1       1       1       1       1       1       0       1       2       4       3       3       2
+  adh[8]             1       2       2       1       1       1       1       0       1       4       3       3       2
+  adh[9]             1       2       2       2       1       1       2       1       0       4       3       3       2
+  adh[10]            4       4       4       4       4       4       4       4       4       0       1       2       2
+  adh[12]            3       3       3       3       3       3       3       3       3       1       0       2       1
+  adh[13]            3       3       3       3       3       3       3       3       3       2       2       0       1
+  adh[14]            2       2       2       2       2       2       2       2       2       2       1       1       0
+=== gat2  giro 7  t=44.257 s | droni 14, collegamenti 35 | snapshot usati: gat2 (questo giro), gat1 (giro 4, 15.4 s fa), gat3 (giro 6, 3.7 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-gat3 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[6]-gat2 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       2       3       1       2       3       4       4       4       4
+  adh[1]             1       0       1       1       2       2       3       1       2       3       4       4       4       4
+  adh[2]             1       1       0       2       1       1       2       1       2       3       4       4       4       4
+  adh[3]             1       1       2       0       1       3       3       1       2       3       4       4       4       4
+  adh[4]             1       2       1       1       0       2       3       1       2       3       4       4       4       4
+  adh[5]             2       2       1       3       2       0       1       2       3       4       5       5       5       5
+  adh[6]             3       3       2       3       3       1       0       3       3       4       4       4       4       4
+  adh[7]             1       1       1       1       1       2       3       0       2       3       4       4       4       4
+  adh[8]             2       2       2       2       2       3       3       2       0       1       4       4       4       4
+  adh[9]             3       3       3       3       3       4       4       3       1       0       5       5       5       5
+  adh[10]            4       4       4       4       4       5       4       4       4       5       0       1       2       2
+  adh[12]            4       4       4       4       4       5       4       4       4       5       1       0       2       1
+  adh[13]            4       4       4       4       4       5       4       4       4       5       2       2       0       1
+  adh[14]            4       4       4       4       4       5       4       4       4       5       2       1       1       0
+=== gat3  giro 7  t=45.612 s | droni 11, collegamenti 27 | snapshot usati: gat3 (questo giro), gat1 (giro 4, 16.7 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[12]-gat3 adh[13]-gat3 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[7] adh[4]-gat1 adh[7]-gat1 adh[8]-gat1 gat1-gat2 gat1-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       4       -       4       4       -
+  adh[1]             1       0       1       1       2       1       4       -       4       4       -
+  adh[2]             1       1       0       2       1       1       4       -       4       4       -
+  adh[3]             1       1       2       0       1       1       4       -       4       4       -
+  adh[4]             1       2       1       1       0       1       4       -       4       4       -
+  adh[7]             1       1       1       1       1       0       4       -       4       4       -
+  adh[10]            4       4       4       4       4       4       0       -       1       2       -
+  adh[11]            -       -       -       -       -       -       -       0       -       -       -
+  adh[12]            4       4       4       4       4       4       1       -       0       2       -
+  adh[13]            4       4       4       4       4       4       2       -       2       0       -
+  adh[14]            -       -       -       -       -       -       -       -       -       -       0
+=== gat1  giro 7  t=47.920 s | droni 14, collegamenti 58 | snapshot usati: gat1 (questo giro), gat3 (giro 6, 7.3 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[8] adh[11]-adh[9] adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[14]-gat3 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       1       1       3       2       2       2       1
+  adh[1]             1       0       1       1       2       2       1       2       2       3       3       2       2       1
+  adh[2]             1       1       0       2       1       1       1       2       2       3       2       2       2       1
+  adh[3]             1       1       2       0       1       2       1       1       2       3       2       2       2       1
+  adh[4]             1       2       1       1       0       1       1       1       1       3       1       2       2       1
+  adh[5]             1       2       1       2       1       0       1       1       1       3       1       2       2       1
+  adh[7]             1       1       1       1       1       1       0       1       2       3       2       2       2       1
+  adh[8]             1       2       2       1       1       1       1       0       1       3       1       2       2       1
+  adh[9]             1       2       2       2       1       1       2       1       0       4       1       3       3       2
+  adh[10]            3       3       3       3       3       3       3       3       4       0       4       1       2       2
+  adh[11]            2       3       2       2       1       1       2       1       1       4       0       3       3       2
+  adh[12]            2       2       2       2       2       2       2       2       3       1       3       0       2       1
+  adh[13]            2       2       2       2       2       2       2       2       3       2       3       2       0       1
+  adh[14]            1       1       1       1       1       1       1       1       2       2       2       1       1       0
+=== gat2  giro 8  t=50.893 s | droni 14, collegamenti 48 | snapshot usati: gat2 (questo giro), gat1 (giro 7, 3.0 s fa), gat3 (giro 6, 10.3 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-gat1 adh[14]-gat3 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[6]-gat2 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       3       2       2       1
+  adh[1]             1       0       1       1       2       2       3       1       2       2       3       2       2       1
+  adh[2]             1       1       0       2       1       1       2       1       2       2       3       2       2       1
+  adh[3]             1       1       2       0       1       2       3       1       2       2       3       2       2       1
+  adh[4]             1       2       1       1       0       1       2       1       2       2       3       2       2       1
+  adh[5]             1       2       1       2       1       0       1       1       2       2       3       2       2       1
+  adh[6]             2       3       2       3       2       1       0       2       3       3       4       3       3       2
+  adh[7]             1       1       1       1       1       1       2       0       2       2       3       2       2       1
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       3       2
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       3       2
+  adh[10]            3       3       3       3       3       3       4       3       4       4       0       1       2       2
+  adh[12]            2       2       2       2       2       2       3       2       3       3       1       0       2       1
+  adh[13]            2       2       2       2       2       2       3       2       3       3       2       2       0       1
+  adh[14]            1       1       1       1       1       1       2       1       2       2       2       1       1       0
+=== gat3  giro 8  t=52.970 s | droni 12, collegamenti 43 | snapshot usati: gat3 (questo giro), gat1 (giro 7, 5.0 s fa), gat2 (giro 8, 2.1 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[12]-gat3 adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[7] adh[5]-gat1 adh[6]-gat2 adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       4       -       4       4       1
+  adh[1]             1       0       1       1       2       2       1       4       -       4       4       1
+  adh[2]             1       1       0       2       1       1       1       4       -       4       4       1
+  adh[3]             1       1       2       0       1       2       1       4       -       4       4       1
+  adh[4]             1       2       1       1       0       1       1       4       -       4       4       1
+  adh[5]             1       2       1       2       1       0       1       4       -       4       4       1
+  adh[7]             1       1       1       1       1       1       0       4       -       4       4       1
+  adh[10]            4       4       4       4       4       4       4       0       -       1       2       4
+  adh[11]            -       -       -       -       -       -       -       -       0       -       -       -
+  adh[12]            4       4       4       4       4       4       4       1       -       0       2       4
+  adh[13]            4       4       4       4       4       4       4       2       -       2       0       4
+  adh[14]            1       1       1       1       1       1       1       4       -       4       4       0
+=== gat1  giro 8  t=55.458 s | droni 14, collegamenti 60 | snapshot usati: gat1 (questo giro), gat2 (giro 8, 4.6 s fa), gat3 (giro 6, 14.9 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[8] adh[11]-adh[9] adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[14]-gat3 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[6]-gat2 adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       1       1       3       2       2       2       1
+  adh[1]             1       0       1       1       2       2       1       2       2       3       3       2       2       1
+  adh[2]             1       1       0       2       1       1       1       2       2       3       2       2       2       1
+  adh[3]             1       1       2       0       1       2       1       1       2       3       2       2       2       1
+  adh[4]             1       2       1       1       0       1       1       1       1       3       1       2       2       1
+  adh[5]             1       2       1       2       1       0       1       1       1       3       1       2       2       1
+  adh[7]             1       1       1       1       1       1       0       1       2       3       2       2       2       1
+  adh[8]             1       2       2       1       1       1       1       0       1       3       1       2       2       1
+  adh[9]             1       2       2       2       1       1       2       1       0       4       1       3       3       2
+  adh[10]            3       3       3       3       3       3       3       3       4       0       4       1       2       2
+  adh[11]            2       3       2       2       1       1       2       1       1       4       0       3       3       2
+  adh[12]            2       2       2       2       2       2       2       2       3       1       3       0       2       1
+  adh[13]            2       2       2       2       2       2       2       2       3       2       3       2       0       1
+  adh[14]            1       1       1       1       1       1       1       1       2       2       2       1       1       0
+=== gat2  giro 9  t=57.004 s | droni 15, collegamenti 42 | snapshot usati: gat2 (questo giro), gat1 (giro 8, 1.5 s fa), gat3 (giro 6, 16.4 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-adh[14] adh[12]-gat3 adh[13]-adh[14] adh[13]-gat3 adh[14]-gat1 adh[14]-gat3 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       3       3       2
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       3       3       2
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       3       3       2
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       3       3       2
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       3       3       2
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       3       3       2
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       4       4       3
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       3       3       2
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       3       3       2
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       3       3       2
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       4       4       3
+  adh[12]            3       3       3       3       3       3       4       3       3       3       1       4       0       2       1
+  adh[13]            3       3       3       3       3       3       4       3       3       3       2       4       2       0       1
+  adh[14]            2       2       2       2       2       2       3       2       2       2       2       3       1       1       0
+=== gat3  giro 9  t=60.154 s | droni 12, collegamenti 38 | snapshot usati: gat3 (questo giro), gat1 (giro 8, 4.7 s fa), gat2 (giro 8, 9.3 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[7] adh[5]-gat1 adh[6]-gat2 adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       4       2       4       4       2
+  adh[1]             1       0       1       1       2       2       1       4       3       4       4       2
+  adh[2]             1       1       0       2       1       1       1       4       2       4       4       2
+  adh[3]             1       1       2       0       1       2       1       4       2       4       4       2
+  adh[4]             1       2       1       1       0       1       1       4       1       4       4       2
+  adh[5]             1       2       1       2       1       0       1       4       1       4       4       2
+  adh[7]             1       1       1       1       1       1       0       4       2       4       4       2
+  adh[10]            4       4       4       4       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       2       5       0       5       5       3
+  adh[12]            4       4       4       4       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       4       2       5       2       0       4
+  adh[14]            2       2       2       2       2       2       2       4       3       4       4       0
+=== gat2  giro 10  t=62.001 s | droni 14, collegamenti 39 | snapshot usati: gat2 (questo giro), gat1 (giro 8, 6.5 s fa), gat3 (giro 9, 1.8 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5       5
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0
+=== gat1  giro 9  t=63.272 s | droni 14, collegamenti 56 | snapshot usati: gat1 (questo giro), gat2 (giro 10, 1.3 s fa), gat3 (giro 9, 3.1 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[8] adh[11]-adh[9] adh[12]-gat3 adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       1       1       4       2       4       4       1
+  adh[1]             1       0       1       1       2       2       1       2       2       4       3       4       4       1
+  adh[2]             1       1       0       2       1       1       1       2       2       4       2       4       4       1
+  adh[3]             1       1       2       0       1       2       1       1       2       4       2       4       4       1
+  adh[4]             1       2       1       1       0       1       1       1       1       4       1       4       4       1
+  adh[5]             1       2       1       2       1       0       1       1       1       4       1       4       4       1
+  adh[7]             1       1       1       1       1       1       0       1       2       4       2       4       4       1
+  adh[8]             1       2       2       1       1       1       1       0       1       4       1       4       4       1
+  adh[9]             1       2       2       2       1       1       2       1       0       4       1       4       4       2
+  adh[10]            4       4       4       4       4       4       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       2       1       1       5       0       5       5       2
+  adh[12]            4       4       4       4       4       4       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       4       4       4       2       5       2       0       4
+  adh[14]            1       1       1       1       1       1       1       1       2       4       2       4       4       0
+=== gat3  giro 10  t=65.944 s | droni 12, collegamenti 37 | snapshot usati: gat3 (questo giro), gat1 (giro 9, 2.7 s fa), gat2 (giro 10, 3.9 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       4       2       4       4       2
+  adh[1]             1       0       1       1       2       2       1       4       3       4       4       2
+  adh[2]             1       1       0       2       1       1       1       4       2       4       4       2
+  adh[3]             1       1       2       0       1       2       1       4       2       4       4       2
+  adh[4]             1       2       1       1       0       1       1       4       1       4       4       2
+  adh[5]             1       2       1       2       1       0       1       4       1       4       4       2
+  adh[7]             1       1       1       1       1       1       0       4       2       4       4       2
+  adh[10]            4       4       4       4       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       2       5       0       5       5       3
+  adh[12]            4       4       4       4       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       4       2       5       2       0       4
+  adh[14]            2       2       2       2       2       2       2       4       3       4       4       0
+=== gat2  giro 11  t=68.568 s | droni 14, collegamenti 39 | snapshot usati: gat2 (questo giro), gat1 (giro 9, 5.3 s fa), gat3 (giro 10, 2.6 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5       5
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0
+=== gat1  giro 10  t=68.706 s | droni 15, collegamenti 61 | snapshot usati: gat1 (questo giro), gat2 (giro 11, 0.1 s fa), gat3 (giro 10, 2.8 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[6] adh[11]-adh[8] adh[11]-adh[9] adh[12]-gat3 adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[6] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[6]-adh[8] adh[6]-adh[9] adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       2       1       1       1       4       2       4       4       1
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4       1
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4       1
+  adh[3]             1       1       2       0       1       2       2       1       1       2       4       2       4       4       1
+  adh[4]             1       2       1       1       0       1       1       1       1       1       4       1       4       4       1
+  adh[5]             1       2       1       2       1       0       1       1       1       1       4       1       4       4       1
+  adh[6]             2       3       2       2       1       1       0       2       1       1       5       1       5       5       2
+  adh[7]             1       1       1       1       1       1       2       0       1       2       4       2       4       4       1
+  adh[8]             1       2       2       1       1       1       1       1       0       1       4       1       4       4       1
+  adh[9]             1       2       2       2       1       1       1       2       1       0       4       1       4       4       2
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       1       2       1       1       5       0       5       5       2
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0       4
+  adh[14]            1       1       1       1       1       1       2       1       1       2       4       2       4       4       0
+=== gat2  giro 12  t=71.604 s | droni 14, collegamenti 39 | snapshot usati: gat2 (questo giro), gat1 (giro 9, 8.3 s fa), gat3 (giro 10, 5.7 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5       5
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0
+=== gat3  giro 11  t=73.313 s | droni 12, collegamenti 37 | snapshot usati: gat3 (questo giro), gat1 (giro 9, 10.0 s fa), gat2 (giro 12, 1.7 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       4       2       4       4       2
+  adh[1]             1       0       1       1       2       2       1       4       3       4       4       2
+  adh[2]             1       1       0       2       1       1       1       4       2       4       4       2
+  adh[3]             1       1       2       0       1       2       1       4       2       4       4       2
+  adh[4]             1       2       1       1       0       1       1       4       1       4       4       2
+  adh[5]             1       2       1       2       1       0       1       4       1       4       4       2
+  adh[7]             1       1       1       1       1       1       0       4       2       4       4       2
+  adh[10]            4       4       4       4       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       2       5       0       5       5       3
+  adh[12]            4       4       4       4       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       4       2       5       2       0       4
+  adh[14]            2       2       2       2       2       2       2       4       3       4       4       0
+=== gat2  giro 13  t=75.682 s | droni 14, collegamenti 39 | snapshot usati: gat2 (questo giro), gat1 (giro 9, 12.4 s fa), gat3 (giro 10, 9.7 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5       5
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0
+=== gat1  giro 11  t=76.228 s | droni 15, collegamenti 61 | snapshot usati: gat1 (questo giro), gat2 (giro 13, 0.5 s fa), gat3 (giro 10, 10.3 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[6] adh[11]-adh[8] adh[11]-adh[9] adh[12]-gat3 adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[6] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[6]-adh[8] adh[6]-adh[9] adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       2       1       1       1       4       2       4       4       1
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4       1
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4       1
+  adh[3]             1       1       2       0       1       2       2       1       1       2       4       2       4       4       1
+  adh[4]             1       2       1       1       0       1       1       1       1       1       4       1       4       4       1
+  adh[5]             1       2       1       2       1       0       1       1       1       1       4       1       4       4       1
+  adh[6]             2       3       2       2       1       1       0       2       1       1       5       1       5       5       2
+  adh[7]             1       1       1       1       1       1       2       0       1       2       4       2       4       4       1
+  adh[8]             1       2       2       1       1       1       1       1       0       1       4       1       4       4       1
+  adh[9]             1       2       2       2       1       1       1       2       1       0       4       1       4       4       2
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       1       2       1       1       5       0       5       5       2
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0       4
+  adh[14]            1       1       1       1       1       1       2       1       1       2       4       2       4       4       0
+=== gat3  giro 12  t=78.801 s | droni 12, collegamenti 37 | snapshot usati: gat3 (questo giro), gat1 (giro 9, 15.5 s fa), gat2 (giro 13, 3.1 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       4       2       4       4       2
+  adh[1]             1       0       1       1       2       2       1       4       3       4       4       2
+  adh[2]             1       1       0       2       1       1       1       4       2       4       4       2
+  adh[3]             1       1       2       0       1       2       1       4       2       4       4       2
+  adh[4]             1       2       1       1       0       1       1       4       1       4       4       2
+  adh[5]             1       2       1       2       1       0       1       4       1       4       4       2
+  adh[7]             1       1       1       1       1       1       0       4       2       4       4       2
+  adh[10]            4       4       4       4       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       2       5       0       5       5       3
+  adh[12]            4       4       4       4       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       4       2       5       2       0       4
+  adh[14]            2       2       2       2       2       2       2       4       3       4       4       0
+=== gat2  giro 14  t=82.060 s | droni 14, collegamenti 39 | snapshot usati: gat2 (questo giro), gat1 (giro 9, 18.8 s fa), gat3 (giro 10, 16.1 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5       5
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0
+=== gat1  giro 12  t=82.538 s | droni 15, collegamenti 61 | snapshot usati: gat1 (questo giro), gat2 (giro 14, 0.5 s fa), gat3 (giro 10, 16.6 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[6] adh[11]-adh[8] adh[11]-adh[9] adh[12]-gat3 adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[6] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[6]-adh[8] adh[6]-adh[9] adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       2       1       1       1       4       2       4       4       1
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4       1
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4       1
+  adh[3]             1       1       2       0       1       2       2       1       1       2       4       2       4       4       1
+  adh[4]             1       2       1       1       0       1       1       1       1       1       4       1       4       4       1
+  adh[5]             1       2       1       2       1       0       1       1       1       1       4       1       4       4       1
+  adh[6]             2       3       2       2       1       1       0       2       1       1       5       1       5       5       2
+  adh[7]             1       1       1       1       1       1       2       0       1       2       4       2       4       4       1
+  adh[8]             1       2       2       1       1       1       1       1       0       1       4       1       4       4       1
+  adh[9]             1       2       2       2       1       1       1       2       1       0       4       1       4       4       2
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       1       2       1       1       5       0       5       5       2
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0       4
+  adh[14]            1       1       1       1       1       1       2       1       1       2       4       2       4       4       0
+=== gat3  giro 13  t=84.658 s | droni 12, collegamenti 37 | snapshot usati: gat3 (questo giro), gat1 (giro 9, 21.4 s fa), gat2 (giro 14, 2.6 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       4       2       4       4       2
+  adh[1]             1       0       1       1       2       2       1       4       3       4       4       2
+  adh[2]             1       1       0       2       1       1       1       4       2       4       4       2
+  adh[3]             1       1       2       0       1       2       1       4       2       4       4       2
+  adh[4]             1       2       1       1       0       1       1       4       1       4       4       2
+  adh[5]             1       2       1       2       1       0       1       4       1       4       4       2
+  adh[7]             1       1       1       1       1       1       0       4       2       4       4       2
+  adh[10]            4       4       4       4       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       2       5       0       5       5       3
+  adh[12]            4       4       4       4       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       4       2       5       2       0       4
+  adh[14]            2       2       2       2       2       2       2       4       3       4       4       0
+=== gat2  giro 15  t=86.294 s | droni 14, collegamenti 39 | snapshot usati: gat2 (questo giro), gat1 (giro 9, 23.0 s fa), gat3 (giro 13, 1.6 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5       5
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0
+=== gat2  giro 16  t=89.571 s | droni 14, collegamenti 39 | snapshot usati: gat2 (questo giro), gat1 (giro 9, 26.3 s fa), gat3 (giro 13, 4.9 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5       5
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0
+=== gat1  giro 13  t=90.157 s | droni 15, collegamenti 61 | snapshot usati: gat1 (questo giro), gat2 (giro 16, 0.6 s fa), gat3 (giro 13, 5.5 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[6] adh[11]-adh[8] adh[11]-adh[9] adh[12]-gat3 adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[6] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[6]-adh[8] adh[6]-adh[9] adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       2       1       1       1       4       2       4       4       1
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4       1
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4       1
+  adh[3]             1       1       2       0       1       2       2       1       1       2       4       2       4       4       1
+  adh[4]             1       2       1       1       0       1       1       1       1       1       4       1       4       4       1
+  adh[5]             1       2       1       2       1       0       1       1       1       1       4       1       4       4       1
+  adh[6]             2       3       2       2       1       1       0       2       1       1       5       1       5       5       2
+  adh[7]             1       1       1       1       1       1       2       0       1       2       4       2       4       4       1
+  adh[8]             1       2       2       1       1       1       1       1       0       1       4       1       4       4       1
+  adh[9]             1       2       2       2       1       1       1       2       1       0       4       1       4       4       2
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       1       2       1       1       5       0       5       5       2
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0       4
+  adh[14]            1       1       1       1       1       1       2       1       1       2       4       2       4       4       0
+=== gat3  giro 14  t=92.535 s | droni 12, collegamenti 35 | snapshot usati: gat3 (questo giro), gat1 (giro 9, 29.3 s fa), gat2 (giro 16, 3.0 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       4       2       -       4       2
+  adh[1]             1       0       1       1       2       2       1       4       3       -       4       2
+  adh[2]             1       1       0       2       1       1       1       4       2       -       4       2
+  adh[3]             1       1       2       0       1       2       1       4       2       -       4       2
+  adh[4]             1       2       1       1       0       1       1       4       1       -       4       2
+  adh[5]             1       2       1       2       1       0       1       4       1       -       4       2
+  adh[7]             1       1       1       1       1       1       0       4       2       -       4       2
+  adh[10]            4       4       4       4       4       4       4       0       5       -       2       4
+  adh[11]            2       3       2       2       1       1       2       5       0       -       5       3
+  adh[12]            -       -       -       -       -       -       -       -       -       0       -       -
+  adh[13]            4       4       4       4       4       4       4       2       5       -       0       4
+  adh[14]            2       2       2       2       2       2       2       4       3       -       4       0
+=== gat2  giro 17  t=95.983 s | droni 14, collegamenti 39 | snapshot usati: gat2 (questo giro), gat1 (giro 9, 32.7 s fa), gat3 (giro 13, 11.3 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5       5
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0
+=== gat3  giro 15  t=97.207 s | droni 12, collegamenti 35 | snapshot usati: gat3 (questo giro), gat1 (giro 9, 33.9 s fa), gat2 (giro 17, 1.2 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       4       2       -       4       2
+  adh[1]             1       0       1       1       2       2       1       4       3       -       4       2
+  adh[2]             1       1       0       2       1       1       1       4       2       -       4       2
+  adh[3]             1       1       2       0       1       2       1       4       2       -       4       2
+  adh[4]             1       2       1       1       0       1       1       4       1       -       4       2
+  adh[5]             1       2       1       2       1       0       1       4       1       -       4       2
+  adh[7]             1       1       1       1       1       1       0       4       2       -       4       2
+  adh[10]            4       4       4       4       4       4       4       0       5       -       2       4
+  adh[11]            2       3       2       2       1       1       2       5       0       -       5       3
+  adh[12]            -       -       -       -       -       -       -       -       -       0       -       -
+  adh[13]            4       4       4       4       4       4       4       2       5       -       0       4
+  adh[14]            2       2       2       2       2       2       2       4       3       -       4       0
+=== gat1  giro 14  t=98.214 s | droni 15, collegamenti 61 | snapshot usati: gat1 (questo giro), gat2 (giro 17, 2.2 s fa), gat3 (giro 13, 13.6 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[6] adh[11]-adh[8] adh[11]-adh[9] adh[12]-gat3 adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[6] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[6]-adh[8] adh[6]-adh[9] adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       2       1       1       1       4       2       4       4       1
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4       1
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4       1
+  adh[3]             1       1       2       0       1       2       2       1       1       2       4       2       4       4       1
+  adh[4]             1       2       1       1       0       1       1       1       1       1       4       1       4       4       1
+  adh[5]             1       2       1       2       1       0       1       1       1       1       4       1       4       4       1
+  adh[6]             2       3       2       2       1       1       0       2       1       1       5       1       5       5       2
+  adh[7]             1       1       1       1       1       1       2       0       1       2       4       2       4       4       1
+  adh[8]             1       2       2       1       1       1       1       1       0       1       4       1       4       4       1
+  adh[9]             1       2       2       2       1       1       1       2       1       0       4       1       4       4       2
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       1       2       1       1       5       0       5       5       2
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0       4
+  adh[14]            1       1       1       1       1       1       2       1       1       2       4       2       4       4       0
+=== gat2  giro 18  t=99.404 s | droni 14, collegamenti 39 | snapshot usati: gat2 (questo giro), gat1 (giro 9, 36.1 s fa), gat3 (giro 13, 14.7 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5       5
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0
+=== gat1  giro 15  t=102.591 s | droni 15, collegamenti 61 | snapshot usati: gat1 (questo giro), gat2 (giro 17, 6.6 s fa), gat3 (giro 13, 17.9 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[6] adh[11]-adh[8] adh[11]-adh[9] adh[12]-gat3 adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[6] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[6]-adh[8] adh[6]-adh[9] adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       2       1       1       1       4       2       4       4       1
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4       1
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4       1
+  adh[3]             1       1       2       0       1       2       2       1       1       2       4       2       4       4       1
+  adh[4]             1       2       1       1       0       1       1       1       1       1       4       1       4       4       1
+  adh[5]             1       2       1       2       1       0       1       1       1       1       4       1       4       4       1
+  adh[6]             2       3       2       2       1       1       0       2       1       1       5       1       5       5       2
+  adh[7]             1       1       1       1       1       1       2       0       1       2       4       2       4       4       1
+  adh[8]             1       2       2       1       1       1       1       1       0       1       4       1       4       4       1
+  adh[9]             1       2       2       2       1       1       1       2       1       0       4       1       4       4       2
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2       4
+  adh[11]            2       3       2       2       1       1       1       2       1       1       5       0       5       5       2
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2       4
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0       4
+  adh[14]            1       1       1       1       1       1       2       1       1       2       4       2       4       4       0
+=== gat2  giro 19  t=104.274 s | droni 14, collegamenti 39 | snapshot usati: gat2 (questo giro), gat1 (giro 9, 41.0 s fa), gat3 (giro 13, 19.6 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-adh[12] adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[12]-gat3 adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[12] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       1       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5       5
+  adh[12]            4       4       4       4       4       4       5       4       4       4       1       5       0       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       2       0
+=== gat3  giro 16  t=105.177 s | droni 12, collegamenti 35 | snapshot usati: gat3 (questo giro), gat1 (giro 9, 41.9 s fa), gat2 (giro 19, 0.9 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       4       2       -       4       2
+  adh[1]             1       0       1       1       2       2       1       4       3       -       4       2
+  adh[2]             1       1       0       2       1       1       1       4       2       -       4       2
+  adh[3]             1       1       2       0       1       2       1       4       2       -       4       2
+  adh[4]             1       2       1       1       0       1       1       4       1       -       4       2
+  adh[5]             1       2       1       2       1       0       1       4       1       -       4       2
+  adh[7]             1       1       1       1       1       1       0       4       2       -       4       2
+  adh[10]            4       4       4       4       4       4       4       0       5       -       2       4
+  adh[11]            2       3       2       2       1       1       2       5       0       -       5       3
+  adh[12]            -       -       -       -       -       -       -       -       -       0       -       -
+  adh[13]            4       4       4       4       4       4       4       2       5       -       0       4
+  adh[14]            2       2       2       2       2       2       2       4       3       -       4       0
+=== gat1  giro 16  t=109.186 s | droni 14, collegamenti 58 | snapshot usati: gat1 (questo giro), gat2 (giro 19, 4.9 s fa), gat3 (giro 16, 4.0 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[6] adh[11]-adh[8] adh[11]-adh[9] adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[6] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[6]-adh[8] adh[6]-adh[9] adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       2       1       1       1       4       2       4       1
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       1
+  adh[2]             1       1       0       2       2       1       2       1       2       2       4       2       4       1
+  adh[3]             1       1       2       0       1       2       2       1       1       2       4       2       4       1
+  adh[4]             1       2       2       1       0       1       1       1       1       1       4       1       4       1
+  adh[5]             1       2       1       2       1       0       1       1       1       1       4       1       4       1
+  adh[6]             2       3       2       2       1       1       0       2       1       1       5       1       5       2
+  adh[7]             1       1       1       1       1       1       2       0       1       2       4       2       4       1
+  adh[8]             1       2       2       1       1       1       1       1       0       1       4       1       4       1
+  adh[9]             1       2       2       2       1       1       1       2       1       0       4       1       4       2
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       2       4
+  adh[11]            2       3       2       2       1       1       1       2       1       1       5       0       5       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       0       4
+  adh[14]            1       1       1       1       1       1       2       1       1       2       4       2       4       0
+=== gat2  giro 20  t=109.918 s | droni 13, collegamenti 37 | snapshot usati: gat2 (questo giro), gat1 (giro 9, 46.6 s fa), gat3 (giro 16, 4.7 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       0
+=== gat3  giro 17  t=112.607 s | droni 12, collegamenti 34 | snapshot usati: gat3 (questo giro), gat1 (giro 9, 49.3 s fa), gat2 (giro 20, 2.7 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[11]-adh[4] adh[11]-adh[5] adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       -       2       -       4       2
+  adh[1]             1       0       1       1       2       2       1       -       3       -       4       2
+  adh[2]             1       1       0       2       1       1       1       -       2       -       4       2
+  adh[3]             1       1       2       0       1       2       1       -       2       -       4       2
+  adh[4]             1       2       1       1       0       1       1       -       1       -       4       2
+  adh[5]             1       2       1       2       1       0       1       -       1       -       4       2
+  adh[7]             1       1       1       1       1       1       0       -       2       -       4       2
+  adh[10]            -       -       -       -       -       -       -       0       -       -       -       -
+  adh[11]            2       3       2       2       1       1       2       -       0       -       5       3
+  adh[12]            -       -       -       -       -       -       -       -       -       0       -       -
+  adh[13]            4       4       4       4       4       4       4       -       5       -       0       4
+  adh[14]            2       2       2       2       2       2       2       -       3       -       4       0
+=== gat1  giro 17  t=114.631 s | droni 14, collegamenti 58 | snapshot usati: gat1 (questo giro), gat2 (giro 20, 4.7 s fa), gat3 (giro 16, 9.5 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[6] adh[11]-adh[8] adh[11]-adh[9] adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[6] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[6]-adh[8] adh[6]-adh[9] adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[13] adh[14]
+  adh[0]             0       1       1       1       2       1       2       1       1       1       4       2       4       1
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       1
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       1
+  adh[3]             1       1       2       0       1       2       2       1       1       2       4       2       4       1
+  adh[4]             2       2       1       1       0       1       1       1       1       1       4       1       4       1
+  adh[5]             1       2       1       2       1       0       1       1       1       1       4       1       4       1
+  adh[6]             2       3       2       2       1       1       0       2       1       1       5       1       5       2
+  adh[7]             1       1       1       1       1       1       2       0       1       2       4       2       4       1
+  adh[8]             1       2       2       1       1       1       1       1       0       1       4       1       4       1
+  adh[9]             1       2       2       2       1       1       1       2       1       0       4       1       4       2
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       2       4
+  adh[11]            2       3       2       2       1       1       1       2       1       1       5       0       5       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       0       4
+  adh[14]            1       1       1       1       1       1       2       1       1       2       4       2       4       0
+=== gat2  giro 21  t=115.431 s | droni 13, collegamenti 37 | snapshot usati: gat2 (questo giro), gat1 (giro 9, 52.2 s fa), gat3 (giro 16, 10.3 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[13]
+  adh[0]             0       1       1       1       1       1       2       1       2       2       4       2       4
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4
+  adh[3]             1       1       2       0       1       2       3       1       2       2       4       2       4
+  adh[4]             1       2       1       1       0       1       2       1       2       2       4       1       4
+  adh[5]             1       2       1       2       1       0       1       1       2       2       4       1       4
+  adh[6]             2       3       2       3       2       1       0       2       3       3       5       2       5
+  adh[7]             1       1       1       1       1       1       2       0       2       2       4       2       4
+  adh[8]             2       2       2       2       2       2       3       2       0       1       4       3       4
+  adh[9]             2       2       2       2       2       2       3       2       1       0       4       3       4
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       2
+  adh[11]            2       3       2       2       1       1       2       2       3       3       5       0       5
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       0
+=== gat3  giro 18  t=117.262 s | droni 12, collegamenti 34 | snapshot usati: gat3 (questo giro), gat1 (giro 9, 54.0 s fa), gat2 (giro 21, 1.8 s fa)
+  collegamenti: adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-gat1 adh[11]-adh[4] adh[11]-adh[5] adh[13]-gat3 adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[7] adh[4]-gat1 adh[5]-adh[7] adh[5]-gat1 adh[7]-gat1 adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[7] adh[10] adh[11] adh[12] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       1       -       2       -       4       2
+  adh[1]             1       0       1       1       2       2       1       -       3       -       4       2
+  adh[2]             1       1       0       2       1       1       1       -       2       -       4       2
+  adh[3]             1       1       2       0       1       2       1       -       2       -       4       2
+  adh[4]             1       2       1       1       0       1       1       -       1       -       4       2
+  adh[5]             1       2       1       2       1       0       1       -       1       -       4       2
+  adh[7]             1       1       1       1       1       1       0       -       2       -       4       2
+  adh[10]            -       -       -       -       -       -       -       0       -       -       -       -
+  adh[11]            2       3       2       2       1       1       2       -       0       -       5       3
+  adh[12]            -       -       -       -       -       -       -       -       -       0       -       -
+  adh[13]            4       4       4       4       4       4       4       -       5       -       0       4
+  adh[14]            2       2       2       2       2       2       2       -       3       -       4       0
+=== gat1  giro 18  t=119.866 s | droni 14, collegamenti 59 | snapshot usati: gat1 (questo giro), gat2 (giro 21, 4.4 s fa), gat3 (giro 16, 14.7 s fa)
+  collegamenti: adh[0]-adh[14] adh[0]-adh[1] adh[0]-adh[2] adh[0]-adh[3] adh[0]-adh[4] adh[0]-adh[5] adh[0]-adh[7] adh[0]-adh[8] adh[0]-adh[9] adh[0]-gat1 adh[10]-gat3 adh[11]-adh[4] adh[11]-adh[5] adh[11]-adh[6] adh[11]-adh[8] adh[11]-adh[9] adh[13]-gat3 adh[14]-adh[1] adh[14]-adh[2] adh[14]-adh[3] adh[14]-adh[4] adh[14]-adh[5] adh[14]-adh[7] adh[14]-adh[8] adh[14]-gat1 adh[1]-adh[2] adh[1]-adh[3] adh[1]-adh[7] adh[1]-gat1 adh[2]-adh[4] adh[2]-adh[5] adh[2]-adh[7] adh[2]-gat1 adh[3]-adh[4] adh[3]-adh[7] adh[3]-adh[8] adh[3]-gat1 adh[4]-adh[5] adh[4]-adh[6] adh[4]-adh[7] adh[4]-adh[8] adh[4]-adh[9] adh[4]-gat1 adh[5]-adh[6] adh[5]-adh[7] adh[5]-adh[8] adh[5]-adh[9] adh[5]-gat1 adh[6]-adh[8] adh[6]-adh[9] adh[7]-adh[8] adh[7]-gat1 adh[8]-adh[9] adh[8]-gat1 adh[9]-gat1 gat1-gat2 gat1-satellite[0] gat2-satellite[0] gat3-satellite[0]
+  hop minimi      adh[0]  adh[1]  adh[2]  adh[3]  adh[4]  adh[5]  adh[6]  adh[7]  adh[8]  adh[9] adh[10] adh[11] adh[13] adh[14]
+  adh[0]             0       1       1       1       1       1       2       1       1       1       4       2       4       1
+  adh[1]             1       0       1       1       2       2       3       1       2       2       4       3       4       1
+  adh[2]             1       1       0       2       1       1       2       1       2       2       4       2       4       1
+  adh[3]             1       1       2       0       1       2       2       1       1       2       4       2       4       1
+  adh[4]             1       2       1       1       0       1       1       1       1       1       4       1       4       1
+  adh[5]             1       2       1       2       1       0       1       1       1       1       4       1       4       1
+  adh[6]             2       3       2       2       1       1       0       2       1       1       5       1       5       2
+  adh[7]             1       1       1       1       1       1       2       0       1       2       4       2       4       1
+  adh[8]             1       2       2       1       1       1       1       1       0       1       4       1       4       1
+  adh[9]             1       2       2       2       1       1       1       2       1       0       4       1       4       2
+  adh[10]            4       4       4       4       4       4       5       4       4       4       0       5       2       4
+  adh[11]            2       3       2       2       1       1       1       2       1       1       5       0       5       2
+  adh[13]            4       4       4       4       4       4       5       4       4       4       2       5       0       4
+  adh[14]            1       1       1       1       1       1       2       1       1       2       4       2       4       0

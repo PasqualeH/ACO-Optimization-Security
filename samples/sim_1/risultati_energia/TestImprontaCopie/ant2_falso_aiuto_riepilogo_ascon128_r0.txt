@@ -1,0 +1,17 @@
+# Regola 4 (controllo sul falso aiuto): totali di rete per drone osservato
+# drone  superati  violati  (di cui dalla GCS)  dubbi  non_applicabili  nodi_che_lo_hanno_controllato
+adh[0]  0  0  (0)  0  0  0
+adh[10]  0  0  (0)  0  0  0
+adh[11]  18  0  (0)  0  78  18
+adh[12]  0  0  (0)  0  0  0
+adh[13]  0  0  (0)  0  0  0
+adh[14]  18  0  (0)  0  71  18
+adh[1]  0  0  (0)  0  0  0
+adh[2]  0  0  (0)  0  0  0
+adh[3]  0  0  (0)  0  0  0
+adh[4]  0  0  (0)  0  0  0
+adh[5]  18  0  (0)  0  14  18
+adh[6]  0  0  (0)  0  0  0
+adh[7]  0  0  (0)  0  0  0
+adh[8]  18  0  (0)  0  14  18
+adh[9]  18  6  (1)  12  135  18

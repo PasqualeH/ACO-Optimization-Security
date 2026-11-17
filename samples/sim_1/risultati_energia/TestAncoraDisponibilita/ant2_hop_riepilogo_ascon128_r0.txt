@@ -1,0 +1,24 @@
+# Regola 6 (hop dichiarati): totali di rete per nodo osservato
+# superati/violati = controllo locale certo su FANT e BANT trasmessi da quel nodo
+# coppie/catene = controllo sulle tracce: in quante coppie sospette compare,
+#                 su quante catene ha attraversato. Il colpevole ha un rapporto alto.
+# nodo  superati  violati  (di cui dalla GCS)  coppie_sospette  catene  nodi
+adh[0]  4647  0  (0)  0  0  8
+adh[10]  484  0  (0)  0  0  3
+adh[11]  4428  0  (0)  0  0  12
+adh[12]  1942  0  (0)  0  13  8
+adh[13]  3970  0  (0)  0  1  9
+adh[14]  3966  0  (0)  0  2  9
+adh[1]  2396  0  (0)  0  0  5
+adh[2]  3800  0  (0)  0  0  7
+adh[3]  3125  0  (0)  0  4  6
+adh[4]  6173  0  (0)  0  20  10
+adh[5]  4530  0  (0)  0  2  11
+adh[6]  1518  0  (0)  0  0  6
+adh[7]  1166  0  (0)  0  0  6
+adh[8]  805  0  (0)  0  14  5
+adh[9]  986  0  (0)  0  0  4
+gat1  9160  0  (0)  0  0  10
+gat2  4923  0  (0)  0  0  8
+gat3  2019  0  (0)  0  0  6
+satellite[0]  2738  0  (0)  0  0  3

@@ -36,6 +36,7 @@
 
 // Libraries added to monitor packets incoming to ipv4 module
 #include "inet/networklayer/ipv4/Ipv4.h"
+#include "inet/physicallayer/wireless/common/contract/packetlevel/IRadio.h"
 #include "inet/common/packet/Packet.h"
 
 
@@ -77,7 +78,10 @@ const std::string& Ant2::descrizioneSicurezza()
 enum PacketType {
     FANT_PACKET,
     BANT_PACKET,
-    REQ_PACKET
+    REQ_PACKET,
+    TRACE_PACKET,  // traceroute delle GCS (snapshot della rete)
+    SNAP_PACKET,   // snapshot di un cluster scambiato tra le GCS
+    DIGEST_PACKET  // bollettino delle impronte, dalla GCS ai droni del cluster
 };
 
 Ant2::ForwardEntry::~ForwardEntry()
@@ -96,6 +100,10 @@ Ant2::~Ant2()
     // Dispose of dynamically allocated the objects
     delete event;
     delete forwardList;
+    cancelAndDelete(chargeDepartTimer);
+    cancelAndDelete(traceRoundTimer);
+    cancelAndDelete(traceCloseTimer);
+    cancelAndDelete(traceRetryTimer);
 
 //    delete Hello;
 }
@@ -169,6 +177,115 @@ void Ant2::initialize(int stage)
         //  added for energy
         nominalCapacity = par("nominalCapacity");
 
+        // Correzioni sull'energia (vedi Ant2Energy.h e il parametro legacyEnergy).
+        legacyEnergy = par("legacyEnergy").boolValue();
+        chargingLogic.setSoglie(par("chargeThreshold").doubleValue(), par("chargeFullThreshold").doubleValue());
+        chargingStation = Coord(par("chargingStationX").doubleValueInUnit("m"),
+                                par("chargingStationY").doubleValueInUnit("m"),
+                                par("chargingStationZ").doubleValueInUnit("m"));
+        // Capacita' reale della batteria: si legge il PARAMETRO del modulo
+        // energyStorage (e non getNominalEnergyCapacity(), perche' in questo
+        // stadio di inizializzazione la batteria potrebbe non essere ancora
+        // inizializzata). Se manca, si ricade su nominalCapacity.
+        batteryCapacityJ = nominalCapacity;
+        if (cModule *storage = host->getSubmodule("energyStorage"))
+            if (storage->hasPar("nominalCapacity"))
+                batteryCapacityJ = storage->par("nominalCapacity").doubleValueInUnit("J");
+        // Generatore della stazione di ricarica: facoltativo. Se il nodo non lo
+        // ha (GCS, satellite, oppure ini senza energyGenerator) la ricarica non
+        // avviene e il nodo non si sposta alla stazione.
+        chargingGenerator = dynamic_cast<power::ChargingStationEpEnergyGenerator *>(host->getSubmodule("energyGenerator"));
+        chargeDepartureDelay = par("chargeDepartureDelay").doubleValueInUnit("s");
+        chargeDepartTimer = new cMessage("chargeDepartTimer");
+
+        // Registrazione traffico/consumo (solo misura)
+        trafficEnergyLogEnabled = par("trafficEnergyLog").boolValue();
+
+        // Traceroute delle GCS (snapshot della rete)
+        traceEnabled = par("traceEnabled").boolValue();
+        traceStartTime = par("traceStartTime").doubleValueInUnit("s");
+        traceIntervalMin = par("traceIntervalMin").doubleValueInUnit("s");
+        traceIntervalMax = par("traceIntervalMax").doubleValueInUnit("s");
+        traceTimeout = par("traceTimeout").doubleValueInUnit("s");
+        traceStagger = par("traceStagger").doubleValueInUnit("s");
+        traceRetryDelay = par("traceRetryDelay").doubleValueInUnit("s");
+        traceUnicastMaxDistance = par("traceUnicastMaxDistance").doubleValueInUnit("m");
+        traceBroadcastCopies = par("traceBroadcastCopies").intValue();
+        traceNeighborTimeout = par("traceNeighborTimeout").doubleValueInUnit("s");
+        snapshotRelay = par("snapshotRelay").boolValue();
+        snapshotCopies = std::max(1, (int)par("snapshotCopies").intValue());
+        if (traceBroadcastCopies < 1)
+            traceBroadcastCopies = 1;
+        traceMaxHops = par("traceMaxHops").intValue();
+        if (traceIntervalMax < traceIntervalMin)
+            throw cRuntimeError("Ant2: traceIntervalMax minore di traceIntervalMin");
+        if (traceEnabled) {
+            traceRoundTimer = new cMessage("traceRoundTimer");
+            traceCloseTimer = new cMessage("traceCloseTimer");
+            traceRetryTimer = new cMessage("traceRetryTimer");
+        }
+        if (trafficEnergyLogEnabled)
+            trafficEnergyInit();
+
+        // Regola 1: controllo sull'energia dichiarata nei BANT.
+        energyCheckEnabled = par("energyCheckEnabled").boolValue();
+        energyCheckWindow = par("energyCheckWindow").doubleValueInUnit("s");
+        maxNetworkDelay = par("maxNetworkDelay").doubleValueInUnit("s");
+        measureMaxInterval = par("measureMaxInterval").doubleValueInUnit("s");
+        energyCheckTolerance = par("energyCheckTolerance").doubleValue();
+        energyCheckUseInitial = par("energyCheckUseInitialCapacity").boolValue();
+        energyCheckLogAll = par("energyCheckLogAll").boolValue();
+        energyMinTrafficMargin = par("energyMinTrafficMargin").doubleValue();
+        positionCheckEnabled = par("positionCheckEnabled").boolValue();
+        positionCheckLogAll = par("positionCheckLogAll").boolValue();
+        positionParams.tolPosM = par("positionCheckTolerance").doubleValueInUnit("m");
+        positionParams.tolFermoM = par("positionStillTolerance").doubleValueInUnit("m");
+        positionEventMaxAge = par("positionEventMaxAge").doubleValueInUnit("s");
+        recruitOffset = par("recruitOffset").doubleValueInUnit("m");
+        recruitRadius = par("recruitRadius").doubleValueInUnit("m");
+        recruitAltitude = par("recruitAltitude").doubleValueInUnit("m");
+        recruitMoveDelay = par("recruitMoveDelay").doubleValueInUnit("s");
+        attackWrongRecruitMove = par("attackWrongRecruitMove").boolValue();
+        attackFakePosition = par("attackFakePosition").boolValue();
+        attackFakePositionOnlyBant = par("attackFakePositionOnlyBant").boolValue();
+        availabilityCheckEnabled = par("availabilityCheckEnabled").boolValue();
+        availabilityCheckLogAll = par("availabilityCheckLogAll").boolValue();
+        attackFalseAvailability = par("attackFalseAvailability").boolValue();
+        helpCheckEnabled = par("helpCheckEnabled").boolValue();
+        helpCheckLogAll = par("helpCheckLogAll").boolValue();
+        helpParams.attesaMaxS = par("helpCheckMaxWait").doubleValueInUnit("s");
+        attackFalseHelp = par("attackFalseHelp").boolValue();
+        attackIgnoreRecruit = par("attackIgnoreRecruit").boolValue();
+        attackStart = par("attackStart").doubleValueInUnit("s");
+        bandCheckEnabled = par("bandCheckEnabled").boolValue();
+        bandCheckLogAll = par("bandCheckLogAll").boolValue();
+        // Regola 0: coerenza fra canali
+        hopCheckEnabled = par("hopCheckEnabled").boolValue();
+        traceAllClusters = par("traceAllClusters").boolValue();
+        hopCheckLogAll = par("hopCheckLogAll").boolValue();
+        hopParams.minCoppieSospette = par("hopMinCoppieSospette").intValue();
+        hopParams.sogliaRapporto = par("hopSogliaRapporto").doubleValue();
+        hopParams.minPartnerDistinti = (size_t)par("hopMinPartnerDistinti").intValue();
+        digestCheckEnabled = par("digestCheckEnabled").boolValue();
+        digestCheckLogAll = par("digestCheckLogAll").boolValue();
+        digestPublish = par("digestPublish").boolValue();
+        digestEveryRounds = std::max(1, (int)par("digestEveryRounds").intValue());
+        digestMeasuresPerNode = std::max(1, (int)par("digestMeasuresPerNode").intValue());
+        digestCopies = std::max(1, (int)par("digestCopies").intValue());
+        digestMaxRows = std::max(1, (int)par("digestMaxRows").intValue());
+        digestMaxReqRows = std::max(1, (int)par("digestMaxReqRows").intValue());
+        digestClusterFirst = par("digestClusterFirst").boolValue();
+        digestUnicast = par("digestUnicast").boolValue();
+        digestMaxRowsCluster = std::max(1, (int)par("digestMaxRowsCluster").intValue());
+        digestFullEveryRounds = std::max(1, (int)par("digestFullEveryRounds").intValue());
+        digestIncludeReq = par("digestIncludeReq").boolValue();
+        digestRelay = par("digestRelay").boolValue();
+        trustPunishEnabled = par("trustPunishEnabled").boolValue();
+        helpRequestEnergyThreshold = par("helpRequestEnergyThreshold").doubleValue();
+        attackFakePositionOffset = par("attackFakePositionOffset").doubleValueInUnit("m");
+        attackFakePositionStart = par("attackFakePositionStart").doubleValueInUnit("s");
+        energyTraceMaxAge = par("energyTraceMaxAge").doubleValueInUnit("s");
+
         // Diario dello scenario (solo osservazione, vedi Ant2Scenario.cc)
         scenarioLogEnabled = par("scenarioLog").boolValue();
 
@@ -180,6 +297,7 @@ void Ant2::initialize(int stage)
 
         // added cluster if
         cluster_id = par("cluster_id");
+        clusterIdOriginale = cluster_id;
         if (cluster_id == 1 || cluster_id == 2 || cluster_id == 3){
             // added to get position
             mobility = check_and_cast<LinearMobility *>(host->getSubmodule("mobility"));
@@ -406,13 +524,107 @@ void Ant2::start()
     //if (name == 0){
     //    scheduleAfter(uniform(0.0, 2.0), event);
     //}
+    // Nomi dei nodi per i file di log (diario e snapshot): registrati sempre,
+    // anche con scenarioLog = false.
+    for (auto ie : wirelessInterfaces)
+        scenRegistroNomi()[ie->getProtocolData<Ipv4InterfaceData>()->getIPAddress().getInt()] = host->getFullName();
+    if (x2ppp_address != Ipv4Address::UNSPECIFIED_ADDRESS)
+        scenRegistroNomi()[x2ppp_address.getInt()] = host->getFullName();
+
     scenAvvio();   // diario dello scenario: solo scrittura su file
     scheduleAfter(uniform(0.0, 2.0), event);
+
+    // Traceroute delle GCS: primo giro a traceStartTime
+    if (traceEnabled && traceRoundTimer != nullptr && !traceRoundTimer->isScheduled())
+        scheduleAt(std::max(simTime(), SimTime(traceStartTime)), traceRoundTimer);
 }
 
 void Ant2::finish()
 {
     scenFine();    // diario dello scenario: riepilogo del drone
+    // Correzioni sull'energia: scalari per verificare il funzionamento della
+    // ricarica dai risultati (.sca) della simulazione.
+    recordScalar("energiaFinalePercento", node_energy);
+    recordScalar("ricaricheIniziate", ricaricheIniziate);
+    recordScalar("ricaricheCompletate", ricaricheCompletate);
+
+    // Regola 1: esiti dei controlli sull'energia eseguiti da questo nodo
+    // (scalari) e riepilogo di rete per drone osservato (file di testo).
+    // Traceroute delle GCS
+    recordScalar("tracePacchettiTrasmessi", ctrl_trace_pkt);
+    recordScalar("traceByteTrasmessi", ctrl_trace_byte);
+    recordScalar("tracePassaggiUnicast", traceHopUnicast);
+    recordScalar("tracePassaggiBroadcast", traceHopBroadcast);
+    if (traceEnabled) {
+        closeTraceRound(false);
+        recordScalar("traceGiri", traceRound);
+        recordScalar("traceInviate", traceSent);
+        recordScalar("traceComplete", traceComplete);
+        recordScalar("traceRottaMancante", traceNoRoute);
+        recordScalar("traceSenzaRisposta", traceMissing);
+        recordScalar("traceManomesse", traceTampered);
+        recordScalar("traceSecondiTentativi", traceRetried);
+        recordScalar("traceSecondiTentativiRiusciti", traceRetryOk);
+        recordScalar("snapshotInviati", snapSent);
+        recordScalar("snapshotRicevuti", snapReceived);
+        recordScalar("snapshotRifiutati", snapRejected);
+        std::ofstream& log = snapshotLogFile();
+        log << "### " << host->getFullName() << " fine simulazione: giri " << traceRound << ", tracce inviate " << traceSent
+            << ", complete " << traceComplete << ", rotta mancante " << traceNoRoute << ", senza risposta " << traceMissing
+            << ", manomesse " << traceTampered << ", risposte in ritardo " << traceLate
+            << " | secondi tentativi " << traceRetried << ", riusciti " << traceRetryOk
+            << " | snapshot inviati " << snapSent << ", ricevuti dalle altre GCS " << snapReceived
+            << ", rifiutati " << snapRejected << "\n";
+        log.flush();
+    }
+    positionCheckFinish();
+    availabilityCheckFinish();
+    helpCheckFinish();
+    bandCheckFinish();
+    digestCheckFinish();
+    hopCheckFinish();
+    if (energyCheckEnabled && !legacyEnergy)
+        energyCheckLogFile();   // vedi la nota in positionCheckFinish()
+    recordScalar("controlliEnergiaSuperati", energyCheckSuperati);
+    recordScalar("controlliEnergiaViolati", energyCheckViolati);
+    // Misure prese in esame, divise per messaggio di provenienza: serve a
+    // vedere quante arrivano dalle voci di traccia raccolte dalle GCS.
+    recordScalar("misureEnergiaDaBant", energyCheckDaBant);
+    recordScalar("misureEnergiaDaTracce", energyCheckDaTracce);
+    if (energyCheckEnabled && !legacyEnergy) {
+        struct Tot { long superati = 0, violati = 0, nonApplicabili = 0, violatiGcs = 0; std::set<std::string> controllori; };
+        static std::map<std::string, Tot> totali;
+        static int runTotali = -1;
+        int runCorr = getEnvir()->getConfigEx()->getActiveRunNumber();
+        if (runTotali != runCorr) {
+            runTotali = runCorr;
+            totali.clear();
+        }
+        std::string io = getContainingNode(this)->getFullName();
+        for (auto& kv : energyObserved) {
+            const EnergyObserved& o = kv.second;
+            if (!o.valido)
+                continue;
+            Tot& t = totali[o.nome];
+            t.superati += o.superati;
+            t.violati += o.violati;
+            t.nonApplicabili += o.nonApplicabili;
+            // "di cui dalla GCS": si riconosce dal nome del nodo che controlla.
+            // Prima si usava energyCheckUseInitialCapacity, che era vero solo
+            // per le GCS: ora quel controllo e' disattivato e la colonna
+            // risultava sempre zero anche quando le GCS rilevavano violazioni.
+            if (io.rfind("gat", 0) == 0)
+                t.violatiGcs += o.violati;
+            if (o.superati + o.violati > 0)
+                t.controllori.insert(io);
+        }
+        std::ofstream r(nomeFileRun("ant2_energia_riepilogo", ".txt"), std::ios::trunc);
+        r << "# Regola 1 (controllo sull'energia): totali di rete per drone osservato\n";
+        r << "# drone  superati  violati  (di cui dalla GCS)  non_applicabili  nodi_che_lo_hanno_controllato\n";
+        for (auto& kv : totali)
+            r << kv.first << "  " << kv.second.superati << "  " << kv.second.violati << "  ("
+              << kv.second.violatiGcs << ")  " << kv.second.nonApplicabili << "  " << kv.second.controllori.size() << "\n";
+    }
     // Riepilogo del livello di sicurezza, a fine run, per OGNI nodo.
     //
     // Scritto su file dedicati (nella working directory della simulazione) e non
@@ -551,6 +763,12 @@ void Ant2::stop()
 {
     scenStop();   // diario dello scenario
     cancelEvent(event);
+    if (traceRoundTimer != nullptr)
+        cancelEvent(traceRoundTimer);
+    if (traceCloseTimer != nullptr)
+        cancelEvent(traceCloseTimer);
+    if (traceRetryTimer != nullptr)
+        cancelEvent(traceRetryTimer);
     while (!forwardList->empty()) {
         ForwardEntry *fh = forwardList->front();
         if (fh->event)
@@ -569,12 +787,13 @@ void Ant2::handleSelfMessage(cMessage *msg)
 
     //////////// ADDED FOR ENERGY MEASUREMENT /////////////////////////
 
-    J energylevel = energyManagement->getEstimatedEnergyCapacity();
-    double residualEnergy = energylevel.get();
-    double charge_status = (int)((residualEnergy/nominalCapacity) * 100);
+    double residualEnergy;
+    double charge_status = readChargePercent(residualEnergy);
     EV_DETAIL << "Energy level is: " << charge_status << "%" << endl;
 
-    if (charge_status <= 15.0 && allowed_send_request == true) {
+    // legacyEnergy: con le correzioni sull'energia questo blocco non si usa
+    // piu' (avviso e ricarica sono gestiti da manageCharging()).
+    if (legacyEnergy && charge_status <= 15.0 && allowed_send_request == true) {
         allowed_accept_request = false;
         scenSos(charge_status);   // diario dello scenario
         int counter = 1;
@@ -605,11 +824,11 @@ void Ant2::handleSelfMessage(cMessage *msg)
         }
     }
 
-    if (charge_status <= 15.0) {
+    if (legacyEnergy && charge_status <= 15.0) {
         return;
     }
 
-    if (charge_status <= 10.0) {
+    if (legacyEnergy && charge_status <= 10.0) {
         moveUav_charge();
         EV << "Energy is depleted, not sending Hello message" << endl;
         if (event -> isScheduled()) {
@@ -826,9 +1045,8 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
     //////////// ADDED FOR ENERGY MEASUREMENT /////////////////////////
 
-    J energylevel = energyManagement->getEstimatedEnergyCapacity();
-    double residualEnergy = energylevel.get();
-    double charge_status = (int)((residualEnergy/nominalCapacity) * 100);
+    double residualEnergy;
+    double charge_status = readChargePercent(residualEnergy);
     //EV_DETAIL << "Energy level is: " << charge_status << "%" << endl;
     scenEnergia(charge_status);   // diario dello scenario: registra le soglie
 
@@ -855,9 +1073,30 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
         moveUav();
     }
 
+    if (msg == chargeDepartTimer) {
+        // avviso gia' inviato: ora il drone va alla stazione
+        departToChargingStation();
+    }
+
+    // Traceroute delle GCS
+    if (msg == traceRoundTimer) {
+        startTraceRound();
+        return;
+    }
+    if (msg == traceCloseTimer) {
+        closeTraceRound();
+        return;
+    }
+    if (msg == traceRetryTimer) {
+        retryMissingTraces();
+        return;
+    }
+
     ///////////////////////////////////////////////////////////////////
 
-    if (charge_status <= 15.0 && allowed_send_request == true) {
+    // legacyEnergy: con le correzioni sull'energia questo blocco non si usa
+    // piu' (avviso e ricarica sono gestiti da manageCharging()).
+    if (legacyEnergy && charge_status <= 15.0 && allowed_send_request == true) {
         allowed_accept_request = false;
         scenSos(charge_status);   // diario dello scenario
         int counter = 1;
@@ -887,7 +1126,7 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
         }
     }
 
-    if (charge_status <= 15.0) {
+    if (legacyEnergy && charge_status <= 15.0) {
         if (charge_status <= 10.0) {
             moveUav_charge();
             EV << "Energy is depleted, not sending Hello message" << endl;
@@ -919,6 +1158,58 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
     else if (check_and_cast<Packet *>(msg)->getTag<PacketProtocolTag>()->getProtocol() == &Protocol::manet) {
         total_manet_packets++;
+
+        // Traceroute delle GCS: ogni nodo ricorda su quale interfaccia ha
+        // sentito ogni vicino, per poter trasmettere le tracce in unicast.
+        noteNeighborInterface(check_and_cast<Packet *>(msg));
+
+        // Smistamento dei messaggi di servizio (traccia, snapshot, bollettino).
+        //
+        // Non ci si puo' fidare del solo 'kind' del messaggio: lungo la catena
+        // di consegna puo' andare perso, e siccome FANT_PACKET vale zero un
+        // pacchetto che arriva con il kind azzerato finisce nel ramo dei FANT,
+        // che prova a reinterpretarne il contenuto e fa abortire la simulazione
+        // ("Implicit data reinterpretation ... DigestM2 -> FantM2"). Si guarda
+        // quindi il tipo effettivo del contenuto, che e' l'informazione vera, e
+        // il kind resta solo come scorciatoia.
+        Packet *pacchetto = check_and_cast<Packet *>(msg);
+        const auto& contenuto = pacchetto->peekData<Chunk>();
+
+        // Regola 6: il numero di hop dichiarato. Si controlla qui, prima dello
+        // smistamento, perche' vale allo stesso modo per FANT e BANT e cosi'
+        // c'e' un solo punto da mantenere invece dei sei in cui il protocollo
+        // legge hopdistance.
+        checkHopRule(pacchetto, contenuto);
+        // Chi ha messo questo messaggio sul canale e' anche chi lo ha firmato?
+        // Serve alla regola 1: su un messaggio inoltrato l'istante di arrivo
+        // misura il ritardo delle code della rete, non la vecchiaia della
+        // lettura. Si calcola una volta qui, prima dello smistamento.
+        msgDiretto = messaggioDalCreatore(pacchetto, contenuto);
+        if (msg->getKind() == TRACE_PACKET || dynamicPtrCast<const TraceM2>(contenuto) != nullptr) {
+            handleTrace(pacchetto);
+            return;
+        }
+        if (msg->getKind() == SNAP_PACKET || dynamicPtrCast<const SnapM2>(contenuto) != nullptr) {
+            handleSnapshot(pacchetto);
+            return;
+        }
+        if (msg->getKind() == DIGEST_PACKET || dynamicPtrCast<const DigestM2>(contenuto) != nullptr) {
+            handleDigest(pacchetto);
+            return;
+        }
+
+        // Difesa: sotto ci sono i rami di FANT, BANT e REQ, che leggono il
+        // contenuto del pacchetto dando per scontato il proprio tipo. Se il
+        // contenuto non e' nessuno dei tre, scartarlo qui e' l'unica cosa sicura
+        // da fare: proseguire significherebbe reinterpretare byte di un
+        // messaggio diverso.
+        if (dynamicPtrCast<const FantM2>(contenuto) == nullptr
+            && dynamicPtrCast<const BantM2>(contenuto) == nullptr
+            && dynamicPtrCast<const ReqM2>(contenuto) == nullptr) {
+            EV_WARN << "Ant2: messaggio di tipo inatteso scartato invece di reinterpretarlo" << endl;
+            delete msg;
+            return;
+        }
 
         if (num_80211 == 1) {
             // Differentiating between FANT and BANT
@@ -1175,11 +1466,33 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                 Coord node_position_neighbor;
                 int cluster_id_;
                 bool allowed_accept_request_node;
+                double measure_time_node;
                 if (!verifyAndDecryptBant(recHello, energy, throughput, node_position_neighbor,
-                                           max_throughput, cluster_id_, allowed_accept_request_node)) {
+                                           max_throughput, cluster_id_, allowed_accept_request_node,
+                                           measure_time_node)) {
                     delete msg;
                     return;
                 }
+
+                // Regola 1: controllo sull'energia dichiarata (firma gia' verificata).
+                // Regola 0: impronta della lettura dichiarata in questo BANT. Va
+                // registrata PRIMA delle altre regole, perche' se la GCS ha gia'
+                // pubblicato l'impronta di questa lettura il confronto scatta qui
+                // e le regole 1-5 lavorano su una lettura gia' verificata.
+                digestNotaMisura(recHello->getSrcAddress(), measure_time_node, throughput, energy,
+                                 node_position_neighbor, max_throughput, ant2digest::Fonte::BANT);
+                TotaliRegole primaDelleRegole = totaliRegole();
+
+                checkEnergyRule(recHello->getSrcAddress(), energy, node_position_neighbor, measure_time_node,
+                                "BANT", -1, -1, msgDiretto);
+                checkPositionRule(recHello->getSrcAddress(), node_position_neighbor, measure_time_node, energy);
+                checkAvailabilityRule(recHello->getSrcAddress(), allowed_accept_request_node, measure_time_node);
+                checkHelpRule(recHello->getSrcAddress(), allowed_accept_request_node, node_position_neighbor, measure_time_node);
+                checkBandRule(recHello->getSrcAddress(), max_throughput, throughput, energy, measure_time_node);
+
+                // Quanti esiti hanno prodotto le cinque regole su questa lettura:
+                // serve per poterli annullare se piu' tardi la GCS la smentisce.
+                digestAttribuisciEsiti(recHello->getSrcAddress(), measure_time_node, primaDelleRegole);
 
                 ForwardEntry *fhp = nullptr;
                 fhp = new ForwardEntry();
@@ -1261,12 +1574,13 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                             it->max_throughput = max_throughput;
                             it->cluster_id = cluster_id_;
                             it->allowed_accept_request = allowed_accept_request_node;
+                            it->measure_time = measure_time_node;
                             EV_INFO << "Updated entry in monitor table: Host: " << src_string
                                     << ", Energy: " << energy << ", Throughput: " << throughput
                                     << ", Distance: " << distance << ", Hops: " << hops << "\n";
                         } else {
                             // Add new entry
-                            StatusEntry newEntry = {src_string, energy, throughput, distance, hops, max_throughput, cluster_id_, allowed_accept_request_node};
+                            StatusEntry newEntry = {src_string, energy, throughput, distance, hops, max_throughput, cluster_id_, allowed_accept_request_node, measure_time_node};
                             statusTable.push_back(newEntry);
                             EV_INFO << "Added new entry to monitor table: Host: " << src_string
                                     << ", Energy: " << energy << ", Throughput: " << throughput
@@ -1367,11 +1681,28 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                 // fhp e prima di toccare qualunque tabella.
                 Coord coordenates_to_be_recruited_coord;
                 bool allowed_accept_request_sender;
+                lastReqCluster = -1;
                 if (!verifyAndDecryptReq(recHelloConst, coordenates_to_be_recruited_coord,
-                                          allowed_accept_request_sender)) {
+                                          allowed_accept_request_sender, &lastReqCluster)) {
                     delete msg;
                     return;
                 }
+
+                // Regola 2 (posizione): il REQ e' l'evento che giustifica uno
+                // spostamento. Viene annotato qui, dopo la verifica della firma
+                // e la decifratura, perche' solo ora mittente, destinatario,
+                // numero di sequenza e posizione di chi chiede aiuto sono
+                // affidabili.
+                noteMoveEvent(recHelloConst->getSrcAddress(), recHelloConst->getDstAddress(),
+                              coordenates_to_be_recruited_coord, recHelloConst->getSequencenumber());
+                // Regola 0: una GCS annota il REQ anche per ripubblicarlo nel
+                // bollettino. E' un fatto che i droni non possono procurarsi da
+                // soli, perche' un REQ raggiunge solo una parte degli osservatori:
+                // nelle misure fatte uno e' arrivato a 6 osservatori su 18, mentre
+                // le GCS ne hanno visti 7 o 8 su 8. E' cio' che trasforma in
+                // certezze i dubbi delle regole 2 e 4.
+                digestRaccogliReq(recHelloConst->getSrcAddress(), recHelloConst->getDstAddress(),
+                                  coordenates_to_be_recruited_coord, recHelloConst->getSequencenumber());
 
                 ForwardEntry *fhp = nullptr;
                 auto recHello = staticPtrCast<ReqM2>(recHelloConst->dupShared());
@@ -1500,11 +1831,27 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     // diario dello scenario: esito di una richiesta d'aiuto (prima che cambi lo stato)
                     scenRichiestaRicevuta(src, dst, (dst == source) || (dst == x2ppp_address),
                                           allowed_accept_request, coordenates_to_be_recruited_coord);
-                    if ((allowed_accept_request == true) && ((dst == source) || (dst == x2ppp_address))) {
+                    // ATTACCO (solo test) attackIgnoreRecruit: il drone ignora del
+                    // tutto i REQ a lui destinati. Non accetta, non cambia la propria
+                    // disponibilita' e non si sposta, quindi chi ha chiesto aiuto resta
+                    // senza aiuto senza che nulla nei suoi messaggi lo tradisca.
+                    if ((allowed_accept_request == true) && !attackIgnoreRecruit
+                        && ((dst == source) || (dst == x2ppp_address))) {
                         EV_INFO << "PETICION" << endl;
-                        double timer = 1;
-                        moveTimer = new cMessage("moveTimer");
-                        scheduleAfter(timer , moveTimer); // Schedule the timer to trigger every second
+                        // Snapshot per cluster: il drone reclutato entra nel cluster di
+                        // chi ha chiesto aiuto, dichiarato da quest'ultimo nel REQ
+                        // (payload cifrato e firmato). Il cambio avviene in moveUav(),
+                        // quando il drone si sposta davvero.
+                        pendingRecruitCluster = lastReqCluster;
+                        // ATTACCO (solo test) attackFalseHelp: il drone accetta, quindi
+                        // mette la disponibilita' a falsa come farebbe un drone onesto,
+                        // ma non programma lo spostamento: si comporta come se stesse
+                        // aiutando e non aiuta nessuno.
+                        if (!attackFalseHelp) {
+                            double timer = recruitMoveDelay;
+                            moveTimer = new cMessage("moveTimer");
+                            scheduleAfter(timer , moveTimer); // Schedule the timer to trigger every second
+                        }
                         allowed_accept_request = false;
                         // MODIFICATO per sicurezza: la coordinata arriva gia' decifrata
                         // come oggetto Coord (coordenates_to_be_recruited_coord); la
@@ -1946,11 +2293,33 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                 Coord node_position_neighbor;
                 int cluster_id_;
                 bool allowed_accept_request_node;
+                double measure_time_node;
                 if (!verifyAndDecryptBant(recHelloConst, energy, throughput, node_position_neighbor,
-                                           max_throughput, cluster_id_, allowed_accept_request_node)) {
+                                           max_throughput, cluster_id_, allowed_accept_request_node,
+                                           measure_time_node)) {
                     delete msg;
                     return;
                 }
+
+                // Regola 1: controllo sull'energia dichiarata (firma gia' verificata).
+                // Regola 0: impronta della lettura dichiarata in questo BANT. Va
+                // registrata PRIMA delle altre regole, perche' se la GCS ha gia'
+                // pubblicato l'impronta di questa lettura il confronto scatta qui
+                // e le regole 1-5 lavorano su una lettura gia' verificata.
+                digestNotaMisura(recHelloConst->getSrcAddress(), measure_time_node, throughput, energy,
+                                 node_position_neighbor, max_throughput, ant2digest::Fonte::BANT);
+                TotaliRegole primaDelleRegole = totaliRegole();
+
+                checkEnergyRule(recHelloConst->getSrcAddress(), energy, node_position_neighbor, measure_time_node,
+                                "BANT", -1, -1, msgDiretto);
+                checkPositionRule(recHelloConst->getSrcAddress(), node_position_neighbor, measure_time_node, energy);
+                checkAvailabilityRule(recHelloConst->getSrcAddress(), allowed_accept_request_node, measure_time_node);
+                checkHelpRule(recHelloConst->getSrcAddress(), allowed_accept_request_node, node_position_neighbor, measure_time_node);
+                checkBandRule(recHelloConst->getSrcAddress(), max_throughput, throughput, energy, measure_time_node);
+
+                // Quanti esiti hanno prodotto le cinque regole su questa lettura:
+                // serve per poterli annullare se piu' tardi la GCS la smentisce.
+                digestAttribuisciEsiti(recHelloConst->getSrcAddress(), measure_time_node, primaDelleRegole);
 
                 auto recHello1 = staticPtrCast<BantM2>(recHelloConst->dupShared());
                 auto recHello2 = staticPtrCast<BantM2>(recHelloConst->dupShared());
@@ -2036,12 +2405,13 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                             it->max_throughput = max_throughput;
                             it->cluster_id = cluster_id_;
                             it->allowed_accept_request = allowed_accept_request_node;
+                            it->measure_time = measure_time_node;
                             EV_INFO << "Updated entry in monitor table: Host: " << src_string
                                     << ", Energy: " << energy << ", Throughput: " << throughput
                                     << ", Distance: " << distance << ", Hops: " << hops << "\n";
                         } else {
                             // Add new entry
-                            StatusEntry newEntry = {src_string, energy, throughput, distance, hops, max_throughput, cluster_id_, allowed_accept_request_node};
+                            StatusEntry newEntry = {src_string, energy, throughput, distance, hops, max_throughput, cluster_id_, allowed_accept_request_node, measure_time_node};
                             statusTable.push_back(newEntry);
                             EV_INFO << "Added new entry to monitor table: Host: " << src_string
                                     << ", Energy: " << energy << ", Throughput: " << throughput
@@ -2167,6 +2537,19 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                     delete msg;
                     return;
                 }
+
+                // Regola 2 (posizione): si annota l'evento, come nell'altro
+                // punto in cui un REQ viene verificato.
+                noteMoveEvent(recHelloConstReq->getSrcAddress(), recHelloConstReq->getDstAddress(),
+                              coordenates_to_be_recruited_coord_dual, recHelloConstReq->getSequencenumber());
+                // Regola 0: una GCS annota il REQ anche per ripubblicarlo nel
+                // bollettino. E' un fatto che i droni non possono procurarsi da
+                // soli, perche' un REQ raggiunge solo una parte degli osservatori:
+                // nelle misure fatte uno e' arrivato a 6 osservatori su 18, mentre
+                // le GCS ne hanno visti 7 o 8 su 8. E' cio' che trasforma in
+                // certezze i dubbi delle regole 2 e 4.
+                digestRaccogliReq(recHelloConstReq->getSrcAddress(), recHelloConstReq->getDstAddress(),
+                                  coordenates_to_be_recruited_coord_dual, recHelloConstReq->getSequencenumber());
 
                 ForwardEntry *fhp = nullptr;
                 auto recHello1 = staticPtrCast<ReqM2>(recHelloConstReq->dupShared());
@@ -2296,7 +2679,7 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
                                           allowed_accept_request, coordenates_to_be_recruited_coord_dual);
                     if ((allowed_accept_request == true) && ((dst == source_a) || (dst == source_b) || (dst == x2ppp_address))) {
                         EV_INFO << "PETICION" << endl;
-                        double timer = 1;
+                        double timer = recruitMoveDelay;
                         moveTimer = new cMessage("moveTimer");
                         scheduleAfter(timer , moveTimer); // Schedule the timer to trigger every second
                         allowed_accept_request = false;
@@ -2438,12 +2821,13 @@ void Ant2::handleMessageWhenUp(cMessage *msg)
 
 void Ant2::updatePheromoneValues()
 {
-    J energylevel = energyManagement->getEstimatedEnergyCapacity();
-    double residualEnergy = energylevel.get();
-    double charge_status = (int)((residualEnergy/nominalCapacity) * 100);
+    double residualEnergy;
+    double charge_status = readChargePercent(residualEnergy);
     EV_DETAIL << "Energy level is: " << charge_status << "%" << endl;
 
-    if (charge_status <= 15.0 && allowed_send_request == true) {
+    // legacyEnergy: con le correzioni sull'energia questo blocco non si usa
+    // piu' (avviso e ricarica sono gestiti da manageCharging()).
+    if (legacyEnergy && charge_status <= 15.0 && allowed_send_request == true) {
         allowed_accept_request = false;
         scenSos(charge_status);   // diario dello scenario
 
@@ -2469,11 +2853,11 @@ void Ant2::updatePheromoneValues()
         allowed_send_request = false;
     }
 
-    if (charge_status <= 15.0) {
+    if (legacyEnergy && charge_status <= 15.0) {
         return;
     }
 
-    if (charge_status <= 10.0) {
+    if (legacyEnergy && charge_status <= 10.0) {
         moveUav_charge();
         EV << "Energy is depleted, not sending Hello message" << endl;
         if (event -> isScheduled()) {
@@ -2746,24 +3130,45 @@ void Ant2::updateThroughput()
     old_data_amount = new_data_amount;
     old_time = simTime();
 
+    // Correzioni sull'energia: timbro di misura, cioe' l'istante in cui si
+    // leggono posizione ed energia. Viaggia nel BANT (parte cifrata e firmata).
+    node_measure_time = simTime();
     updateCoordenates();
     updateEnergy();
+    if (trafficEnergyLogEnabled) {
+        double residualJ = energyManagement->getEstimatedEnergyCapacity().get();
+        trafficEnergyRecord(residualJ);
+    }
 
     EV_DETAIL << "=========== INFO GENERAL =========" << endl;
     EV_DETAIL << "Current coordinates: " << node_position << endl;
     EV_DETAIL << "Current throughput: " << node_throughput << "Mbps" << endl;
     EV_DETAIL << "Current energy: " << node_energy << "%" << endl;
     double th = max_band*0.85;
-    double ene = 15;
-    if (node_throughput >= th || node_energy < ene) {
+    // Stessa soglia che usa il controllo 2 della regola 5 sulla banda massima:
+    // leggerla dal parametro impedisce che le due divergano.
+    double ene = helpRequestEnergyThreshold;
+    // Correzioni sull'energia: disponibilita' e permesso di chiedere aiuto
+    // PRIMA di questa misura, da ripristinare al ritorno dalla ricarica.
+    bool acceptPrima = allowed_accept_request;
+    bool sendPrima = allowed_send_request;
+    bool inRicarica = !legacyEnergy && chargingLogic.inRicarica();
+    if (!inRicarica && (node_throughput >= th || node_energy < ene)) {
         if (allowed_send_request == true) {
             sendRecruiting();
             allowed_send_request = false;
         }
     }
 
-    if (node_energy <= 15.0) {
-        moveUav_charge();
+    if (legacyEnergy) {
+        // comportamento originale: spostamento alla stazione, senza ricarica
+        if (node_energy <= 15.0) {
+            moveUav_charge();
+        }
+    }
+    else {
+        // correzioni sull'energia: avviso, stazione, ricarica e ritorno
+        manageCharging(acceptPrima, sendPrima);
     }
     // added to test (delete)
     if (condition > 5) {
@@ -2806,6 +3211,17 @@ void Ant2::sendRecruiting()
 
                 // Extract parameters for calculation
                 bool allowed_accept_request_n = entry.allowed_accept_request;
+                // Metrica di trust: se la punizione e' accesa, un drone su cui
+                // questo nodo ha osservato almeno una violazione certa non entra
+                // fra i candidati. Spenta di default, perche' un falso positivo
+                // costerebbe prestazioni alla rete e non un avviso nel registro.
+                if (trustPunishEnabled && allowed_accept_request_n
+                    && violazioniCerte(Ipv4Address(entry.destinationAddress.c_str()).getInt()) > 0) {
+                    reclutamentiNegati++;
+                    EV_INFO << "Ant2/trust: " << entry.destinationAddress
+                            << " escluso dai candidati, violazioni certe osservate" << endl;
+                    continue;
+                }
                 if (allowed_accept_request_n == true) {
                     double E = entry.energy;
                     double T = entry.throughput;
@@ -2925,6 +3341,21 @@ void Ant2::sendRecruiting()
 void Ant2::moveUav()
 
 {
+    // Correzioni sull'energia: se, tra l'accettazione del reclutamento e lo
+    // scadere del timer di 1 s, il drone e' andato a ricaricarsi, lo
+    // spostamento verso chi ha chiesto aiuto viene annullato (il drone resta
+    // alla stazione, non disponibile).
+    if (!legacyEnergy && chargingLogic.inRicarica()) {
+        EV_INFO << "Ant2/energia: spostamento di reclutamento annullato, drone in ricarica" << endl;
+        return;
+    }
+    // Snapshot per cluster: il drone reclutato passa al cluster di chi ha
+    // chiesto aiuto (da ora lo dichiara nei BANT e lo traccia quella GCS).
+    if (pendingRecruitCluster > 0 && pendingRecruitCluster != cluster_id) {
+        EV_INFO << "Ant2/snapshot: reclutato, cluster " << cluster_id << " -> " << pendingRecruitCluster << endl;
+        cluster_id = pendingRecruitCluster;
+    }
+    pendingRecruitCluster = -1;
     //EV_DETAIL << "Moving UAV to request" << endl;
     //EV_DETAIL << "Moving UAV to position" << coordenates << endl;
     double x, y, z;
@@ -2933,12 +3364,19 @@ void Ant2::moveUav()
     coordStream >> ignore >> x >> ignore >> y >> ignore >> z >> ignore;
     Coord newPosition(x, y, z);
 
-    double radius = 100;
+    // Gli stessi parametri li usa il controllo sulla posizione (regola 2), cosi'
+    // spostamento e verifica restano coerenti: la destinazione cade dentro una
+    // sfera di raggio recruitRadius centrata in (px + offset, py + offset, quota).
+    double radius = recruitRadius;
     double angle = static_cast<double>(rand())/ RAND_MAX*2*M_PI;
     double randomRadius = static_cast<double>(rand())/ RAND_MAX*radius;
-    double xx = 100 + newPosition.x + randomRadius*cos(angle);
-    double yy = 100 + newPosition.y + randomRadius*sin(angle);
-    double zz = 50;
+    // attackWrongRecruitMove: l'attaccante si sposta nella direzione opposta,
+    // a una distanza plausibile da chi ha chiesto aiuto ma fuori dalla sfera
+    // prevista. Serve a provare la regola 2.
+    double segno = attackWrongRecruitMove ? -1.0 : 1.0;
+    double xx = segno*recruitOffset + newPosition.x + randomRadius*cos(angle);
+    double yy = segno*recruitOffset + newPosition.y + randomRadius*sin(angle);
+    double zz = recruitAltitude;
 
     Coord newPosition1(xx, yy, zz);
 
@@ -3076,7 +3514,13 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
     double dich_max_band   = max_band;
     bool   dich_allowed    = allowed_accept_request;
 
-    if (attackFalseMetrics) {
+    if (attackFalseAvailability)
+        dich_allowed = true;   // si dichiara sempre disponibile, anche se reclutato
+
+    // attackStart permette di far cominciare la menzogna a simulazione avviata,
+    // cosi' chi controlla ha prima visto i valori veri: serve a provare i
+    // controlli che confrontano una dichiarazione con quelle precedenti.
+    if (attackFalseMetrics && simTime().dbl() >= attackStart) {
         dich_throughput = 0.0;                  // "sono completamente scarico"
         dich_energy     = 100.0;                // "ho la batteria piena"
         dich_max_band   = max_band * 2.0;       // "ho il doppio della banda"
@@ -3085,13 +3529,21 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
 
     append(&dich_throughput, sizeof(double));
     append(&dich_energy, sizeof(double));
-    append(&node_position.x, sizeof(double));
-    append(&node_position.y, sizeof(double));
-    append(&node_position.z, sizeof(double));
+    Coord posDich = posizioneDichiarata();
+    append(&posDich.x, sizeof(double));
+    append(&posDich.y, sizeof(double));
+    append(&posDich.z, sizeof(double));
     append(&dich_max_band, sizeof(double));
     append(&cluster_id, sizeof(int));
     uint8_t allowedByte = dich_allowed ? 1 : 0;
     append(&allowedByte, sizeof(uint8_t));
+    // Correzioni sull'energia: timbro di misura (istante in cui sono stati
+    // letti energia e posizione), 8 byte. Con legacyEnergy il BANT resta
+    // identico a quello originale, senza timbro.
+    if (!legacyEnergy) {
+        double timbro = node_measure_time.dbl();
+        append(&timbro, sizeof(double));
+    }
 
     // 2) AAD (Associated Data): i campi di routing restano in chiaro (servono
     //    ad ogni hop per l'inoltro) ma sono comunque autenticati dal tag/firma:
@@ -3109,7 +3561,11 @@ Packet *Ant2::buildSecureBant(Ipv4Address dstAddress, Ipv4Address gateway,
 
     // 3) Nonce derivato: mai trasmesso, unico per (nodo, sequencenumber, tipo messaggio).
     uint8_t nonce[Ant2Crypto::NONCE_LEN];
-    crypto.deriveNonce(srcInt, seq, Ant2Crypto::MSG_BANT, nonce);
+    // dstInt (il nodo che aveva creato il FANT) entra nel nonce: senza di lui
+    // due BANT che rispondono a FANT di nodi diversi con lo stesso numero di
+    // sequenza userebbero lo stesso nonce. E' un campo gia' in chiaro nel
+    // messaggio e gia' autenticato, quindi non costa byte (vedi Ant2Crypto.cc).
+    crypto.deriveNonce(srcInt, dstInt, seq, Ant2Crypto::MSG_BANT, nonce);
 
     // 4) Cifratura + tag di autenticita'/integrita' (AEAD configurato).
     std::vector<uint8_t> ciphertext;
@@ -3172,8 +3628,13 @@ bool Ant2::verifyAndDecryptBant(const Ptr<const BantM2>& recHello,
                                  double& energyOut, double& throughputOut,
                                  Coord& positionOut,
                                  double& maxThroughputOut, int& clusterIdOut,
-                                 bool& allowedAcceptOut)
+                                 bool& allowedAcceptOut, double& measureTimeOut)
 {
+    // Lunghezza del payload in chiaro: 6 double + int + byte di disponibilita',
+    // piu' il timbro di misura (8 byte) se le correzioni sull'energia sono attive.
+    const size_t bantPlainLen = 6 * sizeof(double) + sizeof(int) + sizeof(uint8_t)
+                                + (legacyEnergy ? 0 : sizeof(double));
+    measureTimeOut = -1;
     uint32_t srcInt = recHello->getSrcAddress().getInt();
     uint32_t dstInt = recHello->getDstAddress().getInt();
     unsigned int seq = recHello->getSequencenumber();
@@ -3184,7 +3645,7 @@ bool Ant2::verifyAndDecryptBant(const Ptr<const BantM2>& recHello,
         std::vector<uint8_t> pt(recHello->getCiphertextArraySize());
         for (size_t i = 0; i < pt.size(); i++)
             pt[i] = recHello->getCiphertext(i);
-        if (pt.size() != 6 * sizeof(double) + sizeof(int) + sizeof(uint8_t))
+        if (pt.size() != bantPlainLen)
             return false;
         size_t off = 0;
         auto rd = [&pt, &off]() { double v; memcpy(&v, pt.data() + off, sizeof(double)); off += sizeof(double); return v; };
@@ -3196,6 +3657,9 @@ bool Ant2::verifyAndDecryptBant(const Ptr<const BantM2>& recHello,
         memcpy(&clusterIdOut, pt.data() + off, sizeof(int));
         off += sizeof(int);
         allowedAcceptOut = pt[off] != 0;
+        off += sizeof(uint8_t);
+        if (!legacyEnergy)
+            measureTimeOut = rd();
         return true;
     }
 
@@ -3265,7 +3729,11 @@ bool Ant2::verifyAndDecryptBant(const Ptr<const BantM2>& recHello,
 
     // 4) Decifratura + verifica del tag di integrita' AEAD.
     uint8_t nonce[Ant2Crypto::NONCE_LEN];
-    crypto.deriveNonce(srcInt, seq, Ant2Crypto::MSG_BANT, nonce);
+    // dstInt (il nodo che aveva creato il FANT) entra nel nonce: senza di lui
+    // due BANT che rispondono a FANT di nodi diversi con lo stesso numero di
+    // sequenza userebbero lo stesso nonce. E' un campo gia' in chiaro nel
+    // messaggio e gia' autenticato, quindi non costa byte (vedi Ant2Crypto.cc).
+    crypto.deriveNonce(srcInt, dstInt, seq, Ant2Crypto::MSG_BANT, nonce);
 
     std::vector<uint8_t> plaintext;
     if (!crypto.decrypt(ciphertext, tag, aad, nonce, plaintext)) {
@@ -3277,7 +3745,7 @@ bool Ant2::verifyAndDecryptBant(const Ptr<const BantM2>& recHello,
         return false;
     }
 
-    const size_t expectedLen = 6 * sizeof(double) + sizeof(int) + sizeof(uint8_t);
+    const size_t expectedLen = bantPlainLen;
     if (plaintext.size() != expectedLen) {
         sec_bant_fail++;
         sec_fail_aead++;
@@ -3302,6 +3770,9 @@ bool Ant2::verifyAndDecryptBant(const Ptr<const BantM2>& recHello,
     memcpy(&clusterIdOut, plaintext.data() + offset, sizeof(int));
     offset += sizeof(int);
     allowedAcceptOut = plaintext[offset] != 0;
+    offset += sizeof(uint8_t);
+    if (!legacyEnergy)
+        measureTimeOut = readDouble();
 
     // Aggiunto: stampa di successo, cosi' nel log si vede chiaramente sia cosa
     // viene scartato (EV_WARN sopra) sia cosa passa la verifica correttamente.
@@ -3330,6 +3801,13 @@ Packet *Ant2::buildSecureReq(Ipv4Address dstAddress, unsigned int seq, Ipv4Addre
     append(&coordToSend.z, sizeof(double));
     uint8_t allowedByte = allowedAccept ? 1 : 0;
     append(&allowedByte, sizeof(uint8_t));
+    // Snapshot per cluster: chi chiede aiuto dichiara anche il proprio cluster,
+    // cosi' il drone reclutato puo' passare a quel cluster (4 byte in piu').
+    // Con legacyEnergy il REQ resta identico a quello originale.
+    if (!legacyEnergy) {
+        int32_t cl = cluster_id;
+        append(&cl, sizeof(int32_t));
+    }
 
     std::vector<uint8_t> aad;
     auto appendAad = [&aad](const void *data, size_t len) {
@@ -3343,7 +3821,7 @@ Packet *Ant2::buildSecureReq(Ipv4Address dstAddress, unsigned int seq, Ipv4Addre
     appendAad(&seq, sizeof(uint32_t));
 
     uint8_t nonce[Ant2Crypto::NONCE_LEN];
-    crypto.deriveNonce(srcInt, seq, Ant2Crypto::MSG_REQ, nonce);
+    crypto.deriveNonce(srcInt, dstInt, seq, Ant2Crypto::MSG_REQ, nonce);
 
     std::vector<uint8_t> ciphertext;
     // Il buffer e' dimensionato sul caso peggiore (16 B); se ne usano
@@ -3396,7 +3874,7 @@ Packet *Ant2::buildSecureReq(Ipv4Address dstAddress, unsigned int seq, Ipv4Addre
 }
 
 bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
-                                Coord& coordOut, bool& allowedAcceptOut)
+                                Coord& coordOut, bool& allowedAcceptOut, int *clusterOut)
 {
     uint32_t srcInt = recHello->getSrcAddress().getInt();
     uint32_t dstInt = recHello->getDstAddress().getInt();
@@ -3407,7 +3885,7 @@ bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
         std::vector<uint8_t> pt(recHello->getCiphertextArraySize());
         for (size_t i = 0; i < pt.size(); i++)
             pt[i] = recHello->getCiphertext(i);
-        if (pt.size() != 3 * sizeof(double) + sizeof(uint8_t))
+        if (pt.size() != 3 * sizeof(double) + sizeof(uint8_t) + (legacyEnergy ? 0 : sizeof(int32_t)))
             return false;
         double x0, y0, z0;
         memcpy(&x0, pt.data(), sizeof(double));
@@ -3415,6 +3893,11 @@ bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
         memcpy(&z0, pt.data() + 2 * sizeof(double), sizeof(double));
         coordOut = Coord(x0, y0, z0);
         allowedAcceptOut = pt[3 * sizeof(double)] != 0;
+        if (clusterOut != nullptr && !legacyEnergy) {
+            int32_t cl;
+            memcpy(&cl, pt.data() + 3 * sizeof(double) + 1, sizeof(int32_t));
+            *clusterOut = cl;
+        }
         return true;
     }
 
@@ -3475,7 +3958,7 @@ bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
     }
 
     uint8_t nonce[Ant2Crypto::NONCE_LEN];
-    crypto.deriveNonce(srcInt, seq, Ant2Crypto::MSG_REQ, nonce);
+    crypto.deriveNonce(srcInt, dstInt, seq, Ant2Crypto::MSG_REQ, nonce);
 
     std::vector<uint8_t> plaintext;
     if (!crypto.decrypt(ciphertext, tag, aad, nonce, plaintext)) {
@@ -3487,7 +3970,7 @@ bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
         return false;
     }
 
-    const size_t expectedLen = 3 * sizeof(double) + sizeof(uint8_t);
+    const size_t expectedLen = 3 * sizeof(double) + sizeof(uint8_t) + (legacyEnergy ? 0 : sizeof(int32_t));
     if (plaintext.size() != expectedLen) {
         sec_req_fail++;
         sec_fail_aead++;
@@ -3502,6 +3985,11 @@ bool Ant2::verifyAndDecryptReq(const Ptr<const ReqM2>& recHello,
     memcpy(&z, plaintext.data() + 2 * sizeof(double), sizeof(double));
     coordOut = Coord(x, y, z);
     allowedAcceptOut = plaintext[3 * sizeof(double)] != 0;
+    if (clusterOut != nullptr && !legacyEnergy) {
+        int32_t cl;
+        memcpy(&cl, plaintext.data() + 3 * sizeof(double) + 1, sizeof(int32_t));
+        *clusterOut = cl;
+    }
 
     sec_req_ok++;
     logAccettato("REQ", recHello->getSrcAddress(), sec_req_ok);
@@ -3711,19 +4199,469 @@ bool Ant2::verifyFant(const Ptr<const FantM2>& fant)
 // Registra un messaggio di controllo immesso sul canale (originato o inoltrato).
 void Ant2::contaTrafficoControllo(const char *tipo, int byte)
 {
+    // La dimensione reale dei messaggi serve anche al calo minimo dell'energia
+    // (regola 1): da essa si ricava la durata in aria. Viene presa da qui
+    // invece di essere scritta nel file di configurazione, cosi' resta corretta
+    // anche se un messaggio cambia dimensione.
+    if (byte > 0) {
+        if (strcmp(tipo, "FANT") == 0)      fantFrameBytes = byte;
+        else if (strcmp(tipo, "BANT") == 0) bantFrameBytes = byte;
+    }
     if (strcmp(tipo, "FANT") == 0)      { ctrl_fant_pkt++; ctrl_fant_byte += byte; }
     else if (strcmp(tipo, "BANT") == 0) { ctrl_bant_pkt++; ctrl_bant_byte += byte; }
     else if (strcmp(tipo, "REQ") == 0)  { ctrl_req_pkt++;  ctrl_req_byte  += byte; }
+    else if (strcmp(tipo, "TRACE") == 0) { ctrl_trace_pkt++; ctrl_trace_byte += byte; }
+    // Il bollettino delle impronte (regola 0) viaggia nel canale del cluster:
+    // va contato insieme al resto del traffico di controllo, perche' il suo
+    // costo sulla congestione e' uno dei numeri da riportare in tesi.
+    else if (strcmp(tipo, "DIGEST") == 0) { ctrl_trace_pkt++; ctrl_trace_byte += byte; }
 }
 
 void Ant2::updateEnergy()
 {
-    J energylevel = energyManagement->getEstimatedEnergyCapacity();
-    double residualEnergy = energylevel.get();
-    double charge_status = (int)((residualEnergy/nominalCapacity) * 100);
-    //EV_DETAIL << "Energy level is: " << charge_status << "%" << endl;
-    node_energy = charge_status;
+    double residualEnergy;
+    node_energy = readChargePercent(residualEnergy);
 
+}
+
+// ============================================================================
+// Correzioni sull'energia (parametro legacyEnergy, logica in Ant2Energy.h)
+// ============================================================================
+
+double Ant2::readChargePercent(double& residualJ)
+{
+    residualJ = energyManagement->getEstimatedEnergyCapacity().get();
+    // legacy: percentuale su nominalCapacity di Ant2, troncata all'intero
+    //         (codice originale, puo' superare il 100%);
+    // corretta: percentuale sulla capacita' reale della batteria, con i decimali.
+    return ant2energy::chargePercent(residualJ, legacyEnergy ? nominalCapacity : batteryCapacityJ, legacyEnergy);
+}
+
+void Ant2::sendLowEnergyNotice(double chargePercent)
+{
+    // Avviso di batteria scarica: e' lo stesso REQ del codice originale
+    // (mittente = destinatario = il drone stesso), che chi lo riceve inoltra a
+    // tutta la rete segnando il drone come non disponibile. Rispetto al codice
+    // originale parte da TUTTI i droni (non solo da quelli con il permesso di
+    // chiedere aiuto) e una sola volta per ogni discesa sotto la soglia.
+    allowed_accept_request = false;
+    scenSos(chargePercent);   // diario dello scenario
+    for (auto& wifi : wirelessInterfaces) {
+        Ipv4Address source = wifi->getProtocolData<Ipv4InterfaceData>()->getIPAddress();
+        sequencenumber += 1;
+        Coord selfPosition = mobility ? mobility->getCurrentPosition() : node_position;
+        auto packet = buildSecureReq(source, sequencenumber, source, selfPosition, false);
+        auto addressReq = packet->addTag<L3AddressReq>();
+        addressReq->setDestAddress(L3Address(broadcast_addr));
+        addressReq->setSrcAddress(L3Address(source));
+        packet->addTag<InterfaceReq>()->setInterfaceId(wifi->getInterfaceId());
+        packet->addTag<PacketProtocolTag>()->setProtocol(&Protocol::manet);
+        packet->addTag<DispatchProtocolReq>()->setProtocol(&Protocol::ipv4);
+        send(packet, "ipOut");
+        total_manet_packets++;
+    }
+}
+
+// ============================================================================
+// Regola 1 della metrica di trust: controllo sull'energia (Ant2EnergyCheck.h)
+// ============================================================================
+
+std::ofstream& Ant2::energyCheckLogFile()
+{
+    static std::ofstream log;
+    static int runAperta = -1;
+    int runCorrente = getEnvir()->getConfigEx()->getActiveRunNumber();
+    if (runAperta != runCorrente) {
+        if (log.is_open())
+            log.close();
+        log.open(nomeFileRun("ant2_energia", ".log"), std::ios::trunc);
+        runAperta = runCorrente;
+        log << "# Regola 1 della metrica di trust: controllo sull'energia dichiarata nei BANT\n";
+        log << "# e nelle voci di traccia raccolte dalle GCS\n";
+        log << "# formato: <tempo> <nodo che controlla> <drone osservato> <controllo> <ESITO> <dettaglio>\n";
+        log << "# controlli: coerenza del timbro, coerenza della misura (stesso timbro, valore\n";
+        log << "#            diverso), valore ammesso, andamento (salita/calo massimo),\n";
+        log << "#            calo minimo (finestra W, ascolto + traffico di protocollo),\n";
+        log << "#            energia iniziale (disattivato per impostazione predefinita)\n";
+        log << "# Le violazioni sono sempre registrate; i controlli superati e non applicabili\n";
+        log << "# solo con energyCheckLogAll = true.\n";
+        log << "# Esempi:  grep VIOLATO ant2_energia*.log      grep 'adh\\[7\\]' ant2_energia*.log\n";
+        log << "#\n";
+    }
+    return log;
+}
+
+void Ant2::resolveEnergyObserved(const Ipv4Address& src, EnergyObserved& o)
+{
+    // I parametri del drone osservato (capacita' della batteria, potenze della
+    // radio, potenza del caricatore) sono caratteristiche della flotta, uguali
+    // per tutti e note a priori; nella simulazione si leggono dai parametri
+    // del nodo che ha quell'indirizzo. L'energia iniziale e' usata solo dalla
+    // GCS (piano di missione).
+    o.risolto = true;
+    cModule *h = L3AddressResolver().findHostWithAddress(L3Address(src));
+    if (h == nullptr || strcmp(h->getName(), "adh") != 0)
+        return;   // si controllano solo i droni
+    o.nome = h->getFullName();
+    try {
+        cModule *storage = h->getSubmodule("energyStorage");
+        if (storage == nullptr || !storage->hasPar("nominalCapacity"))
+            return;
+        o.p.capacityJ = storage->par("nominalCapacity").doubleValueInUnit("J");
+        double iniJ = storage->hasPar("initialCapacity") ? storage->par("initialCapacity").doubleValueInUnit("J") : o.p.capacityJ;
+        if (std::isnan(iniJ))
+            iniJ = o.p.capacityJ;
+        cModule *wlan = h->getSubmodule("wlan", 0);
+        cModule *radio = wlan ? wlan->getSubmodule("radio") : nullptr;
+        cModule *cons = radio ? radio->getSubmodule("energyConsumer") : nullptr;
+        if (cons && cons->hasPar("receiverIdlePowerConsumption"))
+            o.p.pMinW = cons->par("receiverIdlePowerConsumption").doubleValueInUnit("W");
+        if (cons && cons->hasPar("transmitterTransmittingPowerConsumption"))
+            o.p.pMaxW = cons->par("transmitterTransmittingPowerConsumption").doubleValueInUnit("W");
+        if (cons && cons->hasPar("receiverReceivingPowerConsumption"))
+            o.p.pRxW = cons->par("receiverReceivingPowerConsumption").doubleValueInUnit("W");
+        cModule *gen = h->getSubmodule("energyGenerator");
+        o.p.chargeW = (gen && gen->hasPar("chargingPower")) ? gen->par("chargingPower").doubleValueInUnit("W") : 0.0;
+        // soglia di ricarica del drone osservato: serve a riconoscere una
+        // ricarica avvenuta mentre chi controlla non riceveva i suoi BANT
+        cModule *rt = h->getSubmodule("routing");
+        o.p.chargeThresholdPct = (o.p.chargeW > 0 && rt && rt->hasPar("chargeThreshold")) ? rt->par("chargeThreshold").doubleValue() : -1;
+        // intervallo fra due generazioni di FANT del drone osservato: e' una
+        // regola del protocollo, uguale per tutta la flotta
+        if (rt && rt->hasPar("helloInterval"))
+            o.p.helloIntervalS = rt->par("helloInterval").doubleValueInUnit("s");
+        o.p.tolPct = energyCheckTolerance;
+        o.p.windowS = energyCheckWindow;
+        o.p.maxAgeS = measureMaxInterval + maxNetworkDelay;
+        o.p.initialPct = energyCheckUseInitial ? 100.0 * iniJ / o.p.capacityJ : -1;
+        o.valido = o.p.capacityJ > 0;
+    }
+    catch (std::exception& e) {
+        EV_WARN << "Ant2/energia: parametri di " << o.nome << " non leggibili: " << e.what() << endl;
+        o.valido = false;
+    }
+}
+
+int Ant2::knownNodeCount() const
+{
+    // Numero di nodi della rete noti a chi controlla: un drone lo ricava dalla
+    // propria tabella di stato, una GCS dallo snapshot raccolto con le tracce.
+    // Serve al calo minimo per sapere quante generazioni di FANT ogni nodo
+    // deve ritrasmettere e a quante deve rispondere.
+    size_t n = statusTable.size() + 1;
+    if (traceNodeInfo.size() + 1 > n)
+        n = traceNodeInfo.size() + 1;
+    return (int)n;
+}
+
+/**
+ * Vero se il messaggio e' stato messo sul canale dallo stesso nodo che lo ha
+ * firmato, falso se e' stato inoltrato da un terzo o se non si riesce a
+ * stabilirlo.
+ *
+ * Il creatore e' l'indirizzo firmato dentro il messaggio, che un attaccante non
+ * puo' alterare senza invalidare la firma. Il trasmittente e' l'indirizzo di
+ * livello 3 del frame ricevuto, che il protocollo non puo' falsificare perche'
+ * lo scrive la radio di chi trasmette.
+ *
+ * Il confronto si fa sui NOMI dei nodi e non sugli indirizzi, perche' ogni nodo
+ * ne possiede piu' di uno (radio del cluster, radio di dorsale, collegamento
+ * X2) e un confronto fra indirizzi di interfacce diverse dello stesso nodo
+ * darebbe "diverso" pur trattandosi dello stesso nodo. E' lo stesso inganno che
+ * aveva prodotto migliaia di falsi positivi nella regola 6 sugli hop.
+ *
+ * Nel dubbio si risponde falso, cosi' il controllo sull'eta' del timbro viene
+ * saltato invece di condannare su un'informazione non verificata.
+ */
+bool Ant2::messaggioDalCreatore(Packet *pacchetto, const Ptr<const Chunk>& contenuto) const
+{
+    Ipv4Address creatore;
+    if (auto b = dynamicPtrCast<const BantM2>(contenuto))
+        creatore = b->getSrcAddress();
+    else if (auto f = dynamicPtrCast<const FantM2>(contenuto))
+        creatore = f->getSrcAddress();
+    else if (auto r = dynamicPtrCast<const ReqM2>(contenuto))
+        creatore = r->getSrcAddress();
+    else
+        return false;
+
+    Ipv4Address trasmittente;
+    if (auto l3 = pacchetto->findTag<L3AddressInd>())
+        trasmittente = l3->getSrcAddress().toIpv4();
+    if (creatore.isUnspecified() || trasmittente.isUnspecified())
+        return false;
+
+    const std::string nomeCreatore = scenNomeDi(creatore);
+    const std::string nomeTrasmittente = scenNomeDi(trasmittente);
+    if (nomeCreatore.empty() || nomeTrasmittente.empty())
+        return false;
+    return nomeCreatore == nomeTrasmittente;
+}
+
+void Ant2::checkEnergyRule(const Ipv4Address& src, double energy, const Coord& pos, double timbro,
+                           const char *fonte, double arrival, double maxAge, bool diretto)
+{
+    if (!energyCheckEnabled || legacyEnergy)
+        return;
+    // i propri messaggi non si controllano
+    for (auto& wifi : wirelessInterfaces)
+        if (wifi->getProtocolData<Ipv4InterfaceData>()->getIPAddress() == src)
+            return;
+    if (src == x2ppp_address)
+        return;
+
+    EnergyObserved& o = energyObserved[src.getInt()];
+    if (!o.risolto)
+        resolveEnergyObserved(src, o);
+    if (!o.valido)
+        return;
+
+    // Dati che cambiano nel tempo: vanno aggiornati a ogni controllo e non
+    // solo quando si risolvono i parametri del drone osservato.
+    o.p.networkNodes = knownNodeCount();
+    o.p.fantBytes = fantFrameBytes;
+    o.p.bantBytes = bantFrameBytes;
+    o.p.trafficMargin = energyMinTrafficMargin;
+    o.p.maxAgeS = maxAge > 0 ? maxAge : measureMaxInterval + maxNetworkDelay;
+
+    ant2energy::EnergySample s;
+    s.t = timbro;
+    s.arrival = arrival >= 0 ? arrival : simTime().dbl();
+    s.pct = energy;
+    s.atStation = calculateEuclideanDistance(pos, chargingStation) < 1.0;
+    s.fonte = fonte;
+    s.diretto = diretto;
+    if (strcmp(fonte, "BANT") == 0)
+        energyCheckDaBant++;
+    else
+        energyCheckDaTracce++;
+
+    std::string io = getContainingNode(this)->getFullName();
+    for (auto& esito : ant2energy::checkEnergy(o.st, s, o.p)) {
+        if (esito.esito == ant2energy::Esito::SUPERATO) { o.superati++; energyCheckSuperati++; }
+        else if (esito.esito == ant2energy::Esito::VIOLATO) { o.violati++; energyCheckViolati++; }
+        else o.nonApplicabili++;
+        if (esito.esito == ant2energy::Esito::VIOLATO || energyCheckLogAll)
+            energyCheckLogFile() << simTime() << "  " << io << "  " << o.nome << "  " << esito.controllo
+                                 << "  " << ant2energy::esitoStr(esito.esito) << "  " << esito.dettaglio << "\n";
+        if (esito.esito == ant2energy::Esito::VIOLATO)
+            EV_WARN << "Ant2/energia: " << io << " rileva una violazione di " << o.nome << " (" << esito.controllo
+                    << "): " << esito.dettaglio << endl;
+    }
+}
+
+Coord Ant2::posizioneDichiarata(bool perBant) const
+{
+    // Posizione che il drone scrive nei propri messaggi. Un nodo onesto
+    // dichiara quella letta dal modulo di mobilita'; con attackFakePosition
+    // attivo, dal secondo attackFakePositionStart ne dichiara una falsa.
+    if (!attackFakePosition || simTime().dbl() < attackFakePositionStart)
+        return node_position;
+    if (attackFakePositionOnlyBant && !perBant)
+        return node_position;   // nelle voci di traccia dichiara quella vera
+    return Coord(node_position.x + attackFakePositionOffset, node_position.y, node_position.z);
+}
+
+void Ant2::departToChargingStation()
+{
+    if (chargingGenerator == nullptr || mobility == nullptr)
+        return;
+    scenRicarica();   // diario dello scenario
+    mobility->setPosition(chargingStation);
+    chargingGenerator->setCharging(true);
+    ricaricheIniziate++;
+    EV_INFO << "Ant2/energia: energia " << node_energy << "%, drone alla stazione "
+            << chargingStation << ", ricarica avviata" << endl;
+}
+
+// ============================================================================
+// Registrazione traffico/consumo (solo misura, parametro trafficEnergyLog)
+// ============================================================================
+
+void Ant2::trafficEnergyInit()
+{
+    using physicallayer::IRadio;
+    for (int i = 0; i < 8; i++) {
+        cModule *wlan = host->getSubmodule("wlan", i);
+        if (wlan == nullptr)
+            break;
+        cModule *radio = wlan->getSubmodule("radio");
+        if (radio == nullptr)
+            continue;
+        RadioTrack r;
+        r.radio = radio;
+        radioTracks.push_back(r);
+        radio->subscribe(IRadio::transmissionStateChangedSignal, this);
+        radio->subscribe(IRadio::receptionStateChangedSignal, this);
+        radio->subscribe(packetReceivedFromUpperSignal, this);   // frame passato dal MAC alla radio: trasmesso
+        radio->subscribe(packetSentToUpperSignal, this);         // frame ricevuto e passato al MAC
+    }
+}
+
+void Ant2::trafficEnergyAccumulate(RadioTrack& r)
+{
+    using physicallayer::IRadio;
+    double d = (simTime() - r.last).dbl();
+    if (d > 0) {
+        if (r.txState == IRadio::TRANSMISSION_STATE_TRANSMITTING)
+            te_Ttx += d;
+        if (r.rxState == IRadio::RECEPTION_STATE_RECEIVING)
+            te_Trx += d;
+        else if (r.rxState == IRadio::RECEPTION_STATE_BUSY)
+            te_Tbusy += d;
+    }
+    r.last = simTime();
+}
+
+void Ant2::receiveSignal(cComponent *source, simsignal_t signalID, intval_t value, cObject *details)
+{
+    Enter_Method("%s", cComponent::getSignalName(signalID));
+    using physicallayer::IRadio;
+    for (auto& r : radioTracks) {
+        if (r.radio != source)
+            continue;
+        trafficEnergyAccumulate(r);
+        if (signalID == IRadio::transmissionStateChangedSignal)
+            r.txState = (int)value;
+        else if (signalID == IRadio::receptionStateChangedSignal)
+            r.rxState = (int)value;
+    }
+}
+
+void Ant2::receiveSignal(cComponent *source, simsignal_t signalID, cObject *obj, cObject *details)
+{
+    Enter_Method("%s", cComponent::getSignalName(signalID));
+    auto packet = dynamic_cast<Packet *>(obj);
+    if (packet == nullptr)
+        return;
+    bool nostro = false;
+    for (auto& r : radioTracks)
+        if (r.radio == source)
+            nostro = true;
+    if (!nostro)
+        return;
+    if (signalID == packetReceivedFromUpperSignal) {
+        te_txFrames++;
+        te_txBytes += packet->getByteLength();
+    }
+    else if (signalID == packetSentToUpperSignal) {
+        te_rxFrames++;
+        te_rxBytes += packet->getByteLength();
+    }
+}
+
+std::ofstream& Ant2::trafficEnergyLogFile()
+{
+    static std::ofstream log;
+    static int runAperta = -1;
+    int runCorrente = getEnvir()->getConfigEx()->getActiveRunNumber();
+    if (runAperta != runCorrente) {
+        if (log.is_open())
+            log.close();
+        log.open(nomeFileRun("ant2_traffico_energia", ".log"), std::ios::trunc);
+        runAperta = runCorrente;
+        log << "# Registrazione traffico/consumo (solo misura, parametro trafficEnergyLog)\n";
+        log << "# Una riga per ogni misura di ogni nodo, con i valori dell'intervallo dalla misura precedente:\n";
+        log << "#   t        istante della misura (s)\n";
+        log << "#   nodo     nome del nodo\n";
+        log << "#   dt       durata dell'intervallo (s)\n";
+        log << "#   energiaJ energia residua (J), letta dalla batteria di INET\n";
+        log << "#   consJ    energia realmente consumata nell'intervallo (J); con staz=1 include la ricarica\n";
+        log << "#   staz     1 se il caricatore era acceso nell'intervallo\n";
+        log << "#   txFr txB frame e byte passati dal MAC alla radio (trasmessi, ritrasmissioni comprese)\n";
+        log << "#   rxFr rxB frame e byte ricevuti dalla radio e passati al MAC (anche non rivolti al nodo)\n";
+        log << "#   Ttx Trx Tbusy  tempo della radio in trasmissione, in ricezione e con canale occupato (s)\n";
+        log << "#   thrDich  throughput dichiarato nel BANT (Mbps)\n";
+        log << "# Le righe '# nodo' riportano capacita', potenze della radio e bitrate di ogni nodo.\n";
+        log << "#\n";
+        log << "# t nodo dt energiaJ consJ staz txFr txB rxFr rxB Ttx Trx Tbusy thrDich\n";
+    }
+    return log;
+}
+
+void Ant2::trafficEnergyRecord(double residualJ)
+{
+    std::ofstream& log = trafficEnergyLogFile();
+    std::string nodo = host->getFullName();
+    bool charging = chargingGenerator != nullptr && chargingGenerator->isCharging();
+    for (auto& r : radioTracks)
+        trafficEnergyAccumulate(r);   // chiude i tempi fino a questo istante
+    if (te_prevT < 0) {
+        // prima misura: parametri del nodo, utili all'analisi
+        auto mW = [](cModule *m, const char *p) {
+            return (m && m->hasPar(p)) ? m->par(p).doubleValueInUnit("W") * 1000 : -1.0;
+        };
+        cModule *cons = radioTracks.empty() ? nullptr : radioTracks[0].radio->getSubmodule("energyConsumer");
+        cModule *wlan = host->getSubmodule("wlan", 0);
+        double bitrate = (wlan && wlan->hasPar("bitrate")) ? wlan->par("bitrate").doubleValueInUnit("bps") / 1e6 : -1;
+        log << "# nodo " << nodo << " capacitaJ " << batteryCapacityJ << " radio " << radioTracks.size()
+            << " potenze_mW idle " << mW(cons, "receiverIdlePowerConsumption")
+            << " busy " << mW(cons, "receiverBusyPowerConsumption")
+            << " ricezione " << mW(cons, "receiverReceivingPowerConsumption")
+            << " trasmissione " << mW(cons, "transmitterTransmittingPowerConsumption")
+            << " tx_idle " << mW(cons, "transmitterIdlePowerConsumption")
+            << " bitrate_Mbps " << bitrate << "\n";
+    }
+    else {
+        char riga[512];
+        snprintf(riga, sizeof(riga), "%.6f %s %.6f %.9f %.9f %d %ld %.0f %ld %.0f %.9f %.9f %.9f %.6f\n",
+                 simTime().dbl(), nodo.c_str(), (simTime() - te_prevT).dbl(), residualJ, te_prevJ - residualJ,
+                 (charging || te_prevCharging) ? 1 : 0, te_txFrames, te_txBytes, te_rxFrames, te_rxBytes,
+                 te_Ttx, te_Trx, te_Tbusy, node_throughput);
+        log << riga;
+    }
+    te_prevT = simTime();
+    te_prevJ = residualJ;
+    te_prevCharging = charging;
+    te_Ttx = te_Trx = te_Tbusy = 0;
+    te_txFrames = te_rxFrames = 0;
+    te_txBytes = te_rxBytes = 0;
+}
+
+void Ant2::manageCharging(bool acceptBefore, bool sendBefore)
+{
+    // Senza generatore della stazione (GCS, satellite o ini senza
+    // energyGenerator) la ricarica non e' possibile: nessuna azione.
+    if (chargingGenerator == nullptr || mobility == nullptr)
+        return;
+
+    switch (chargingLogic.aggiorna(node_energy)) {
+        case ant2energy::ChargingAction::INIZIA_RICARICA: {
+            // 1) si memorizza lo stato da ripristinare al ritorno
+            preChargePosition = mobility->getCurrentPosition();
+            preChargeAccept = acceptBefore;
+            preChargeSend = sendBefore;
+            // 2) avviso di batteria scarica (disponibilita' a falso), inviato
+            //    dalla posizione attuale del drone
+            sendLowEnergyNotice(node_energy);
+            // 3) spostamento alla stazione e accensione del caricatore dopo
+            //    chargeDepartureDelay: nel frattempo i vicini ricevono l'avviso
+            //    e lo inoltrano. Il drone e' gia' non disponibile e non chiede aiuto.
+            if (chargeDepartureDelay > 0) {
+                if (chargeDepartTimer->isScheduled())
+                    cancelEvent(chargeDepartTimer);
+                scheduleAfter(chargeDepartureDelay, chargeDepartTimer);
+            }
+            else
+                departToChargingStation();
+            break;
+        }
+        case ant2energy::ChargingAction::FINE_RICARICA: {
+            // ricarica completata: caricatore spento, ritorno alla posizione
+            // di prima e ripristino di disponibilita' e permesso di chiedere aiuto
+            chargingGenerator->setCharging(false);
+            mobility->setPosition(preChargePosition);
+            allowed_accept_request = preChargeAccept;
+            allowed_send_request = preChargeSend;
+            ricaricheCompletate++;
+            scenFineRicarica();   // diario dello scenario
+            EV_INFO << "Ant2/energia: ricarica completata (" << node_energy << "%), ritorno in "
+                    << preChargePosition << endl;
+            break;
+        }
+        case ant2energy::ChargingAction::NESSUNA:
+            break;
+    }
 }
 
 // Hook method to intercept packet processing at the IPv4 module
@@ -3752,6 +4690,8 @@ INetfilter::IHook::Result Ant2::ensureRouteForDatagram(Packet *datagram)
         EV_INFO << "Handling Bant packet" << endl;
     } else if (strcmp(packetName, "Request") == 0) {
         EV_INFO << "Handling Request packet" << endl;
+    } else if (strcmp(packetName, "Trace") == 0 || strcmp(packetName, "Snapshot") == 0) {
+        EV_INFO << "Handling Trace/Snapshot packet" << endl;   // traceroute delle GCS: nessun feromone
     } else {
         EV_INFO << "Handling unknown packet type: " << packetName << endl;
 
